@@ -20,13 +20,15 @@
     .how{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.step{padding:20px;border:1px solid var(--line);border-radius:16px}.num{font-size:12px;color:var(--gold2);font-weight:900;letter-spacing:1px}.step h3{margin:10px 0 7px}.step p{color:var(--muted);line-height:1.6;font-size:14px;margin:0}
     .notice{margin:0 0 45px;padding:16px 18px;border-radius:14px;border:1px solid #51421e;background:#1d180b;color:#e7d7a6;font-size:13px;line-height:1.6}
     footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-size:13px}.foot{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
-    @media(max-width:760px){.navlinks{display:none}.hero{grid-template-columns:1fr;padding:48px 0 35px}.hero-card{max-width:480px}.grid,.how{grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}h1{letter-spacing:-2px}.statrow{grid-template-columns:repeat(3,1fr)}}
+    /* Added dashboard sections use the original SCOTAP black-and-gold theme. */
+    .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.dash-card{border:1px solid var(--line);background:linear-gradient(145deg,#19191d,#111113);border-radius:18px;padding:22px}.dash-card h3{margin:0 0 8px}.dash-muted{color:var(--muted);font-size:14px;line-height:1.6}.dash-balance{font-size:34px;font-weight:900;letter-spacing:-1px;margin:12px 0;color:var(--gold2)}.dash-stat{display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}.dash-stat:last-child{border-bottom:0}.dash-tag{display:inline-block;border:1px solid #59471b;color:var(--gold2);border-radius:999px;padding:5px 9px;font-size:11px}.dash-field{display:block;margin:13px 0}.dash-field label{display:block;font-size:13px;color:var(--muted);margin-bottom:7px}.dash-field input,.dash-field select{width:100%;padding:12px;border:1px solid #414147;border-radius:10px;background:#0a0a0b;color:#fff}.dash-msg{min-height:22px;color:var(--gold2);font-size:13px;margin-top:10px}.dash-account{display:flex;align-items:center;gap:14px}.dash-avatar{width:46px;height:46px;border-radius:13px;background:#32270c;color:var(--gold2);display:grid;place-items:center;font-size:23px}
+    @media(max-width:760px){.navlinks{display:none}.hero{grid-template-columns:1fr;padding:48px 0 35px}.hero-card{max-width:480px}.grid,.how{grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}h1{letter-spacing:-2px}.statrow{grid-template-columns:repeat(3,1fr)}.dash-grid{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
 <header><div class="wrap nav">
   <a class="brand" href="#"><span class="mark">S</span><span>SCOTAP <small>OTP</small></span></a>
-  <nav class="navlinks"><a href="#services">Services</a><a href="#how">How it works</a><a href="#about">About</a></nav>
+  <nav class="navlinks"><a href="#services">Services</a><a href="#dashboard">Dashboard</a><a href="#orders">Orders</a><a href="#account">Account</a><a href="#how">How it works</a></nav>
   <a class="btn" href="#services">Explore services</a>
 </div></header>
 <main>
@@ -35,7 +37,7 @@
       <span class="eyebrow">✦ DIGITAL SERVICES · SIMPLIFIED</span>
       <h1>Your digital world.<br><span class="gold">One platform.</span></h1>
       <p class="lead">A simpler way to explore virtual numbers and digital services. SCOTAP OTP is being built to make ordering clear, secure and convenient.</p>
-      <div class="actions"><a class="btn" href="#services">Explore services ↗</a><a class="btn secondary" href="#how">How it works</a></div>
+      <div class="actions"><a class="btn" href="#services">Explore services ↗</a><a class="btn secondary" href="#dashboard">Open dashboard</a></div>
     </div>
     <aside class="hero-card">
       <div class="hero-logo">S</div>
@@ -44,6 +46,7 @@
       <div class="statrow"><div class="stat"><strong>Secure</strong><span>Designed with care</span></div><div class="stat"><strong>Simple</strong><span>Clear ordering</span></div><div class="stat"><strong>Digital</strong><span>Online access</span></div></div>
     </aside>
   </div>
+
   <section id="services"><div class="wrap">
     <div class="section-head"><div><h2>Explore <span class="gold">services</span></h2><p>Start with virtual numbers, then grow the catalogue.</p></div></div>
     <div class="grid">
@@ -52,6 +55,46 @@
       <article class="service"><div class="ico">▣</div><h3>Digital Services</h3><p>More services can be added after their providers, prices and APIs are confirmed.</p><span class="tag">PLANNED</span></article>
     </div>
   </div></section>
+
+  <section id="dashboard"><div class="wrap">
+    <div class="section-head"><div><h2>Your <span class="gold">dashboard</span></h2><p>Wallet, service ordering and account tools together in one place.</p></div></div>
+    <div class="dash-grid">
+      <article class="dash-card" id="wallet">
+        <div class="eyebrow">WALLET OVERVIEW</div>
+        <div class="dash-muted" style="margin-top:15px">Available balance</div>
+        <div class="dash-balance" id="balance">₦0.00</div>
+        <div class="dash-muted" id="balance-note">Wallet API is not connected yet.</div>
+        <div class="dash-stat"><span>Total orders</span><strong id="order-count">0</strong></div>
+        <div class="dash-stat"><span>Currency</span><strong>NGN (₦)</strong></div>
+        <div class="actions"><button class="btn secondary" id="refresh-balance" type="button">Refresh balance</button></div>
+        <div class="dash-msg" id="balance-msg" aria-live="polite"></div>
+      </article>
+      <article class="dash-card">
+        <div class="eyebrow">PREPARE AN ORDER</div>
+        <h3 style="margin-top:16px">Choose a service</h3>
+        <p class="dash-muted">Select a country and service. Live stock and prices will appear after OTP Suite is connected.</p>
+        <div class="dash-field"><label for="country">Country</label><select id="country"><option value="">Choose country</option><option>Nigeria</option><option>United States</option><option>United Kingdom</option><option>Canada</option><option>India</option></select></div>
+        <div class="dash-field"><label for="service">Service</label><select id="service"><option value="">Choose service</option><option>WhatsApp</option><option>Telegram</option><option>Google</option><option>Other SMS service</option></select></div>
+        <button class="btn" id="prepare-order" type="button">Check availability</button>
+        <div class="dash-msg" id="order-msg" aria-live="polite"></div>
+      </article>
+    </div>
+  </div></section>
+
+  <section id="orders"><div class="wrap">
+    <div class="section-head"><div><h2>Order <span class="gold">history</span></h2><p>Orders will appear here once the backend and account storage are connected.</p></div></div>
+    <div class="dash-card"><div class="dash-stat"><div><strong>No orders yet</strong><div class="dash-muted">Your future orders and their status will show here.</div></div><span class="dash-tag">PREVIEW</span></div></div>
+  </div></section>
+
+  <section id="account"><div class="wrap">
+    <div class="section-head"><div><h2>Your <span class="gold">account</span></h2><p>Account area included in the same original design.</p></div></div>
+    <div class="dash-card">
+      <div class="dash-account"><div class="dash-avatar">♙</div><div><h3>Welcome to SCOTAP</h3><div class="dash-muted">Guest preview · Sign-in is not active yet.</div></div></div>
+      <div class="actions"><button class="btn" id="signin" type="button">Sign in (coming soon)</button><button class="btn secondary" id="profile" type="button">Profile settings</button></div>
+      <div class="dash-msg" id="account-msg" aria-live="polite"></div>
+    </div>
+  </div></section>
+
   <section id="how"><div class="wrap">
     <div class="section-head"><div><h2>How it will <span class="gold">work</span></h2><p>A straightforward process from selection to delivery.</p></div></div>
     <div class="how">
@@ -61,9 +104,28 @@
     </div>
   </div></section>
   <section id="about"><div class="wrap">
-    <div class="notice"><strong>Development preview:</strong> This is the first visual version of SCOTAP OTP. Live purchases, account registration, payments and OTP Suite API calls are not connected yet. Do not accept customer payments until the backend and payment flow are implemented and tested.</div>
+    <div class="notice"><strong>Development preview:</strong> This combined design keeps the original SCOTAP black-and-gold colours. Live purchases, account registration, payments and OTP Suite API calls are not connected yet. Do not accept customer payments until the backend and payment flow are implemented and tested.</div>
   </div></section>
 </main>
 <footer><div class="wrap foot"><span>© <span id="year"></span> SCOTAP OTP</span><span>Digital Services · Simplified</span></div></footer>
-<script>document.getElementById('year').textContent=new Date().getFullYear();</script>
-</body></html>
+<script>
+document.getElementById('year').textContent=new Date().getFullYear();
+document.getElementById('prepare-order').addEventListener('click',()=>{
+  const country=document.getElementById('country').value;
+  const service=document.getElementById('service').value;
+  document.getElementById('order-msg').textContent=(!country||!service)
+    ?'Choose both a country and a service first.'
+    :`Preview selected: ${service} · ${country}. Live availability is not connected yet.`;
+});
+document.getElementById('refresh-balance').addEventListener('click',()=>{
+  document.getElementById('balance-msg').textContent='The wallet API is not connected to this page yet, so no live balance was fetched.';
+});
+document.getElementById('signin').addEventListener('click',()=>{
+  document.getElementById('account-msg').textContent='Sign-in will be enabled after the account backend is ready.';
+});
+document.getElementById('profile').addEventListener('click',()=>{
+  document.getElementById('account-msg').textContent='Profile settings will be available after account registration is connected.';
+});
+</script>
+</body>
+</html>
