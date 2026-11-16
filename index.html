@@ -401,7 +401,7 @@ $("deposit-form").addEventListener("submit", async event => {
   }
 });
 
-// Supports direct arrays and nested {data:{countries:[...]}} responses.
+// Supports direct arrays and nested API response objects.
 function getList(response, keys) {
   let root = response;
 
@@ -457,8 +457,7 @@ function getServiceName(service) {
   ]) || "Verification service");
 }
 
-// This assumes your_price is the provider cost in NGN, as described
-// in the current integration. Confirm against the provider's live docs.
+// Adds the SCOTAP markup to the provider price for display.
 function getServicePrice(service) {
   const raw = field(service, [
     "your_price", "price_naira", "price_ngn",
@@ -546,9 +545,10 @@ function renderServices() {
     return;
   }
 
+  // Do not reveal the markup to customers.
   showMessage(
     "services-message",
-    filtered.length + " service(s) found. Prices include the SCOTAP ₦1,000 markup.",
+    filtered.length + " service(s) available. Prices are shown below.",
     "success"
   );
 
@@ -580,7 +580,7 @@ function renderServices() {
     note.className = "service-meta";
     note.textContent = amount === null
       ? "Provider price unavailable."
-      : "Includes ₦1,000 SCOTAP markup. Availability is not guaranteed.";
+      : "Availability is not guaranteed.";
 
     const choose = document.createElement("button");
     choose.className = "primary";
@@ -658,7 +658,6 @@ async function loadServices() {
       "Loading services for " + selectedCode + "..."
     );
 
-    // Always include the selected country code in the request.
     const query = new URLSearchParams({ country: selectedCode });
     const serviceResponse = await api("/api/services?" + query.toString());
 
