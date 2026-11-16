@@ -101,7 +101,18 @@ main{width:min(100% - 28px,850px);margin:auto}.hero{text-align:center;padding:32
 <footer>Â© <span id="year"></span> <strong style="color:var(--gold)">SCOTAP OTP</strong>. All rights reserved.<div class="footer-links"><a href="https://wa.me/2349121971385" target="_blank" rel="noopener noreferrer">ð¬ WhatsApp Support</a><a href="#terms">Terms of Service</a><a href="#privacy">Privacy Policy</a></div></footer>
 <script>
 "use strict";
+// Repair UTF-8 emoji/text that may arrive incorrectly encoded from a provider.
+function repairEmojiText(value){
+  if(typeof value!=="string"||!/[Ã°ÃÃÃ¢]/.test(value))return value;
+  try{
+    const bytes=Uint8Array.from(value,c=>c.charCodeAt(0)&255);
+    const fixed=new TextDecoder("utf-8",{fatal:true}).decode(bytes);
+    return /[Ã°ÃÃÃ¢]/.test(fixed)?value:fixed;
+  }catch{return value}
+}
 const API="https://scotap-otp-api.onaolapor39.workers.dev", MARKUP_NAIRA=1000, $=id=>document.getElementById(id);
+function repairPageText(){const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let node;while((node=walker.nextNode())){const fixed=repairEmojiText(node.nodeValue);if(fixed!==node.nodeValue)node.nodeValue=fixed}}
+window.addEventListener("DOMContentLoaded",()=>{repairPageText();new MutationObserver(repairPageText).observe(document.body,{childList:true,subtree:true,characterData:true})},{once:true});
 let mode="register",token=null,countries=[],services=[],servicesCountry="",currentUser=null;
 $("year").textContent=new Date().getFullYear();
 function showMessage(id,message,type=""){const el=$(id);el.textContent=message;el.className="message "+type}
@@ -129,9 +140,9 @@ $("deposit-form").addEventListener("submit",async e=>{e.preventDefault();const b
 $("password-form").addEventListener("submit",async e=>{e.preventDefault();const b=$("password-submit");b.disabled=true;showMessage("settings-message","Updating your password...");try{const current=$("current-password").value,next=$("new-password").value,confirm=$("confirm-new-password").value;if(next!==confirm)throw new Error("Your new passwords do not match.");if(next.length<8||next.length>128)throw new Error("New password must be 8â128 characters.");const result=await api("/api/password/change",{method:"POST",body:JSON.stringify({current_password:current,new_password:next,confirm_new_password:confirm})});$("password-form").reset();showMessage("settings-message",result.message||"Password changed successfully.","success")}catch(err){showMessage("settings-message",err.message,"error")}finally{b.disabled=false}});
 function getList(response,keys){let root=response;for(let i=0;i<5;i++){if(Array.isArray(root))return root;if(!root||typeof root!=="object")break;for(const key of keys)if(Array.isArray(root[key]))return root[key];if(root.data&&typeof root.data==="object")root=root.data;else break}return[]}
 function field(obj,names){for(const name of names){const v=obj?.[name];if(v!==undefined&&v!==null&&v!=="")return v}return null}
-function countryName(c){if(typeof c==="string")return c;return String(field(c,["country_name","name","country","title","english"])||"Unknown country")}
+function countryName(c){if(typeof c==="string")return repairEmojiText(c);return repairEmojiText(String(field(c,["country_name","name","country","title","english"])||"Unknown country"))}
 function countryCode(c){if(typeof c==="string")return c;return String(field(c,["country_code","code","iso","value"])||"")}
-function getServiceName(s){return String(field(s,["service_name","name","service","title","product","code"])||"Verification service")}
+function getServiceName(s){return repairEmojiText(String(field(s,["service_name","name","service","title","product","code"])||"Verification service"))}
 function getServicePrice(s){const raw=field(s,["your_price","price_naira","price_ngn","price","cost","amount","retail_price"]);if(raw===null)return null;const n=Number(raw);if(!Number.isFinite(n)||n<0)return null;const unit=String(field(s,["price_currency","unit"])||"").toLowerCase();return unit.includes("kobo")||unit.includes("kopeck")||unit.includes("cent")?n/100:n}
 function logoForService(name){const n=name.toLowerCase();const brands=[
 [/whatsapp/,"whatsapp","25D366","ð¬"],[/telegram/,"telegram","26A5E4","âï¸"],[/instagram/,"instagram","E4405F","ð¸"],[/facebook|meta/,"facebook","0866FF","ð"],[/google|gmail|youtube/,"google","4285F4","ð"],[/tiktok/,"tiktok","000000","ðµ"],[/twitter|x\.com|\\bx\\b/,"x","000000","ð"],[/discord/,"discord","5865F2","ð®"],[/snapchat/,"snapchat","FFFC00","ð»"],[/microsoft|outlook/,"microsoft","5E5E5E","ðª"],[/apple/,"apple","000000","ð"],[/uber/,"uber","000000","ð"],[/amazon/,"amazon","FF9900","ð¦"],[/viber/,"viber","7360F2","ð"],[/signal/,"signal","3A76F0","ðµ"],[/reddit/,"reddit","FF4500","ð¤"],[/line/,"line","06C755","ð"],[/wechat/,"wechat","07C160","ð¬"],[/yahoo/,"yahoo","6001D2","âï¸"]
