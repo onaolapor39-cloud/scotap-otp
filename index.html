@@ -12,15 +12,11 @@
 
   <title>SCOTAP OTP | Premium OTP Services</title>
 
-  <meta name="description" content="SCOTAP OTP dashboard for managing your OTP service wallet.">
-
   <style>
 
     :root {
 
       --gold: #f5c542;
-
-      --gold-light: #ffe28a;
 
       --bg: #090909;
 
@@ -32,21 +28,11 @@
 
     }
 
-    * {
-
-      box-sizing: border-box;
-
-      margin: 0;
-
-      padding: 0;
-
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
 
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-
-        Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
 
       background: var(--bg);
 
@@ -58,415 +44,109 @@
 
     }
 
-    button, a {
-
-      font: inherit;
-
-    }
-
-    a {
-
-      color: inherit;
-
-      text-decoration: none;
-
-    }
+    button, input { font: inherit; }
 
     .topbar {
 
-      display: flex;
+      display: flex; justify-content: space-between; align-items: center;
 
-      justify-content: space-between;
-
-      align-items: center;
-
-      padding: 18px 6%;
-
-      border-bottom: 1px solid var(--border);
-
-      gap: 12px;
+      padding: 18px 6%; border-bottom: 1px solid var(--border); gap: 12px;
 
     }
 
-    .logo {
+    .logo { color: var(--gold); font-size: 23px; font-weight: 900; }
 
-      color: var(--gold);
+    .logo span { color: white; }
 
-      font-size: 23px;
+    .status { font-size: 12px; color: #9be7a5; }
 
-      font-weight: 900;
+    main { width: min(100% - 32px, 850px); margin: auto; }
 
-      letter-spacing: 1px;
+    .hero { text-align: center; padding: 42px 10px 28px; }
 
-    }
+    .eyebrow { color: var(--gold); font-size: 12px; font-weight: 800; letter-spacing: 3px; }
 
-    .logo span {
+    h1 { font-size: clamp(34px, 8vw, 54px); line-height: 1.15; margin: 12px 0; }
 
-      color: white;
+    h1 span, .section-title span { color: var(--gold); }
 
-    }
+    .muted { color: var(--muted); font-size: 14px; }
 
-    .status {
+    .panel {
 
-      font-size: 12px;
+      background: var(--panel); border: 1px solid var(--border);
 
-      color: #9be7a5;
-
-      border: 1px solid #315d39;
-
-      padding: 5px 10px;
-
-      border-radius: 20px;
+      border-radius: 16px; padding: 23px; margin: 20px 0;
 
     }
 
-    main {
+    .panel h2 { font-size: 21px; margin-bottom: 12px; }
 
-      width: min(100% - 32px, 1000px);
+    .tabs, .actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 15px 0; }
 
-      margin: 0 auto;
+    button {
 
-    }
+      border: 0; border-radius: 9px; padding: 12px 16px;
 
-    .hero {
-
-      text-align: center;
-
-      padding: 58px 10px 35px;
+      cursor: pointer; font-weight: 750;
 
     }
 
-    .eyebrow {
+    button:disabled { opacity: .6; cursor: wait; }
 
-      color: var(--gold);
+    .primary { background: var(--gold); color: #111; }
 
-      font-size: 12px;
+    .secondary { background: #292929; color: white; border: 1px solid #414141; }
 
-      font-weight: 800;
+    input {
 
-      letter-spacing: 3px;
+      width: 100%; background: #090909; border: 1px solid #414141;
 
-      margin-bottom: 15px;
-
-    }
-
-    h1 {
-
-      font-size: clamp(34px, 8vw, 58px);
-
-      line-height: 1.12;
-
-      margin-bottom: 17px;
+      border-radius: 9px; color: white; padding: 13px; margin: 6px 0 13px;
 
     }
 
-    h1 span {
+    label { font-size: 13px; color: #ddd; }
 
-      color: var(--gold);
-
-    }
-
-    .hero p {
-
-      max-width: 570px;
-
-      margin: auto;
-
-      color: var(--muted);
-
-      font-size: 15px;
-
-    }
-
-    .wallet {
-
-      max-width: 650px;
-
-      margin: 0 auto 28px;
-
-      padding: 25px;
-
-      background: linear-gradient(140deg, #202018, #121212 70%);
-
-      border: 1px solid #6e5a25;
-
-      border-radius: 20px;
-
-      box-shadow: 0 12px 40px #0008;
-
-    }
-
-    .wallet-top {
-
-      display: flex;
-
-      justify-content: space-between;
-
-      align-items: center;
-
-      gap: 12px;
-
-    }
-
-    .wallet-label {
-
-      color: #ccc;
-
-      font-size: 14px;
-
-    }
-
-    .wallet-icon {
-
-      font-size: 24px;
-
-    }
+    .full { width: 100%; }
 
     .balance {
 
-      color: var(--gold-light);
+      color: #ffe28a; font-size: clamp(32px, 8vw, 44px);
 
-      font-size: clamp(32px, 8vw, 45px);
-
-      font-weight: 800;
-
-      margin: 12px 0 4px;
+      font-weight: 800; margin: 10px 0;
 
       overflow-wrap: anywhere;
 
     }
 
-    #balance-note {
+    .message { font-size: 13px; margin-top: 12px; overflow-wrap: anywhere; }
 
-      font-size: 12px;
+    .error { color: #ff8888; }
 
-      color: var(--muted);
+    .success { color: #9be7a5; }
 
-    }
+    .hidden { display: none !important; }
 
-    .wallet-actions {
+    .section-title { text-align: center; margin: 35px 0 15px; }
 
-      display: flex;
+    .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 
-      flex-wrap: wrap;
+    .feature { background: var(--panel); border: 1px solid var(--border); border-radius: 13px; padding: 18px; }
 
-      gap: 10px;
+    .feature p { color: var(--muted); font-size: 13px; }
 
-      margin-top: 20px;
+    footer { margin-top: 35px; border-top: 1px solid var(--border); padding: 25px; text-align: center; color: #888; font-size: 12px; }
 
-    }
+    @media(max-width: 600px) {
 
-    button, .button {
+      .features { grid-template-columns: 1fr; }
 
-      border: 0;
+      .panel { padding: 18px; }
 
-      border-radius: 10px;
+      .topbar { padding: 15px 5%; }
 
-      padding: 12px 17px;
-
-      cursor: pointer;
-
-      font-weight: 750;
-
-      text-align: center;
-
-      transition: opacity .2s, transform .2s;
-
-    }
-
-    button:active, .button:active {
-
-      transform: scale(.98);
-
-    }
-
-    button:disabled {
-
-      opacity: .6;
-
-      cursor: wait;
-
-    }
-
-    .primary {
-
-      background: var(--gold);
-
-      color: #111;
-
-    }
-
-    .secondary {
-
-      background: #292929;
-
-      color: white;
-
-      border: 1px solid #414141;
-
-    }
-
-    #balance-msg {
-
-      font-size: 13px;
-
-      margin-top: 12px;
-
-      overflow-wrap: anywhere;
-
-    }
-
-    .error {
-
-      color: #ff8888;
-
-    }
-
-    .success {
-
-      color: #9be7a5;
-
-    }
-
-    .section-title {
-
-      text-align: center;
-
-      font-size: 25px;
-
-      margin: 38px 0 20px;
-
-    }
-
-    .section-title span {
-
-      color: var(--gold);
-
-    }
-
-    .grid {
-
-      display: grid;
-
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-
-      gap: 15px;
-
-    }
-
-    .feature {
-
-      background: var(--panel);
-
-      border: 1px solid var(--border);
-
-      border-radius: 15px;
-
-      padding: 22px 17px;
-
-    }
-
-    .feature-icon {
-
-      font-size: 27px;
-
-      margin-bottom: 10px;
-
-    }
-
-    .feature h3 {
-
-      font-size: 16px;
-
-      margin-bottom: 7px;
-
-    }
-
-    .feature p {
-
-      font-size: 13px;
-
-      color: var(--muted);
-
-    }
-
-    .order-panel {
-
-      margin: 28px 0 45px;
-
-      padding: 25px;
-
-      border: 1px solid var(--border);
-
-      background: #111;
-
-      border-radius: 16px;
-
-      text-align: center;
-
-    }
-
-    .order-panel p {
-
-      color: var(--muted);
-
-      font-size: 14px;
-
-      margin: 8px 0 18px;
-
-    }
-
-    footer {
-
-      border-top: 1px solid var(--border);
-
-      padding: 25px 15px;
-
-      text-align: center;
-
-      color: #888;
-
-      font-size: 12px;
-
-    }
-
-    footer strong {
-
-      color: var(--gold);
-
-    }
-
-    @media (max-width: 650px) {
-
-      .grid {
-
-        grid-template-columns: 1fr;
-
-      }
-
-      .topbar {
-
-        padding: 16px 5%;
-
-      }
-
-      .hero {
-
-        padding-top: 43px;
-
-      }
-
-      .wallet {
-
-        padding: 20px;
-
-      }
-
-      .wallet-actions button {
-
-        flex: 1;
-
-      }
+      .actions button { flex: 1; }
 
     }
 
@@ -478,9 +158,9 @@
 
   <header class="topbar">
 
-    <a class="logo" href="#">SCOTAP<span> OTP</span></a>
+    <div class="logo">SCOTAP<span> OTP</span></div>
 
-    <span class="status">● Dashboard</span>
+    <span class="status">● Customer Dashboard</span>
 
   </header>
 
@@ -492,265 +172,445 @@
 
       <h1>Your OTP.<br><span>Your Control.</span></h1>
 
-      <p>
-
-        Manage your service wallet and access your OTP dashboard
-
-        through one simple, mobile-friendly interface.
-
-      </p>
+      <p class="muted">Create your account, fund your wallet and manage your OTP services.</p>
 
     </section>
 
-    <section class="wallet">
+    <section class="panel" id="auth-panel">
 
-      <div class="wallet-top">
+      <h2 id="auth-title">Create your SCOTAP account</h2>
 
-        <div class="wallet-label">Your OTP Suite Wallet</div>
+      <p class="muted" id="auth-description">Register with your email address and a strong password.</p>
 
-        <div class="wallet-icon">💳</div>
+      <div class="tabs">
 
-      </div>
+        <button class="primary" id="register-tab" type="button">Register</button>
 
-      <div class="balance" id="balance">Loading...</div>
-
-      <div id="balance-note">Connecting securely to your wallet...</div>
-
-      <div class="wallet-actions">
-
-        <button class="primary" id="refresh-balance">
-
-          ↻ Refresh Balance
-
-        </button>
-
-        <button class="secondary" id="account-button">
-
-          My Account
-
-        </button>
+        <button class="secondary" id="login-tab" type="button">Log in</button>
 
       </div>
 
-      <div id="balance-msg" aria-live="polite"></div>
+      <form id="auth-form">
+
+        <label for="email">Email address</label>
+
+        <input id="email" type="email" autocomplete="email" required maxlength="254" placeholder="you@example.com">
+
+        <label for="password">Password</label>
+
+        <input id="password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required placeholder="At least 8 characters">
+
+        <button class="primary full" id="auth-submit" type="submit">Create account</button>
+
+      </form>
+
+      <div id="auth-message" class="message" aria-live="polite"></div>
+
+    </section>
+
+    <section class="panel hidden" id="wallet-panel">
+
+      <p class="muted">YOUR PERSONAL SCOTAP WALLET</p>
+
+      <div class="balance" id="balance">₦0.00</div>
+
+      <p class="muted">Wallet balance</p>
+
+      <div class="actions">
+
+        <button class="primary" id="refresh-button" type="button">↻ Refresh</button>
+
+        <button class="secondary" id="logout-button" type="button">Log out</button>
+
+      </div>
+
+      <hr style="border:0;border-top:1px solid #303030;margin:20px 0">
+
+      <h2>Add money</h2>
+
+      <p class="muted">Choose an amount in naira. Paystack will handle the payment securely.</p>
+
+      <form id="deposit-form">
+
+        <label for="amount">Amount (NGN)</label>
+
+        <input id="amount" type="number" min="100" max="1000000" step="1" required placeholder="Example: 1000">
+
+        <button class="primary full" id="deposit-button" type="submit">Continue to Paystack</button>
+
+      </form>
+
+      <div id="wallet-message" class="message" aria-live="polite"></div>
 
     </section>
 
     <h2 class="section-title">Why <span>SCOTAP OTP?</span></h2>
 
-    <section class="grid">
+    <section class="features">
 
       <article class="feature">
 
-        <div class="feature-icon">🔐</div>
+        <h3>🔐 Secure account</h3>
 
-        <h3>Simple Dashboard</h3>
-
-        <p>A clean interface designed to work on phones and computers.</p>
+        <p>Sign in to your own customer account.</p>
 
       </article>
 
       <article class="feature">
 
-        <div class="feature-icon">💰</div>
+        <h3>💰 Personal wallet</h3>
 
-        <h3>Wallet Overview</h3>
-
-        <p>Check your connected OTP Suite wallet balance when available.</p>
+        <p>View your own balance and deposit history will be added next.</p>
 
       </article>
 
       <article class="feature">
 
-        <div class="feature-icon">⚡</div>
+        <h3>⚡ OTP services</h3>
 
-        <h3>Quick Access</h3>
-
-        <p>Keep your dashboard features together in one convenient place.</p>
+        <p>Number purchasing will be enabled after secure wallet billing is connected.</p>
 
       </article>
-
-    </section>
-
-    <section class="order-panel">
-
-      <h2>Ready to get started?</h2>
-
-      <p id="order-note">
-
-        Live OTP ordering must be connected to the supported OTP Suite API
-
-        before orders can be placed here.
-
-      </p>
-
-      <button class="primary" id="order-button">
-
-        Explore OTP Services
-
-      </button>
 
     </section>
 
   </main>
 
-  <footer>
-
-    © <span id="year"></span> <strong>SCOTAP OTP</strong>.
-
-    All rights reserved.
-
-  </footer>
+  <footer>© <span id="year"></span> <strong style="color:#f5c542">SCOTAP OTP</strong>. All rights reserved.</footer>
 
   <script>
 
     "use strict";
 
-    const API_BASE =
+    const API = "https://scotap-otp-api.onaolapor39.workers.dev";
 
-      "https://scotap-otp-api.onaolapor39.workers.dev";
+    const $ = id => document.getElementById(id);
 
-    const balanceEl = document.getElementById("balance");
+    let mode = "register";
 
-    const noteEl = document.getElementById("balance-note");
+    let token = null;
 
-    const messageEl = document.getElementById("balance-msg");
+    $("year").textContent = new Date().getFullYear();
 
-    const refreshButton = document.getElementById("refresh-balance");
+    function showMessage(id, message, type = "") {
 
-    document.getElementById("year").textContent =
+      const el = $(id);
 
-      new Date().getFullYear();
+      el.textContent = message;
 
-    async function refreshBalance() {
+      el.className = "message " + type;
 
-      refreshButton.disabled = true;
+    }
 
-      balanceEl.textContent = "Loading...";
+    function money(kobo) {
 
-      noteEl.textContent = "Checking your wallet...";
+      return new Intl.NumberFormat("en-NG", {
 
-      messageEl.textContent = "";
+        style: "currency",
 
-      messageEl.className = "";
+        currency: "NGN"
+
+      }).format(Number(kobo || 0) / 100);
+
+    }
+
+    async function api(path, options = {}) {
+
+      const headers = { "Accept": "application/json" };
+
+      if (options.body) headers["Content-Type"] = "application/json";
+
+      if (token) headers["Authorization"] = "Bearer " + token;
+
+      const response = await fetch(API + path, {
+
+        ...options,
+
+        headers: { ...headers, ...(options.headers || {}) },
+
+        cache: "no-store"
+
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok || data.success !== true) {
+
+        throw new Error(data.error || "Request failed. Please try again.");
+
+      }
+
+      return data;
+
+    }
+
+    function setMode(nextMode) {
+
+      mode = nextMode;
+
+      const registering = mode === "register";
+
+      $("auth-title").textContent = registering
+
+        ? "Create your SCOTAP account" : "Welcome back";
+
+      $("auth-description").textContent = registering
+
+        ? "Register with your email address and a strong password."
+
+        : "Log in to access your personal wallet.";
+
+      $("auth-submit").textContent = registering ? "Create account" : "Log in";
+
+      $("password").autocomplete = registering ? "new-password" : "current-password";
+
+      $("register-tab").className = registering ? "primary" : "secondary";
+
+      $("login-tab").className = registering ? "secondary" : "primary";
+
+      showMessage("auth-message", "");
+
+    }
+
+    function showLoggedIn() {
+
+      $("auth-panel").classList.add("hidden");
+
+      $("wallet-panel").classList.remove("hidden");
+
+    }
+
+    function showLoggedOut() {
+
+      token = null;
+
+      $("auth-panel").classList.remove("hidden");
+
+      $("wallet-panel").classList.add("hidden");
+
+      $("balance").textContent = "₦—";
+
+    }
+
+    async function refreshWallet() {
+
+      if (!token) return;
+
+      $("refresh-button").disabled = true;
+
+      showMessage("wallet-message", "Loading your wallet...");
 
       try {
 
-        const response = await fetch(
+        const data = await api("/api/wallet");
 
-          API_BASE + "/api/balance",
+        $("balance").textContent = money(data.balance_kobo);
 
-          {
-
-            method: "GET",
-
-            headers: { "Accept": "application/json" },
-
-            cache: "no-store"
-
-          }
-
-        );
-
-        const result = await response.json();
-
-        if (!response.ok || result.success !== true) {
-
-          throw new Error(
-
-            result.error || "Unable to retrieve your wallet balance."
-
-          );
-
-        }
-
-        const data = result.data || {};
-
-        const amount = Number(data.balance);
-
-        const currency = data.currency || "NGN";
-
-        if (!Number.isFinite(amount)) {
-
-          throw new Error("The API returned an invalid balance.");
-
-        }
-
-        balanceEl.textContent = new Intl.NumberFormat("en-NG", {
-
-          style: "currency",
-
-          currency: currency
-
-        }).format(amount);
-
-        noteEl.textContent = "Wallet balance retrieved successfully.";
-
-        messageEl.textContent = "Your wallet is connected.";
-
-        messageEl.className = "success";
+        showMessage("wallet-message", "Wallet updated.", "success");
 
       } catch (error) {
 
-        balanceEl.textContent = "Unavailable";
-
-        noteEl.textContent = "We couldn't load your wallet balance.";
-
-        messageEl.textContent =
-
-          "Connection error: " + error.message +
-
-          " Check the Worker API and its CORS settings.";
-
-        messageEl.className = "error";
+        showMessage("wallet-message", error.message, "error");
 
       } finally {
 
-        refreshButton.disabled = false;
+        $("refresh-button").disabled = false;
 
       }
 
     }
 
-    refreshButton.addEventListener("click", refreshBalance);
+    $("register-tab").addEventListener("click", () => setMode("register"));
 
-    document.getElementById("account-button").addEventListener(
+    $("login-tab").addEventListener("click", () => setMode("login"));
 
-      "click",
+    $("auth-form").addEventListener("submit", async event => {
 
-      function () {
+      event.preventDefault();
 
-        alert(
+      const button = $("auth-submit");
 
-          "Account sign-in is not connected yet. " +
+      button.disabled = true;
 
-          "A secure account system needs to be set up."
+      showMessage("auth-message", "Please wait...");
+
+      try {
+
+        const result = await api(
+
+          mode === "register" ? "/api/register" : "/api/login",
+
+          {
+
+            method: "POST",
+
+            body: JSON.stringify({
+
+              email: $("email").value.trim(),
+
+              password: $("password").value
+
+            })
+
+          }
+
+        );
+
+        if (!result.token) throw new Error("The server did not return a login token.");
+
+        token = result.token;
+
+        $("password").value = "";
+
+        showLoggedIn();
+
+        await refreshWallet();
+
+      } catch (error) {
+
+        showMessage("auth-message", error.message, "error");
+
+      } finally {
+
+        button.disabled = false;
+
+      }
+
+    });
+
+    $("refresh-button").addEventListener("click", refreshWallet);
+
+    $("logout-button").addEventListener("click", () => {
+
+      showLoggedOut();
+
+      setMode("login");
+
+      showMessage("auth-message", "You have logged out.", "success");
+
+    });
+
+    $("deposit-form").addEventListener("submit", async event => {
+
+      event.preventDefault();
+
+      const button = $("deposit-button");
+
+      button.disabled = true;
+
+      showMessage("wallet-message", "Preparing your Paystack payment...");
+
+      try {
+
+        const amount = Number($("amount").value);
+
+        if (!Number.isSafeInteger(amount) || amount < 100 || amount > 1000000) {
+
+          throw new Error("Enter an amount between ₦100 and ₦1,000,000.");
+
+        }
+
+        const result = await api("/api/payments/initialize", {
+
+          method: "POST",
+
+          body: JSON.stringify({ amount_naira: amount })
+
+        });
+
+        if (!result.authorization_url) {
+
+          throw new Error("Paystack did not return a payment link.");
+
+        }
+
+        window.location.assign(result.authorization_url);
+
+      } catch (error) {
+
+        showMessage("wallet-message", error.message, "error");
+
+        button.disabled = false;
+
+      }
+
+    });
+
+    async function verifyReturnPayment() {
+
+      const params = new URLSearchParams(window.location.search);
+
+      const reference = params.get("reference");
+
+      if (!reference || !token) return;
+
+      showMessage("wallet-message", "Verifying your payment with Paystack...");
+
+      try {
+
+        const result = await api("/api/payments/verify", {
+
+          method: "POST",
+
+          body: JSON.stringify({ reference })
+
+        });
+
+        await refreshWallet();
+
+        showMessage(
+
+          "wallet-message",
+
+          result.already_credited
+
+            ? "This payment was already credited."
+
+            : "Payment verified and wallet credited successfully.",
+
+          "success"
+
+        );
+
+        history.replaceState({}, "", window.location.pathname);
+
+      } catch (error) {
+
+        showMessage(
+
+          "wallet-message",
+
+          "Payment verification: " + error.message +
+
+          ". Log in again if needed, then check your payment reference.",
+
+          "error"
 
         );
 
       }
 
-    );
+    }
 
-    document.getElementById("order-button").addEventListener(
+    // Tokens remain in memory only. Reloading the page requires logging in again.
 
-      "click",
+    setMode("register");
 
-      function () {
+    // Payment return is checked after login, because the token is not stored
 
-        alert(
+    // persistently in this initial frontend.
 
-          "Live OTP ordering is not connected yet. " +
+    $("login-tab").addEventListener("click", () => {
 
-          "The supported OTP Suite ordering endpoint is needed."
+      const ref = new URLSearchParams(window.location.search).get("reference");
 
-        );
+      if (ref) showMessage("auth-message", "After logging in, payment verification can be retried.");
 
-      }
+    });
 
-    );
+    // No customer token is assumed or created automatically.
 
-    refreshBalance();
+    showLoggedOut();
 
   </script>
 
