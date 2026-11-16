@@ -147,13 +147,13 @@
 
     <section class="panel" id="services-panel">
       <h2>Available Services</h2>
-      <p class="muted">Browse countries, check current prices, then fund your wallet if you decide to buy.</p>
+      <p class="muted">Choose a country to view its services and prices. Fund your wallet only when you're ready.</p>
 
       <div class="service-tools" style="margin-top:15px">
         <div>
           <label for="country-filter">Choose country</label>
           <select id="country-filter">
-            <option value="">All available countries</option>
+            <option value="">Loading countries...</option>
           </select>
         </div>
         <div>
@@ -162,8 +162,8 @@
         </div>
       </div>
 
-      <button class="secondary full" id="reload-services" type="button">↻ Refresh services and prices</button>
-      <div id="services-message" class="message" aria-live="polite">Loading available services...</div>
+      <button class="secondary full" id="reload-services" type="button">↻ Refresh countries and prices</button>
+      <div id="services-message" class="message" aria-live="polite">Your available countries will appear here.</div>
       <div id="service-list" class="service-list"></div>
     </section>
   </section>
@@ -216,6 +216,7 @@ function money(kobo) {
 function naira(value) {
   const n = Number(value);
   if (!Number.isFinite(n)) return null;
+
   return new Intl.NumberFormat("en-NG", {
     style: "currency",
     currency: "NGN"
@@ -224,6 +225,7 @@ function naira(value) {
 
 async function api(path, options = {}) {
   const headers = { "Accept": "application/json" };
+
   if (options.body) headers["Content-Type"] = "application/json";
   if (token) headers["Authorization"] = "Bearer " + token;
 
@@ -238,6 +240,7 @@ async function api(path, options = {}) {
   if (!response.ok || data.success !== true) {
     throw new Error(data.error || "Request failed. Please try again.");
   }
+
   return data;
 }
 
@@ -256,6 +259,7 @@ function setMode(nextMode) {
   $("password").autocomplete = registering ? "new-password" : "current-password";
   $("register-tab").className = registering ? "primary" : "secondary";
   $("login-tab").className = registering ? "secondary" : "primary";
+
   showMessage("auth-message", "");
 }
 
@@ -266,9 +270,16 @@ function showLoggedIn() {
 
 function showLoggedOut() {
   token = null;
+  countries = [];
+  services = [];
+
   $("auth-panel").classList.remove("hidden");
   $("customer-dashboard").classList.add("hidden");
   $("balance").textContent = "₦—";
+  $("country-filter").replaceChildren(
+    new Option("Log in to load countries", "")
+  );
+  $("service-list").replaceChildren();
 }
 
 async function refreshWallet() {
@@ -293,6 +304,7 @@ $("login-tab").addEventListener("click", () => setMode("login"));
 
 $("auth-form").addEventListener("submit", async event => {
   event.preventDefault();
+
   const button = $("auth-submit");
   button.disabled = true;
   showMessage("auth-message", "Please wait...");
@@ -309,7 +321,9 @@ $("auth-form").addEventListener("submit", async event => {
       }
     );
 
-    if (!result.token) throw new Error("The server did not return a login token.");
+    if (!result.token) {
+      throw new Error("The server did not return a login token.");
+    }
 
     token = result.token;
     $("password").value = "";
@@ -332,6 +346,7 @@ $("refresh-button").addEventListener("click", refreshWallet);
 
 $("logout-button").addEventListener("click", () => {
   showLoggedOut();
+  $("deposit-area").classList.add("hidden");
   setMode("login");
   showMessage("auth-message", "You have logged out.", "success");
 });
@@ -347,6 +362,7 @@ $("hide-deposit").addEventListener("click", () => {
 
 $("deposit-form").addEventListener("submit", async event => {
   event.preventDefault();
+
   const button = $("deposit-button");
   button.disabled = true;
   showMessage("wallet-message", "Preparing your Paystack payment...");
@@ -378,90 +394,95 @@ $("deposit-form").addEventListener("submit", async event => {
   }
 });
 
-function getList(data, keys) {
+function getList(response, keys) {
+  // OTP Suite wraps its response in { success: true, data: {...} }.
+  const root = response?.data ?? response;
+
+  if (Array.isArray(root)) return root;
+
   for (const key of keys) {
-    if (Array.isArray(data[key])) return data[key];
+    if (Array.isArray(root?.[key])) return root[key];
   }
-  if (Array.isArray(data.data)) return data.data;
-  if (data.data && typeof data.data === "object") {
-    for (const key of keys) {
-      if (Array.isArray(data.data[key])) return data.data[key];
-    }
-  }
+
   return [];
 }
 
 function field(obj, names) {
   for (const name of names) {
     const value = obj?.[name];
-    if (value !== undefined && value !== null && value !== "") return value;
+
+    if (value !== undefined && value !== null && value !== "") {
+      return value;
+    }
   }
+
   return null;
 }
 
 function countryName(country) {
   if (typeof country === "string") return country;
-  return String(field(country, ["name", "country", "title", "english", "country_name"]) || "Unknown country");
+
+  return String(field(country, [
+    "country_name", "name", "country", "title", "english"
+  ]) || "Unknown country");
 }
 
 function countryCode(country) {
   if (typeof country === "string") return country;
-  return String(field(country, ["id", "code", "iso", "country_code", "value", "name"]) || countryName(country));
-}
 
-function getServiceCountry(service) {
-  return String(field(service, [
-    "country", "country_name", "countryName", "country_code", "countryCode"
+  return String(field(country, [
+    "country_code", "code", "iso", "value"
   ]) || "");
 }
 
 function getServiceName(service) {
   return String(field(service, [
-    "name", "service", "title", "product", "service_name", "code"
+    "service_name", "name", "service", "title", "product", "code"
   ]) || "Verification service");
 }
 
 function getServicePrice(service) {
-  // Display prices only when the API actually supplies them.
+  // OTP Suite documents your_price as the amount charged to your account.
   const raw = field(service, [
-    "price_naira", "price_ngn", "price", "cost", "amount", "retail_price"
+    "your_price", "price_naira", "price_ngn",
+    "price", "cost", "amount", "retail_price"
   ]);
 
   if (raw === null) return null;
 
-  const n = Number(raw);
-  if (!Number.isFinite(n)) return null;
+  const amount = Number(raw);
+  if (!Number.isFinite(amount) || amount < 0) return null;
 
-  // Common API formats may use kopecks/cents or naira.
-  const unit = String(field(service, ["currency", "price_currency", "unit"]) || "").toLowerCase();
-  if (unit.includes("kobo") || unit.includes("kopeck") || unit.includes("cent")) {
-    return n / 100;
+  const unit = String(
+    field(service, ["price_currency", "unit"]) || ""
+  ).toLowerCase();
+
+  if (
+    unit.includes("kobo") ||
+    unit.includes("kopeck") ||
+    unit.includes("cent")
+  ) {
+    return amount / 100;
   }
 
-  return n;
-}
-
-function getAvailability(service) {
-  const raw = field(service, [
-    "count", "stock", "available", "quantity", "available_count", "in_stock"
-  ]);
-
-  if (raw === null) return "Availability not provided by API";
-  if (raw === false || raw === 0 || raw === "0") return "Currently unavailable";
-  if (raw === true) return "Available";
-  return "Availability: " + String(raw);
+  return amount;
 }
 
 function renderCountries() {
   const select = $("country-filter");
   const previous = select.value;
 
-  select.replaceChildren(new Option("All available countries", ""));
+  select.replaceChildren(
+    new Option("Choose a country", "")
+  );
 
   countries.forEach(country => {
     const name = countryName(country);
     const code = countryCode(country);
-    select.add(new Option(name, code));
+
+    if (code) {
+      select.add(new Option(name, code));
+    }
   });
 
   if ([...select.options].some(option => option.value === previous)) {
@@ -473,36 +494,40 @@ function renderServices() {
   const list = $("service-list");
   list.replaceChildren();
 
-  const selectedCountry = $("country-filter").value.toLowerCase();
+  const selectedCode = $("country-filter").value;
   const search = $("service-search").value.trim().toLowerCase();
+
+  if (!selectedCode) {
+    showMessage(
+      "services-message",
+      "Countries loaded. Choose a country to see its services and prices."
+    );
+    return;
+  }
+
+  const selectedCountry = countries.find(
+    country => countryCode(country) === selectedCode
+  );
 
   const filtered = services.filter(service => {
     const name = getServiceName(service);
-    const country = getServiceCountry(service);
-    const countryMatches = !selectedCountry ||
-      country.toLowerCase() === selectedCountry ||
-      countryName(countries.find(c => countryCode(c).toLowerCase() === selectedCountry) || "")
-        .toLowerCase() === country.toLowerCase();
-
-    const searchMatches = !search ||
-      name.toLowerCase().includes(search) ||
-      country.toLowerCase().includes(search);
-
-    return countryMatches && searchMatches;
+    return !search || name.toLowerCase().includes(search);
   });
 
   if (!filtered.length) {
     showMessage(
       "services-message",
-      services.length
-        ? "No matching services found. Try another search or country."
-        : "No service data was returned. Check the API connection.",
-      services.length ? "" : "error"
+      "No services were returned for this country. Try refreshing or choose another country.",
+      "error"
     );
     return;
   }
 
-  showMessage("services-message", filtered.length + " service(s) found.", "success");
+  showMessage(
+    "services-message",
+    filtered.length + " service(s) found.",
+    "success"
+  );
 
   filtered.forEach(service => {
     const card = document.createElement("article");
@@ -513,60 +538,50 @@ function renderServices() {
 
     const country = document.createElement("p");
     country.className = "service-meta";
-    country.textContent = "Country: " + (getServiceCountry(service) || "See service details");
+    country.textContent = "Country: " +
+      (selectedCountry ? countryName(selectedCountry) : selectedCode);
 
     const price = document.createElement("p");
     price.className = "price";
-    const amount = getServicePrice(service);
 
+    const amount = getServicePrice(service);
     price.textContent = amount === null
       ? "Price unavailable"
       : naira(amount);
 
-    const availability = document.createElement("p");
-    availability.className = "service-meta";
-    availability.textContent = getAvailability(service);
+    const note = document.createElement("p");
+    note.className = "service-meta";
+    note.textContent = "Final number availability is confirmed when purchasing.";
 
-    const buy = document.createElement("button");
-    buy.className = "primary";
-    buy.type = "button";
-    buy.textContent = "Choose service";
+    const choose = document.createElement("button");
+    choose.className = "primary";
+    choose.type = "button";
+    choose.textContent = "Choose service";
 
-    buy.addEventListener("click", async () => {
+    choose.addEventListener("click", () => {
       if (amount === null) {
         showMessage(
           "services-message",
-          "The provider did not supply a price for this service. We cannot safely sell it until the real price is available.",
+          "OTP Suite did not provide a valid price. This service cannot be purchased safely yet.",
           "error"
         );
         return;
       }
 
-      const balanceText = $("balance").textContent;
-      const currentBalance = Number(
-        balanceText.replace(/[^\d.,-]/g, "").replace(/,/g, "")
-      );
-
-      if (!Number.isFinite(currentBalance) || currentBalance < amount) {
-        $("deposit-area").classList.remove("hidden");
-        $("amount").focus();
-        showMessage(
-          "wallet-message",
-          "Your balance may not cover this service. Add money before buying.",
-          "error"
-        );
-        $("wallet-panel").scrollIntoView({ behavior: "smooth", block: "start" });
+      if (!token) {
+        showMessage("services-message", "Please log in first.", "error");
         return;
       }
 
       showMessage(
         "services-message",
-        "This service is listed for browsing, but secure number purchasing is not enabled yet. No money has been deducted.",
+        getServiceName(service) + " costs " + naira(amount) +
+        ". Secure number purchasing is not enabled yet. No money has been deducted.",
         "error"
       );
     });
 
-    card.append(name, country, price, availability, buy);
+    card.append(name, country, price, note, choose);
     list.append(card);
   });
 }
@@ -574,47 +589,67 @@ function renderServices() {
 async function loadServices() {
   if (!token) return;
 
-  $("reload-services").disabled = true;
-  showMessage("services-message", "Loading countries and services...");
+  const refreshButton = $("reload-services");
+  refreshButton.disabled = true;
+
+  showMessage("services-message", "Loading available countries...");
   $("service-list").replaceChildren();
 
   try {
-    const results = await Promise.allSettled([
-      api("/api/countries"),
-      api("/api/services")
-    ]);
+    const countryResponse = await api("/api/countries");
+    countries = getList(countryResponse, ["countries", "results", "items"]);
 
-    if (results[0].status === "fulfilled") {
-      countries = getList(results[0].value, ["countries", "data", "results"]);
-      renderCountries();
+    if (!countries.length) {
+      throw new Error("OTP Suite returned no countries.");
     }
 
-    if (results[1].status === "fulfilled") {
-      services = getList(results[1].value, ["services", "data", "results", "items"]);
-    }
+    renderCountries();
 
-    if (results[0].status === "rejected" && results[1].status === "rejected") {
-      throw new Error("Could not load countries or services. Please try again.");
-    }
+    const selectedCode = $("country-filter").value;
 
-    renderServices();
+    // Do not request /api/services until a country has been selected.
+    if (!selectedCode) {
+      services = [];
 
-    if (results[1].status === "rejected") {
       showMessage(
         "services-message",
-        "Countries loaded, but services failed: " + results[1].reason.message,
-        "error"
+        countries.length + " country/countries loaded. Choose a country to see its services and prices.",
+        "success"
       );
+
+      return;
     }
+
+    showMessage(
+      "services-message",
+      "Loading services for " + selectedCode + "..."
+    );
+
+    const serviceResponse = await api(
+      "/api/services?country=" + encodeURIComponent(selectedCode)
+    );
+
+    services = getList(serviceResponse, ["services", "results", "items"]);
+
+    renderServices();
   } catch (error) {
-    showMessage("services-message", error.message, "error");
+    services = [];
+    $("service-list").replaceChildren();
+
+    showMessage(
+      "services-message",
+      "Could not load countries or services: " + error.message,
+      "error"
+    );
   } finally {
-    $("reload-services").disabled = false;
+    refreshButton.disabled = false;
   }
 }
 
 $("reload-services").addEventListener("click", loadServices);
-$("country-filter").addEventListener("change", renderServices);
+
+$("country-filter").addEventListener("change", loadServices);
+
 $("service-search").addEventListener("input", renderServices);
 
 async function verifyReturnPayment() {
@@ -652,7 +687,7 @@ async function verifyReturnPayment() {
     showMessage(
       "wallet-message",
       "Payment verification could not be confirmed: " + error.message +
-      ". Your balance has not been confirmed as credited. Refresh your wallet or contact support before paying again.",
+      ". Your balance has not been confirmed as credited. Check your payment status before paying again.",
       "error"
     );
   }
