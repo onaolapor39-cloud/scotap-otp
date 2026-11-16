@@ -9,7 +9,7 @@
 :root{color-scheme:dark;--gold:#f5c542;--bg:#090909;--panel:#151515;--muted:#aaa;--border:#303030;--text:#fff;--input:#090909;--card:#101010;--secondary:#292929;--secondary-border:#414141;--gold-text:#ffe28a}
 html[data-theme="light"]{color-scheme:light;--gold:#b8860b;--bg:#f5f6f8;--panel:#fff;--muted:#5f6368;--border:#d9dde3;--text:#171717;--input:#fff;--card:#f8f9fb;--secondary:#e9edf2;--secondary-border:#cbd1d9;--gold-text:#805b00}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;transition:background .2s,color .2s}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
 button,input,select{font:inherit}
 a{color:var(--gold)}
 button{border:0;border-radius:9px;padding:12px 16px;cursor:pointer;font-weight:750}
@@ -27,13 +27,13 @@ label{font-size:13px;color:var(--text)}
 .success{color:#229447}
 .topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 5%;border-bottom:1px solid var(--border);gap:12px;position:sticky;top:0;background:var(--bg);z-index:20}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
-.logo-mark{width:42px;height:42px;min-width:42px;min-height:42px;display:inline-grid;place-items:center;background:#f5c542!important;color:#fff!important;border:2px solid #f5c542;border-radius:7px;font-size:29px;font-weight:950;line-height:1;flex-shrink:0;visibility:visible;opacity:1}
+.logo-mark{width:42px;height:42px;display:inline-grid;place-items:center;background:#f5c542;color:#fff;border:2px solid #f5c542;border-radius:7px;font-size:29px;font-weight:950;line-height:1;flex-shrink:0}
 .brand-name{font-size:21px;font-weight:900;letter-spacing:.3px}
 .brand-name span{color:var(--gold)}
 .header-actions{display:flex;align-items:center;gap:9px}
 .status{font-size:12px;color:#55b96a}
 .menu-button{font-size:22px;min-width:46px;padding:8px 12px}
-.menu{position:fixed;z-index:30;right:16px;top:76px;width:min(290px,calc(100vw - 32px));background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:10px;box-shadow:0 12px 35px #0005}
+.menu{position:fixed;z-index:30;right:16px;top:76px;width:min(300px,calc(100vw - 32px));background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:10px;box-shadow:0 12px 35px #0005}
 .menu button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;margin:3px 0;background:transparent;color:var(--text);border:0}
 .menu button:hover{background:var(--secondary)}
 .menu .logout-item{color:#e65b5b}
@@ -71,12 +71,20 @@ footer{margin-top:35px;border-top:1px solid var(--border);padding:25px;text-alig
 .section-heading{display:flex;justify-content:space-between;align-items:center;gap:12px}
 .section-heading h2{margin:0}
 .small-button{padding:9px 12px}
+.history-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-top:10px;overflow-wrap:anywhere}
+.history-item h3{font-size:15px}
+.history-row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:5px}
+.history-status{font-size:12px;font-weight:800;text-transform:capitalize}
+.history-status.success{color:#36b85a}
+.history-status.failed,.history-status.cancelled{color:#e65b5b}
+.history-status.pending{color:var(--gold)}
+.empty-state{padding:20px;text-align:center;border:1px dashed var(--border);border-radius:12px;color:var(--muted);margin-top:14px}
 @media(max-width:600px){
 .features,.service-tools,.settings-grid{grid-template-columns:1fr}
 .panel{padding:17px}
 .topbar{padding:11px 4%}
 .brand-name{font-size:18px}
-.logo-mark{width:38px;height:38px;min-width:38px;min-height:38px;font-size:26px}
+.logo-mark{width:38px;height:38px;font-size:26px}
 .status{display:none}
 .service-card{align-items:flex-start}
 .service-card button{width:100%}
@@ -86,7 +94,10 @@ footer{margin-top:35px;border-top:1px solid var(--border);padding:25px;text-alig
 </head>
 <body>
 <header class="topbar">
-<a class="brand" href="#" aria-label="SCOTAP OTP home"><span class="logo-mark" aria-hidden="true">S</span><span class="brand-name">SCOTAP<span> OTP</span></span></a>
+<a class="brand" href="#" aria-label="SCOTAP OTP home">
+<span class="logo-mark" aria-hidden="true">S</span>
+<span class="brand-name">SCOTAP<span> OTP</span></span>
+</a>
 <div class="header-actions">
 <span class="status" id="header-status">● Customer Dashboard</span>
 <button class="secondary menu-button hidden" id="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">☰</button>
@@ -96,8 +107,10 @@ footer{margin-top:35px;border-top:1px solid var(--border);padding:25px;text-alig
 </header>
 
 <nav class="menu hidden" id="main-menu" aria-label="Customer menu">
-<button type="button" data-page="settings">⚙️ <span>Account settings</span></button>
-<button type="button" data-page="services">📱 <span>Available Services</span></button>
+<button type="button" data-page="settings">⚙️ <span>Account Settings</span></button>
+<button type="button" data-page="transactions">📄 <span>Transaction History</span></button>
+<button type="button" data-page="orders">📱 <span>Number Purchase History</span></button>
+<button type="button" data-page="services">🌐 <span>Available Services</span></button>
 <button type="button" data-page="dashboard">💰 <span>Dashboard / Wallet</span></button>
 <button type="button" data-page="logout" class="logout-item">🚪 <span>Log out</span></button>
 </nav>
@@ -121,7 +134,7 @@ footer{margin-top:35px;border-top:1px solid var(--border);padding:25px;text-alig
 <label for="full-name">Full name</label>
 <input id="full-name" type="text" autocomplete="name" maxlength="100" placeholder="Your full name">
 <label for="username">Username</label>
-<input id="username" type="text" autocomplete="username" minlength="3" maxlength="24" pattern="[A-Za-z0-9_]{3,24}" placeholder="Choose a username (letters, numbers, _)" autocapitalize="none">
+<input id="username" type="text" autocomplete="username" minlength="3" maxlength="24" pattern="[A-Za-z0-9_]{3,24}" placeholder="Choose a username" autocapitalize="none">
 </div>
 <label for="email" id="email-label">Email address</label>
 <input id="email" type="email" autocomplete="email" maxlength="254" required placeholder="you@example.com">
@@ -155,7 +168,7 @@ footer{margin-top:35px;border-top:1px solid var(--border);padding:25px;text-alig
 <div id="deposit-area" class="hidden">
 <hr style="border:0;border-top:1px solid var(--border);margin:20px 0">
 <h2>💳 Add money to your wallet</h2>
-<p class="muted">Choose how much to deposit. Paystack handles the payment securely.</p>
+<p class="muted">Choose an amount. Paystack handles the payment securely.</p>
 <form id="deposit-form">
 <label for="amount">Amount (NGN)</label>
 <input id="amount" type="number" min="100" max="1000000" step="1" required placeholder="Example: 1000">
@@ -167,11 +180,29 @@ footer{margin-top:35px;border-top:1px solid var(--border);padding:25px;text-alig
 
 <section class="panel page-panel hidden" id="settings-page">
 <div class="section-heading">
-<h2>⚙️ Account settings</h2>
+<h2>⚙️ Account Settings</h2>
 <button class="secondary small-button" type="button" data-page="dashboard">← Back</button>
 </div>
-<p class="muted">Manage your appearance and password.</p>
-<div class="settings-grid" style="margin-top:15px">
+<p class="muted">Edit your profile and manage your password.</p>
+
+<hr style="border:0;border-top:1px solid var(--border);margin:20px 0">
+<h2>👤 Profile information</h2>
+<form id="profile-form">
+<label for="profile-full-name">Full name</label>
+<input id="profile-full-name" type="text" maxlength="100" required placeholder="Your full name">
+<label for="profile-username">Username</label>
+<input id="profile-username" type="text" minlength="3" maxlength="24" pattern="[A-Za-z0-9_]{3,24}" required placeholder="Your username" autocapitalize="none">
+<label for="profile-email">Email address</label>
+<input id="profile-email" type="email" maxlength="254" required placeholder="you@example.com">
+<label for="profile-phone">Phone number (optional)</label>
+<input id="profile-phone" type="tel" maxlength="30" placeholder="Your phone number">
+<button class="primary full" id="profile-submit" type="submit">Save profile changes</button>
+</form>
+<div id="profile-message" class="message" aria-live="polite"></div>
+
+<hr style="border:0;border-top:1px solid var(--border);margin:20px 0">
+<h2>🎨 Appearance and support</h2>
+<div class="settings-grid">
 <div>
 <label for="settings-theme">Appearance</label>
 <select id="settings-theme">
@@ -184,6 +215,7 @@ footer{margin-top:35px;border-top:1px solid var(--border);padding:25px;text-alig
 <a class="support-link" href="https://wa.me/2349121971385" target="_blank" rel="noopener noreferrer"><button class="secondary full" type="button">💬 Chat with support</button></a>
 </div>
 </div>
+
 <hr style="border:0;border-top:1px solid var(--border);margin:20px 0">
 <h2>🔐 Change password</h2>
 <form id="password-form">
@@ -198,9 +230,31 @@ footer{margin-top:35px;border-top:1px solid var(--border);padding:25px;text-alig
 <div id="settings-message" class="message" aria-live="polite"></div>
 </section>
 
+<section class="panel page-panel hidden" id="transactions-page">
+<div class="section-heading">
+<h2>📄 Transaction History</h2>
+<button class="secondary small-button" type="button" data-page="dashboard">← Back</button>
+</div>
+<p class="muted">Your recorded wallet deposits and number-order transactions.</p>
+<button class="secondary full" id="reload-transactions" type="button" style="margin-top:15px">🔄 Refresh history</button>
+<div id="transactions-message" class="message" aria-live="polite"></div>
+<div id="transactions-list"></div>
+</section>
+
+<section class="panel page-panel hidden" id="orders-page">
+<div class="section-heading">
+<h2>📱 Number Purchase History</h2>
+<button class="secondary small-button" type="button" data-page="dashboard">← Back</button>
+</div>
+<p class="muted">Your recorded number orders and their current statuses.</p>
+<button class="secondary full" id="reload-orders" type="button" style="margin-top:15px">🔄 Refresh history</button>
+<div id="orders-message" class="message" aria-live="polite"></div>
+<div id="orders-list"></div>
+</section>
+
 <section class="panel page-panel hidden" id="services-page">
 <div class="section-heading">
-<h2>📱 Available Services</h2>
+<h2>🌐 Available Services</h2>
 <button class="secondary small-button" type="button" data-page="dashboard">← Back</button>
 </div>
 <p class="muted">Choose a country to view supported apps and prices.</p>
@@ -253,465 +307,871 @@ footer{margin-top:35px;border-top:1px solid var(--border);padding:25px;text-alig
 <script>
 "use strict";
 
-const API="https://scotap-otp-api.onaolapor39.workers.dev", MARKUP_NAIRA=1000, $=id=>document.getElementById(id);
-let mode="register",token=null,countries=[],services=[],servicesCountry="",currentUser=null;
+const API = "https://scotap-otp-api.onaolapor39.workers.dev";
+const MARKUP_NAIRA = 1000;
+const $ = id => document.getElementById(id);
 
-$("year").textContent=new Date().getFullYear();
+let mode = "register";
+let token = null;
+let countries = [];
+let services = [];
+let servicesCountry = "";
+let currentUser = null;
 
-function showMessage(id,message,type=""){
-  const el=$(id);
-  el.textContent=message;
-  el.className="message "+type;
+$("year").textContent = new Date().getFullYear();
+
+function showMessage(id, message, type = "") {
+  const el = $(id);
+  el.textContent = message;
+  el.className = "message " + type;
 }
 
-function money(kobo){
-  return new Intl.NumberFormat("en-NG",{style:"currency",currency:"NGN"}).format(Number(kobo||0)/100);
+function money(kobo) {
+  return new Intl.NumberFormat("en-NG", {
+    style: "currency", currency: "NGN"
+  }).format(Number(kobo || 0) / 100);
 }
 
-function naira(value){
-  const n=Number(value);
-  if(!Number.isFinite(n))return null;
-  return new Intl.NumberFormat("en-NG",{style:"currency",currency:"NGN",maximumFractionDigits:2}).format(n);
+function naira(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return null;
+  return new Intl.NumberFormat("en-NG", {
+    style: "currency", currency: "NGN", maximumFractionDigits: 2
+  }).format(n);
 }
 
-function applyTheme(theme){
-  const safe=theme==="light"?"light":"dark";
-  document.documentElement.dataset.theme=safe;
-  $("settings-theme").value=safe;
-  $("theme-toggle").textContent=safe==="dark"?"☀️ Light mode":"🌙 Dark mode";
-  $("theme-color").setAttribute("content",safe==="dark"?"#090909":"#f5f6f8");
-  try{localStorage.setItem("scotap_theme",safe)}catch{}
+function saveToken(value) {
+  token = value || null;
+  try {
+    if (token) localStorage.setItem("scotap_auth_token", token);
+    else localStorage.removeItem("scotap_auth_token");
+  } catch {}
 }
 
-try{applyTheme(localStorage.getItem("scotap_theme")||"dark")}catch{applyTheme("dark")}
+function applyTheme(theme) {
+  const safe = theme === "light" ? "light" : "dark";
+  document.documentElement.dataset.theme = safe;
+  $("settings-theme").value = safe;
+  $("theme-toggle").textContent = safe === "dark" ? "☀️ Light mode" : "🌙 Dark mode";
+  $("theme-color").setAttribute("content", safe === "dark" ? "#090909" : "#f5f6f8");
+  try { localStorage.setItem("scotap_theme", safe); } catch {}
+}
 
-$("theme-toggle").addEventListener("click",()=>applyTheme(document.documentElement.dataset.theme==="dark"?"light":"dark"));
-$("settings-theme").addEventListener("change",e=>applyTheme(e.target.value));
+try {
+  applyTheme(localStorage.getItem("scotap_theme") || "dark");
+} catch {
+  applyTheme("dark");
+}
 
-async function api(path,options={}){
-  const headers={"Accept":"application/json"};
-  if(options.body)headers["Content-Type"]="application/json";
-  if(token)headers["Authorization"]="Bearer "+token;
-  const response=await fetch(API+path,{...options,headers:{...headers,...(options.headers||{})},cache:"no-store"});
-  const data=await response.json().catch(()=>({}));
-  if(!response.ok||data.success!==true)throw new Error(data.error||"Request failed. Please try again.");
+$("theme-toggle").addEventListener("click", () =>
+  applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark")
+);
+$("settings-theme").addEventListener("change", e => applyTheme(e.target.value));
+
+async function api(path, options = {}) {
+  const headers = { Accept: "application/json" };
+  if (options.body) headers["Content-Type"] = "application/json";
+  if (token) headers.Authorization = "Bearer " + token;
+
+  const response = await fetch(API + path, {
+    ...options,
+    headers: { ...headers, ...(options.headers || {}) },
+    cache: "no-store"
+  });
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || data.success !== true) {
+    const error = new Error(data.error || "Request failed. Please try again.");
+    error.status = response.status;
+    throw error;
+  }
   return data;
 }
 
-function setMode(next){
-  mode=next;
-  const reg=mode==="register";
-  $("auth-title").textContent=reg?"Create your SCOTAP account":"Welcome back";
-  $("auth-description").textContent=reg?"Enter your details and accept the terms to create an account.":"Log in using your email address or username.";
-  $("auth-submit").textContent=reg?"Create account":"Log in";
-  $("password").autocomplete=reg?"new-password":"current-password";
-  $("register-tab").className=reg?"primary":"secondary";
-  $("login-tab").className=reg?"secondary":"primary";
-  $("register-fields").classList.toggle("hidden",!reg);
-  $("confirm-password-field").classList.toggle("hidden",!reg);
-  $("terms-row").classList.toggle("hidden",!reg);
-  $("full-name").required=reg;
-  $("username").required=reg;
-  $("confirm-password").required=reg;
-  $("terms-accepted").required=reg;
-  $("email-label").textContent=reg?"Email address":"Email address or username";
-  $("email").type=reg?"email":"text";
-  $("email").autocomplete=reg?"email":"username";
-  $("email").placeholder=reg?"you@example.com":"Email address or username";
-  showMessage("auth-message","");
+function setMode(next) {
+  mode = next;
+  const reg = mode === "register";
+  $("auth-title").textContent = reg ? "Create your SCOTAP account" : "Welcome back";
+  $("auth-description").textContent = reg
+    ? "Enter your details and accept the terms to create an account."
+    : "Log in using your email address or username.";
+  $("auth-submit").textContent = reg ? "Create account" : "Log in";
+  $("password").autocomplete = reg ? "new-password" : "current-password";
+  $("register-tab").className = reg ? "primary" : "secondary";
+  $("login-tab").className = reg ? "secondary" : "primary";
+  $("register-fields").classList.toggle("hidden", !reg);
+  $("confirm-password-field").classList.toggle("hidden", !reg);
+  $("terms-row").classList.toggle("hidden", !reg);
+  $("full-name").required = reg;
+  $("username").required = reg;
+  $("confirm-password").required = reg;
+  $("terms-accepted").required = reg;
+  $("email-label").textContent = reg ? "Email address" : "Email address or username";
+  $("email").type = reg ? "email" : "text";
+  $("email").autocomplete = reg ? "email" : "username";
+  $("email").placeholder = reg ? "you@example.com" : "Email address or username";
+  showMessage("auth-message", "");
 }
 
-function timeGreeting(username){
-  const h=new Date().getHours(),g=h<12?"Good morning":h<17?"Good afternoon":"Good evening";
-  return `${g}, ${username||"there"}!`;
+function timeGreeting(username) {
+  const h = new Date().getHours();
+  const g = h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
+  return `${g}, ${username || "there"}!`;
 }
 
-function updateProfile(user){
-  currentUser=user||{};
-  const username=currentUser.username||"";
-  $("greeting").textContent=timeGreeting(username);
-  $("wallet-label").textContent=username?`${username.toUpperCase()}'S SCOTAP WALLET`:"YOUR PERSONAL SCOTAP WALLET";
-  $("profile-line").textContent=currentUser.full_name?`${currentUser.full_name} · ${currentUser.email||""}`:(currentUser.email||"");
+function updateProfile(user) {
+  currentUser = user || {};
+  const username = currentUser.username || "";
+  $("greeting").textContent = timeGreeting(username);
+  $("wallet-label").textContent = username
+    ? `${username.toUpperCase()}'S SCOTAP WALLET`
+    : "YOUR PERSONAL SCOTAP WALLET";
+  $("profile-line").textContent = currentUser.full_name
+    ? `${currentUser.full_name} · ${currentUser.email || ""}`
+    : (currentUser.email || "");
+
+  $("profile-full-name").value = currentUser.full_name || "";
+  $("profile-username").value = currentUser.username || "";
+  $("profile-email").value = currentUser.email || "";
+  $("profile-phone").value = currentUser.phone_number || "";
 }
 
-async function loadProfile(){
-  const result=await api("/api/me");
+async function loadProfile() {
+  const result = await api("/api/me");
   updateProfile(result.user);
 }
 
-function showPage(page){
-  const pages={dashboard:"dashboard-page",settings:"settings-page",services:"services-page"};
-  Object.values(pages).forEach(id=>$(id).classList.add("hidden"));
-  if(pages[page])$(pages[page]).classList.remove("hidden");
+function showPage(page) {
+  const pages = {
+    dashboard: "dashboard-page",
+    settings: "settings-page",
+    transactions: "transactions-page",
+    orders: "orders-page",
+    services: "services-page"
+  };
+
+  Object.values(pages).forEach(id => $(id).classList.add("hidden"));
+  if (pages[page]) $(pages[page]).classList.remove("hidden");
+
   $("main-menu").classList.add("hidden");
-  $("menu-toggle").setAttribute("aria-expanded","false");
-  if(page==="services"&&token&&countries.length===0)loadServices();
-  window.scrollTo({top:0,behavior:"smooth"});
+  $("menu-toggle").setAttribute("aria-expanded", "false");
+
+  if (page === "services" && token && countries.length === 0) loadServices();
+  if (page === "transactions") loadTransactions();
+  if (page === "orders") loadOrders();
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function showLoggedIn(){
+function showLoggedIn() {
   $("auth-panel").classList.add("hidden");
   $("hero").classList.add("hidden");
   $("public-features").classList.add("hidden");
   $("customer-dashboard").classList.remove("hidden");
   $("menu-toggle").classList.remove("hidden");
+  $("header-status").textContent = "● Customer Dashboard";
   showPage("dashboard");
 }
 
-function showLoggedOut(){
-  token=null;
-  currentUser=null;
-  countries=[];
-  services=[];
-  servicesCountry="";
+function showLoggedOut() {
+  currentUser = null;
+  countries = [];
+  services = [];
+  servicesCountry = "";
+
   $("auth-panel").classList.remove("hidden");
   $("hero").classList.remove("hidden");
   $("public-features").classList.remove("hidden");
   $("customer-dashboard").classList.add("hidden");
   $("menu-toggle").classList.add("hidden");
   $("main-menu").classList.add("hidden");
-  $("balance").textContent="₦—";
-  $("greeting").textContent="Welcome to SCOTAP!";
-  $("wallet-label").textContent="YOUR PERSONAL SCOTAP WALLET";
-  $("profile-line").textContent="";
-  $("country-filter").replaceChildren(new Option("Log in to load countries",""));
+  $("header-status").textContent = "● Customer Dashboard";
+  $("balance").textContent = "₦—";
+  $("greeting").textContent = "Welcome to SCOTAP!";
+  $("wallet-label").textContent = "YOUR PERSONAL SCOTAP WALLET";
+  $("profile-line").textContent = "";
+  $("country-filter").replaceChildren(new Option("Log in to load countries", ""));
   $("service-list").replaceChildren();
-  showMessage("services-message","Log in to load available countries.");
-  $("current-password").value="";
-  $("new-password").value="";
-  $("confirm-new-password").value="";
+  $("transactions-list").replaceChildren();
+  $("orders-list").replaceChildren();
+  showMessage("services-message", "Log in to load available countries.");
+  showMessage("transactions-message", "");
+  showMessage("orders-message", "");
+  $("current-password").value = "";
+  $("new-password").value = "";
+  $("confirm-new-password").value = "";
 }
 
-async function refreshWallet(){
-  if(!token)return;
-  $("refresh-button").disabled=true;
-  showMessage("wallet-message","Loading your wallet...");
-  try{
-    const d=await api("/api/wallet");
-    $("balance").textContent=money(d.balance_kobo);
-    showMessage("wallet-message","Wallet updated.","success");
-  }catch(e){
-    showMessage("wallet-message",e.message,"error");
-  }finally{
-    $("refresh-button").disabled=false;
+function endSession(message = "") {
+  saveToken(null);
+  showLoggedOut();
+  $("deposit-area").classList.add("hidden");
+  setMode("login");
+  if (message) showMessage("auth-message", message, "success");
+}
+
+async function refreshWallet() {
+  if (!token) return;
+  $("refresh-button").disabled = true;
+  showMessage("wallet-message", "Loading your wallet...");
+  try {
+    const d = await api("/api/wallet");
+    $("balance").textContent = money(d.balance_kobo);
+    showMessage("wallet-message", "Wallet updated.", "success");
+  } catch (e) {
+    showMessage("wallet-message", e.message, "error");
+    if (e.status === 401) endSession("Your session expired. Please log in again.");
+  } finally {
+    $("refresh-button").disabled = false;
   }
 }
 
-$("register-tab").addEventListener("click",()=>setMode("register"));
-$("login-tab").addEventListener("click",()=>setMode("login"));
+$("register-tab").addEventListener("click", () => setMode("register"));
+$("login-tab").addEventListener("click", () => setMode("login"));
 
-$("auth-form").addEventListener("submit",async e=>{
+$("auth-form").addEventListener("submit", async e => {
   e.preventDefault();
-  const b=$("auth-submit");
-  b.disabled=true;
-  showMessage("auth-message","Please wait...");
-  try{
+  const b = $("auth-submit");
+  b.disabled = true;
+  showMessage("auth-message", "Please wait...");
+
+  try {
     let body;
-    if(mode==="register"){
-      if($("password").value!==$("confirm-password").value)throw new Error("Passwords do not match.");
-      if(!$("terms-accepted").checked)throw new Error("You must accept the Terms of Service and Privacy Policy.");
-      body={
-        full_name:$("full-name").value.trim(),
-        username:$("username").value.trim().toLowerCase(),
-        email:$("email").value.trim(),
-        password:$("password").value,
-        confirm_password:$("confirm-password").value,
-        terms_accepted:$("terms-accepted").checked
+
+    if (mode === "register") {
+      if ($("password").value !== $("confirm-password").value) {
+        throw new Error("Passwords do not match.");
+      }
+      if (!$("terms-accepted").checked) {
+        throw new Error("You must accept the Terms of Service and Privacy Policy.");
+      }
+
+      body = {
+        full_name: $("full-name").value.trim(),
+        username: $("username").value.trim().toLowerCase(),
+        email: $("email").value.trim().toLowerCase(),
+        password: $("password").value,
+        confirm_password: $("confirm-password").value,
+        terms_accepted: $("terms-accepted").checked
       };
-    }else{
-      body={email:$("email").value.trim(),password:$("password").value};
+    } else {
+      body = {
+        identifier: $("email").value.trim().toLowerCase(),
+        password: $("password").value
+      };
     }
-    const result=await api(mode==="register"?"/api/register":"/api/login",{method:"POST",body:JSON.stringify(body)});
-    if(!result.token)throw new Error("The server did not return a login token.");
-    token=result.token;
-    $("password").value="";
-    $("confirm-password").value="";
+
+    const result = await api(
+      mode === "register" ? "/api/register" : "/api/login",
+      { method: "POST", body: JSON.stringify(body) }
+    );
+
+    if (!result.token) throw new Error("The server did not return a login token.");
+
+    saveToken(result.token);
+    $("password").value = "";
+    $("confirm-password").value = "";
+
     showLoggedIn();
-    if(result.user)updateProfile(result.user);
-    try{await loadProfile()}catch(err){if(!currentUser)throw err}
-    await Promise.allSettled([refreshWallet()]);
+    if (result.user) updateProfile(result.user);
+
+    await loadProfile();
+    await refreshWallet();
     await verifyReturnPayment();
-  }catch(err){
-    showMessage("auth-message",err.message,"error");
-  }finally{
-    b.disabled=false;
+  } catch (err) {
+    showMessage("auth-message", err.message, "error");
+  } finally {
+    b.disabled = false;
   }
 });
 
-$("menu-toggle").addEventListener("click",()=>{
-  const m=$("main-menu"),open=m.classList.contains("hidden");
-  m.classList.toggle("hidden",!open);
-  $("menu-toggle").setAttribute("aria-expanded",String(open));
+$("menu-toggle").addEventListener("click", () => {
+  const m = $("main-menu");
+  const open = m.classList.contains("hidden");
+  m.classList.toggle("hidden", !open);
+  $("menu-toggle").setAttribute("aria-expanded", String(open));
 });
 
-document.querySelectorAll("[data-page]").forEach(button=>button.addEventListener("click",()=>{
-  const p=button.dataset.page;
-  if(p==="logout"){
-    showLoggedOut();
-    $("deposit-area").classList.add("hidden");
-    setMode("login");
-    showMessage("auth-message","You have logged out.","success");
-    return;
-  }
-  showPage(p);
-}));
+document.querySelectorAll("[data-page]").forEach(button => {
+  button.addEventListener("click", () => {
+    const p = button.dataset.page;
+    if (p === "logout") {
+      endSession("You have logged out.");
+      return;
+    }
+    showPage(p);
+  });
+});
 
-$("refresh-button").addEventListener("click",refreshWallet);
-$("show-deposit").addEventListener("click",()=>{
+$("refresh-button").addEventListener("click", refreshWallet);
+
+$("show-deposit").addEventListener("click", () => {
   $("deposit-area").classList.remove("hidden");
   $("amount").focus();
 });
-$("hide-deposit").addEventListener("click",()=>$("deposit-area").classList.add("hidden"));
 
-$("deposit-form").addEventListener("submit",async e=>{
+$("hide-deposit").addEventListener("click", () =>
+  $("deposit-area").classList.add("hidden")
+);
+
+$("deposit-form").addEventListener("submit", async e => {
   e.preventDefault();
-  const b=$("deposit-button");
-  b.disabled=true;
-  showMessage("wallet-message","Preparing your Paystack payment...");
-  try{
-    const amount=Number($("amount").value);
-    if(!Number.isSafeInteger(amount)||amount<100||amount>1000000)throw new Error("Enter an amount between ₦100 and ₦1,000,000.");
-    const result=await api("/api/payments/initialize",{method:"POST",body:JSON.stringify({amount_naira:amount})});
-    if(!result.authorization_url)throw new Error("Paystack did not return a payment link.");
-    if(result.reference)sessionStorage.setItem("scotap_pending_payment",result.reference);
+  const b = $("deposit-button");
+  b.disabled = true;
+  showMessage("wallet-message", "Preparing your Paystack payment...");
+
+  try {
+    const amount = Number($("amount").value);
+    if (!Number.isSafeInteger(amount) || amount < 100 || amount > 1000000) {
+      throw new Error("Enter an amount between ₦100 and ₦1,000,000.");
+    }
+
+    const result = await api("/api/payments/initialize", {
+      method: "POST",
+      body: JSON.stringify({ amount_naira: amount })
+    });
+
+    if (!result.authorization_url) throw new Error("Paystack did not return a payment link.");
+
+    if (result.reference) {
+      try { sessionStorage.setItem("scotap_pending_payment", result.reference); } catch {}
+    }
+
     window.location.assign(result.authorization_url);
-  }catch(err){
-    showMessage("wallet-message",err.message,"error");
-    b.disabled=false;
+  } catch (err) {
+    showMessage("wallet-message", err.message, "error");
+    b.disabled = false;
   }
 });
 
-$("password-form").addEventListener("submit",async e=>{
+$("profile-form").addEventListener("submit", async e => {
   e.preventDefault();
-  const b=$("password-submit");
-  b.disabled=true;
-  showMessage("settings-message","Updating your password...");
-  try{
-    const current=$("current-password").value,next=$("new-password").value,confirm=$("confirm-new-password").value;
-    if(next!==confirm)throw new Error("Your new passwords do not match.");
-    if(next.length<8||next.length>128)throw new Error("New password must be 8–128 characters.");
-    const result=await api("/api/password/change",{method:"POST",body:JSON.stringify({current_password:current,new_password:next,confirm_new_password:confirm})});
-    $("password-form").reset();
-    showMessage("settings-message",result.message||"Password changed successfully.","success");
-  }catch(err){
-    showMessage("settings-message",err.message,"error");
-  }finally{
-    b.disabled=false;
+  const b = $("profile-submit");
+  b.disabled = true;
+  showMessage("profile-message", "Saving your profile...");
+
+  try {
+    const body = {
+      full_name: $("profile-full-name").value.trim(),
+      username: $("profile-username").value.trim().toLowerCase(),
+      email: $("profile-email").value.trim().toLowerCase(),
+      phone_number: $("profile-phone").value.trim()
+    };
+
+    const result = await api("/api/profile/update", {
+      method: "POST",
+      body: JSON.stringify(body)
+    });
+
+    updateProfile(result.user);
+    showMessage("profile-message", result.message || "Profile updated successfully.", "success");
+  } catch (err) {
+    showMessage("profile-message", err.message, "error");
+    if (err.status === 401) endSession("Your session expired. Please log in again.");
+  } finally {
+    b.disabled = false;
   }
 });
 
-function getList(response,keys){
-  let root=response;
-  for(let i=0;i<5;i++){
-    if(Array.isArray(root))return root;
-    if(!root||typeof root!=="object")break;
-    for(const key of keys)if(Array.isArray(root[key]))return root[key];
-    if(root.data&&typeof root.data==="object")root=root.data;
-    else break;
+$("password-form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const b = $("password-submit");
+  b.disabled = true;
+  showMessage("settings-message", "Updating your password...");
+
+  try {
+    const current = $("current-password").value;
+    const next = $("new-password").value;
+    const confirm = $("confirm-new-password").value;
+
+    if (next !== confirm) throw new Error("Your new passwords do not match.");
+    if (next.length < 8 || next.length > 128) {
+      throw new Error("New password must be 8–128 characters.");
+    }
+
+    const result = await api("/api/password/change", {
+      method: "POST",
+      body: JSON.stringify({
+        current_password: current,
+        new_password: next,
+        confirm_new_password: confirm
+      })
+    });
+
+    $("password-form").reset();
+    showMessage("settings-message", result.message || "Password changed successfully.", "success");
+  } catch (err) {
+    showMessage("settings-message", err.message, "error");
+    if (err.status === 401) endSession("Your session expired. Please log in again.");
+  } finally {
+    b.disabled = false;
   }
-  return[];
+});
+
+function formatDate(value) {
+  if (!value) return "Date unavailable";
+  const normalized = String(value).includes("T") ? value : String(value).replace(" ", "T") + "Z";
+  const date = new Date(normalized);
+  return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString();
 }
 
-function field(obj,names){
-  for(const name of names){
-    const v=obj?.[name];
-    if(v!==undefined&&v!==null&&v!=="")return v;
+function safeText(value, fallback = "—") {
+  return value === undefined || value === null || value === "" ? fallback : String(value);
+}
+
+function statusClass(status) {
+  const s = String(status || "").toLowerCase();
+  if (["success", "successful", "completed", "delivered"].includes(s)) return "success";
+  if (["failed", "cancelled", "canceled", "rejected", "expired"].includes(s)) return "failed";
+  return "pending";
+}
+
+function makeHistoryItem(title, details, amount, status, date) {
+  const card = document.createElement("article");
+  card.className = "history-item";
+
+  const h = document.createElement("h3");
+  h.textContent = title;
+  card.append(h);
+
+  details.forEach(([label, value]) => {
+    const row = document.createElement("div");
+    row.className = "history-row";
+
+    const left = document.createElement("span");
+    left.className = "muted";
+    left.textContent = label;
+
+    const right = document.createElement("span");
+    right.textContent = safeText(value);
+
+    row.append(left, right);
+    card.append(row);
+  });
+
+  const amountRow = document.createElement("div");
+  amountRow.className = "history-row";
+
+  const amountLabel = document.createElement("span");
+  amountLabel.className = "muted";
+  amountLabel.textContent = "Amount";
+
+  const amountValue = document.createElement("strong");
+  amountValue.textContent = amount === null || amount === undefined ? "—" : money(amount);
+
+  amountRow.append(amountLabel, amountValue);
+  card.append(amountRow);
+
+  const statusRow = document.createElement("div");
+  statusRow.className = "history-row";
+
+  const dateText = document.createElement("span");
+  dateText.className = "muted";
+  dateText.textContent = formatDate(date);
+
+  const statusText = document.createElement("span");
+  statusText.className = "history-status " + statusClass(status);
+  statusText.textContent = "Status: " + safeText(status, "unknown");
+
+  statusRow.append(dateText, statusText);
+  card.append(statusRow);
+
+  return card;
+}
+
+async function loadTransactions() {
+  if (!token) return;
+
+  const button = $("reload-transactions");
+  button.disabled = true;
+  $("transactions-list").replaceChildren();
+  showMessage("transactions-message", "Loading transaction history...");
+
+  try {
+    const result = await api("/api/transactions");
+    const transactions = Array.isArray(result.transactions) ? result.transactions : [];
+
+    if (!transactions.length) {
+      $("transactions-list").innerHTML = '<div class="empty-state">No transactions have been recorded yet.</div>';
+      showMessage("transactions-message", "History loaded.", "success");
+      return;
+    }
+
+    transactions.forEach(item => {
+      const isDeposit = item.type === "deposit";
+      const title = isDeposit ? "Wallet deposit" : "Number purchase";
+      const details = [];
+
+      if (item.id) details.push(["Reference / Order ID", item.id]);
+      if (item.service) details.push(["Service", item.service]);
+      if (item.phone_number) details.push(["Phone number", item.phone_number]);
+
+      $("transactions-list").append(
+        makeHistoryItem(title, details, item.amount_kobo, item.status, item.created_at)
+      );
+    });
+
+    showMessage("transactions-message", `${transactions.length} transaction(s) loaded.`, "success");
+  } catch (err) {
+    showMessage("transactions-message", err.message, "error");
+    if (err.status === 401) endSession("Your session expired. Please log in again.");
+  } finally {
+    button.disabled = false;
+  }
+}
+
+async function loadOrders() {
+  if (!token) return;
+
+  const button = $("reload-orders");
+  button.disabled = true;
+  $("orders-list").replaceChildren();
+  showMessage("orders-message", "Loading number purchase history...");
+
+  try {
+    const result = await api("/api/orders");
+    const orders = Array.isArray(result.orders) ? result.orders : [];
+
+    if (!orders.length) {
+      $("orders-list").innerHTML = '<div class="empty-state">No number purchases have been recorded yet. Number purchasing is not enabled at the moment.</div>';
+      showMessage("orders-message", "History loaded.", "success");
+      return;
+    }
+
+    orders.forEach(order => {
+      const details = [
+        ["Order ID", order.id],
+        ["Country", order.country],
+        ["Service", order.service],
+        ["Phone number", order.phone_number],
+        ["SMS code", order.sms_code]
+      ];
+
+      $("orders-list").append(
+        makeHistoryItem("Number order", details, order.amount_kobo, order.status, order.created_at)
+      );
+    });
+
+    showMessage("orders-message", `${orders.length} order(s) loaded.`, "success");
+  } catch (err) {
+    showMessage("orders-message", err.message, "error");
+    if (err.status === 401) endSession("Your session expired. Please log in again.");
+  } finally {
+    button.disabled = false;
+  }
+}
+
+$("reload-transactions").addEventListener("click", loadTransactions);
+$("reload-orders").addEventListener("click", loadOrders);
+
+function getList(response, keys) {
+  let root = response;
+  for (let i = 0; i < 5; i++) {
+    if (Array.isArray(root)) return root;
+    if (!root || typeof root !== "object") break;
+    for (const key of keys) if (Array.isArray(root[key])) return root[key];
+    if (root.data && typeof root.data === "object") root = root.data;
+    else break;
+  }
+  return [];
+}
+
+function field(obj, names) {
+  for (const name of names) {
+    const v = obj?.[name];
+    if (v !== undefined && v !== null && v !== "") return v;
   }
   return null;
 }
 
-function countryName(c){
-  if(typeof c==="string")return c;
-  return String(field(c,["country_name","name","country","title","english"])||"Unknown country");
+function countryName(c) {
+  if (typeof c === "string") return c;
+  return String(field(c, ["country_name", "name", "country", "title", "english"]) || "Unknown country");
 }
 
-function countryCode(c){
-  if(typeof c==="string")return c;
-  return String(field(c,["country_code","code","iso","value"])||"");
+function countryCode(c) {
+  if (typeof c === "string") return c;
+  return String(field(c, ["country_code", "code", "iso", "value"]) || "");
 }
 
-function getServiceName(s){
-  return String(field(s,["service_name","name","service","title","product","code"])||"Verification service");
+function getServiceName(s) {
+  return String(field(s, ["service_name", "name", "service", "title", "product", "code"]) || "Verification service");
 }
 
-function getServicePrice(s){
-  const raw=field(s,["your_price","price_naira","price_ngn","price","cost","amount","retail_price"]);
-  if(raw===null)return null;
-  const n=Number(raw);
-  if(!Number.isFinite(n)||n<0)return null;
-  const unit=String(field(s,["price_currency","unit"])||"").toLowerCase();
-  return unit.includes("kobo")||unit.includes("kopeck")||unit.includes("cent")?n/100:n;
+function getServicePrice(s) {
+  const raw = field(s, ["your_price", "price_naira", "price_ngn", "price", "cost", "amount", "retail_price"]);
+  if (raw === null) return null;
+  const n = Number(raw);
+  if (!Number.isFinite(n) || n < 0) return null;
+  const unit = String(field(s, ["price_currency", "unit"]) || "").toLowerCase();
+  return unit.includes("kobo") || unit.includes("kopeck") || unit.includes("cent") ? n / 100 : n;
 }
 
-function logoForService(name){
-  const n=name.toLowerCase();
-  const brands=[
-    [/whatsapp/,"whatsapp","25D366","💬"],
-    [/telegram/,"telegram","26A5E4","✈️"],
-    [/instagram/,"instagram","E4405F","📸"],
-    [/facebook|meta/,"facebook","0866FF","📘"],
-    [/google|gmail|youtube/,"google","4285F4","🌐"],
-    [/tiktok/,"tiktok","000000","🎵"],
-    [/twitter|x\.com|\bx\b/,"x","000000","𝕏"],
-    [/discord/,"discord","5865F2","🎮"],
-    [/snapchat/,"snapchat","FFFC00","👻"],
-    [/microsoft|outlook/,"microsoft","5E5E5E","🪟"],
-    [/apple/,"apple","000000","🍎"],
-    [/uber/,"uber","000000","🚗"],
-    [/amazon/,"amazon","FF9900","📦"],
-    [/viber/,"viber","7360F2","📞"],
-    [/signal/,"signal","3A76F0","🔵"],
-    [/reddit/,"reddit","FF4500","🤖"],
-    [/line/,"line","06C755","💚"],
-    [/wechat/,"wechat","07C160","💬"],
-    [/yahoo/,"yahoo","6001D2","✉️"]
+function logoForService(name) {
+  const n = name.toLowerCase();
+  const brands = [
+    [/whatsapp/, "whatsapp", "25D366", "💬"],
+    [/telegram/, "telegram", "26A5E4", "✈️"],
+    [/instagram/, "instagram", "E4405F", "📸"],
+    [/facebook|meta/, "facebook", "0866FF", "📘"],
+    [/google|gmail|youtube/, "google", "4285F4", "🌐"],
+    [/tiktok/, "tiktok", "000000", "🎵"],
+    [/twitter|x\.com|\bx\b/, "x", "000000", "𝕏"],
+    [/discord/, "discord", "5865F2", "🎮"],
+    [/snapchat/, "snapchat", "FFFC00", "👻"],
+    [/microsoft|outlook/, "microsoft", "5E5E5E", "🪟"],
+    [/apple/, "apple", "000000", "🍎"],
+    [/uber/, "uber", "000000", "🚗"],
+    [/amazon/, "amazon", "FF9900", "📦"],
+    [/viber/, "viber", "7360F2", "📞"],
+    [/signal/, "signal", "3A76F0", "🔵"],
+    [/reddit/, "reddit", "FF4500", "🤖"],
+    [/line/, "line", "06C755", "💚"],
+    [/wechat/, "wechat", "07C160", "💬"],
+    [/yahoo/, "yahoo", "6001D2", "✉️"]
   ];
-  const match=brands.find(x=>x[0].test(n));
-  return match?{url:`https://cdn.simpleicons.org/${match[1]}/${match[2]}`,fallback:match[3]}:{url:"",fallback:"📱"};
+  const match = brands.find(x => x[0].test(n));
+  return match
+    ? { url: `https://cdn.simpleicons.org/${match[1]}/${match[2]}`, fallback: match[3] }
+    : { url: "", fallback: "📱" };
 }
 
-function renderCountries(){
-  const s=$("country-filter"),prev=s.value;
-  s.replaceChildren(new Option("Choose a country",""));
-  countries.forEach(c=>{
-    const name=countryName(c),code=countryCode(c);
-    if(code)s.add(new Option(name,code));
+function renderCountries() {
+  const s = $("country-filter");
+  const prev = s.value;
+  s.replaceChildren(new Option("Choose a country", ""));
+
+  countries.forEach(c => {
+    const name = countryName(c);
+    const code = countryCode(c);
+    if (code) s.add(new Option(name, code));
   });
-  if([...s.options].some(o=>o.value===prev))s.value=prev;
+
+  if ([...s.options].some(o => o.value === prev)) s.value = prev;
 }
 
-function renderServices(){
-  const list=$("service-list");
+function renderServices() {
+  const list = $("service-list");
   list.replaceChildren();
-  const code=$("country-filter").value,search=$("service-search").value.trim().toLowerCase();
-  if(!code){
-    showMessage("services-message","Choose a country to see its services and prices.");
+
+  const code = $("country-filter").value;
+  const search = $("service-search").value.trim().toLowerCase();
+
+  if (!code) {
+    showMessage("services-message", "Choose a country to see its services and prices.");
     return;
   }
-  if(servicesCountry!==code){
-    showMessage("services-message","Loading services for the selected country...");
+
+  if (servicesCountry !== code) {
+    showMessage("services-message", "Loading services for the selected country...");
     return;
   }
-  const c=countries.find(x=>countryCode(x)===code),filtered=services.filter(s=>!search||getServiceName(s).toLowerCase().includes(search));
-  if(!filtered.length){
-    showMessage("services-message","No services found for this search or country. Try refreshing.","error");
+
+  const c = countries.find(x => countryCode(x) === code);
+  const filtered = services.filter(s => !search || getServiceName(s).toLowerCase().includes(search));
+
+  if (!filtered.length) {
+    showMessage("services-message", "No services found for this search or country. Try refreshing.", "error");
     return;
   }
-  showMessage("services-message",`${filtered.length} service(s) available. Prices are shown below.`,"success");
-  filtered.forEach(service=>{
-    const card=document.createElement("article");
-    card.className="service-card";
-    const logo=document.createElement("img");
-    logo.className="service-logo";
-    logo.alt="";
-    logo.loading="lazy";
-    const brand=logoForService(getServiceName(service));
-    logo.src=brand.url||"";
-    logo.onerror=()=>{
-      const fallback=document.createElement("div");
-      fallback.className="service-logo";
-      fallback.style.display="grid";
-      fallback.style.placeItems="center";
-      fallback.style.fontSize="25px";
-      fallback.textContent=brand.fallback;
-      logo.replaceWith(fallback);
-    };
-    if(!brand.url){
-      const fallback=document.createElement("div");
-      fallback.className="service-logo";
-      fallback.style.display="grid";
-      fallback.style.placeItems="center";
-      fallback.style.fontSize="25px";
-      fallback.textContent=brand.fallback;
-      logo.replaceWith(fallback);
+
+  showMessage("services-message", `${filtered.length} service(s) available. Prices are shown below.`, "success");
+
+  filtered.forEach(service => {
+    const card = document.createElement("article");
+    card.className = "service-card";
+
+    const brand = logoForService(getServiceName(service));
+    const info = document.createElement("div");
+    info.className = "service-info";
+
+    const name = document.createElement("h3");
+    name.textContent = getServiceName(service);
+
+    const country = document.createElement("p");
+    country.className = "service-meta";
+    country.textContent = "🌍 " + (c ? countryName(c) : code);
+
+    const amount = getServicePrice(service);
+    const price = document.createElement("p");
+    price.className = "price";
+    const sell = amount === null ? null : amount + MARKUP_NAIRA;
+    price.textContent = sell === null ? "Price unavailable" : naira(sell);
+
+    const note = document.createElement("p");
+    note.className = "service-meta";
+    note.textContent = amount === null ? "Provider price unavailable." : "Availability is not guaranteed.";
+
+    const choose = document.createElement("button");
+    choose.className = "secondary";
+    choose.type = "button";
+    choose.textContent = "View service";
+    choose.addEventListener("click", () => showMessage(
+      "services-message",
+      amount === null
+        ? "Provider price unavailable."
+        : `${getServiceName(service)} costs ${naira(sell)}. Number purchasing is not enabled yet. No money has been deducted.`,
+      "error"
+    ));
+
+    if (brand.url) {
+      const logo = document.createElement("img");
+      logo.className = "service-logo";
+      logo.alt = "";
+      logo.loading = "lazy";
+      logo.src = brand.url;
+      logo.onerror = () => {
+        const fallback = document.createElement("div");
+        fallback.className = "service-logo";
+        fallback.style.display = "grid";
+        fallback.style.placeItems = "center";
+        fallback.style.fontSize = "25px";
+        fallback.textContent = brand.fallback;
+        logo.replaceWith(fallback);
+      };
+      card.append(logo);
+    } else {
+      const fallback = document.createElement("div");
+      fallback.className = "service-logo";
+      fallback.style.display = "grid";
+      fallback.style.placeItems = "center";
+      fallback.style.fontSize = "25px";
+      fallback.textContent = brand.fallback;
+      card.append(fallback);
     }
-    const info=document.createElement("div");
-    info.className="service-info";
-    const name=document.createElement("h3");
-    name.textContent=getServiceName(service);
-    const country=document.createElement("p");
-    country.className="service-meta";
-    country.textContent="🌍 "+(c?countryName(c):code);
-    const amount=getServicePrice(service),price=document.createElement("p");
-    price.className="price";
-    const sell=amount===null?null:amount+MARKUP_NAIRA;
-    price.textContent=sell===null?"Price unavailable":naira(sell);
-    const note=document.createElement("p");
-    note.className="service-meta";
-    note.textContent=amount===null?"Provider price unavailable.":"Availability is not guaranteed.";
-    const choose=document.createElement("button");
-    choose.className="secondary";
-    choose.type="button";
-    choose.textContent="View service";
-    choose.addEventListener("click",()=>showMessage("services-message",amount===null?"Provider price unavailable.":`${getServiceName(service)} costs ${naira(sell)}. Number purchasing is not enabled yet. No money has been deducted.`,"error"));
-    info.append(name,country,price,note,choose);
-    card.append(logo,info);
+
+    info.append(name, country, price, note, choose);
+    card.append(info);
     list.append(card);
   });
 }
 
-async function loadServices(){
-  if(!token)return;
-  const b=$("reload-services");
-  b.disabled=true;
-  showMessage("services-message","Loading available countries...");
+async function loadServices() {
+  if (!token) return;
+
+  const b = $("reload-services");
+  b.disabled = true;
+  showMessage("services-message", "Loading available countries...");
   $("service-list").replaceChildren();
-  try{
-    const cr=await api("/api/countries");
-    countries=getList(cr,["countries","results","items"]);
-    if(!countries.length)throw new Error("OTP Suite returned no countries.");
+
+  try {
+    const cr = await api("/api/countries");
+    countries = getList(cr, ["countries", "results", "items"]);
+
+    if (!countries.length) throw new Error("OTP Suite returned no countries.");
+
     renderCountries();
-    const code=$("country-filter").value;
-    if(!code){
-      services=[];
-      servicesCountry="";
-      showMessage("services-message",`${countries.length} country/countries loaded. Choose a country to see services and prices.`,"success");
+    const code = $("country-filter").value;
+
+    if (!code) {
+      services = [];
+      servicesCountry = "";
+      showMessage("services-message", `${countries.length} country/countries loaded. Choose a country to see services and prices.`, "success");
       return;
     }
-    showMessage("services-message","Loading services for "+code+"...");
-    const query=new URLSearchParams({country:code}),sr=await api("/api/services?"+query.toString());
-    services=getList(sr,["services","results","items"]);
-    servicesCountry=code;
+
+    showMessage("services-message", "Loading services for " + code + "...");
+    const query = new URLSearchParams({ country: code });
+    const sr = await api("/api/services?" + query.toString());
+    services = getList(sr, ["services", "results", "items"]);
+    servicesCountry = code;
     renderServices();
-    if(!services.length)showMessage("services-message","The API returned no services for "+code+". Check the provider's catalogue.","error");
-  }catch(err){
-    services=[];
-    servicesCountry="";
+
+    if (!services.length) {
+      showMessage("services-message", "The API returned no services for " + code + ". Check the provider's catalogue.", "error");
+    }
+  } catch (err) {
+    services = [];
+    servicesCountry = "";
     $("service-list").replaceChildren();
-    showMessage("services-message","Could not load countries or services: "+err.message,"error");
-  }finally{
-    b.disabled=false;
+    showMessage("services-message", "Could not load countries or services: " + err.message, "error");
+    if (err.status === 401) endSession("Your session expired. Please log in again.");
+  } finally {
+    b.disabled = false;
   }
 }
 
-$("reload-services").addEventListener("click",loadServices);
-$("country-filter").addEventListener("change",()=>{
-  services=[];
-  servicesCountry="";
+$("reload-services").addEventListener("click", loadServices);
+$("country-filter").addEventListener("change", () => {
+  services = [];
+  servicesCountry = "";
   $("service-list").replaceChildren();
-  if($("country-filter").value)loadServices();
-  else showMessage("services-message","Choose a country to load its services.");
+  if ($("country-filter").value) loadServices();
+  else showMessage("services-message", "Choose a country to load its services.");
 });
-$("service-search").addEventListener("input",renderServices);
+$("service-search").addEventListener("input", renderServices);
 
-async function verifyReturnPayment(){
-  if(!token)return;
-  const p=new URLSearchParams(window.location.search),ref=p.get("reference")||p.get("trxref")||sessionStorage.getItem("scotap_pending_payment");
-  if(!ref)return;
-  showMessage("wallet-message","Checking your payment with Paystack...");
-  try{
-    const r=await api("/api/payments/verify",{method:"POST",body:JSON.stringify({reference:ref})});
-    sessionStorage.removeItem("scotap_pending_payment");
+async function verifyReturnPayment() {
+  if (!token) return;
+
+  const p = new URLSearchParams(window.location.search);
+  let ref = p.get("reference") || p.get("trxref");
+
+  if (!ref) {
+    try { ref = sessionStorage.getItem("scotap_pending_payment"); } catch {}
+  }
+
+  if (!ref) return;
+
+  showMessage("wallet-message", "Checking your payment with Paystack...");
+
+  try {
+    const r = await api("/api/payments/verify", {
+      method: "POST",
+      body: JSON.stringify({ reference: ref })
+    });
+
+    try { sessionStorage.removeItem("scotap_pending_payment"); } catch {}
+
     await refreshWallet();
-    showMessage("wallet-message",r.already_credited?"This payment was already credited.":"Payment verified. Your wallet has been updated.","success");
-    history.replaceState({},"",window.location.pathname);
-  }catch(err){
-    showMessage("wallet-message","Payment verification could not be confirmed: "+err.message+". Check your payment status before paying again.","error");
+    showMessage(
+      "wallet-message",
+      r.already_credited
+        ? "This payment was already credited. Your wallet is safe."
+        : "Payment verified. Your wallet has been updated.",
+      "success"
+    );
+
+    history.replaceState({}, "", window.location.pathname);
+  } catch (err) {
+    showMessage(
+      "wallet-message",
+      "Payment verification could not be confirmed: " + err.message +
+      ". Check your transaction history and wallet before trying to pay again.",
+      "error"
+    );
   }
 }
 
-setMode("register");
-showLoggedOut();
+async function restoreSession() {
+  let saved = null;
+  try { saved = localStorage.getItem("scotap_auth_token"); } catch {}
+
+  setMode("register");
+
+  if (!saved) {
+    token = null;
+    showLoggedOut();
+    return;
+  }
+
+  token = saved;
+  showLoggedIn();
+
+  try {
+    await loadProfile();
+    await refreshWallet();
+    await verifyReturnPayment();
+  } catch (err) {
+    if (err.status === 401) {
+      endSession("Your session expired. Please log in again.");
+    } else {
+      showMessage("wallet-message", "Could not refresh your account: " + err.message, "error");
+    }
+  }
+}
+
+restoreSession();
 </script>
 </body>
 </html>
