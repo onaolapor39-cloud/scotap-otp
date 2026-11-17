@@ -1,57 +1,167 @@
-Here is the full fixed code. Copy everything below and replace your current HTML with it:
-
-
-
-
-
-
-
-
-
-
-S
-SCOTAP OTP
-
-● Customer Dashboard
-
-
-💬 Support
-
-
-
-
-WELCOME TO SCOTAP
-Your OTP. Your Control.
-Explore available verification services and prices before funding your wallet.
-Create your SCOTAP account
-Create your profile to get started.
-Register
-Log in
-Full nameUsername
-Email addressPassword
-Confirm password
-
-I agree to the Terms of Service and Privacy Policy, and I will not use this service for fraud.
-Create account
-
-
-Why SCOTAP OTP?
-🔐 Secure account
-Your own customer account.
-💰 Personal wallet
-View your balance and add money when you're ready.
-⚡ OTP services
-Browse supported services before choosing to buy.
-
-Terms of Service
-Use SCOTAP OTP lawfully and responsibly. Do not use the service for fraud, impersonation, harassment, or to violate any law or another service's rules. Service availability and prices may change. Number purchases are not available until explicitly enabled on the website.
-Privacy Policy
-SCOTAP uses account details to provide account access and wallet services. Passwords are stored as password hashes, not plain text. Payment processing is handled by Paystack. Do not submit passwords or payment secrets to customer support. Contact support for privacy questions.
-©  SCOTAP OTP. All rights reserved.
-💬 WhatsApp Support
-Terms of Service
-Privacy Policy
-
-
-
-Copy the whole thing, save it as your index.html (make sure the file is saved as UTF-8), then push it to GitHub Pages.
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090909" id="theme-color">
+<title>SCOTAP OTP | Premium OTP Services</title>
+<style>
+:root{color-scheme:dark;--gold:#f5c542;--bg:#090909;--panel:#151515;--muted:#aaa;--border:#303030;--text:#fff;--input:#090909;--card:#101010;--secondary:#292929;--secondary-border:#414141;--gold-text:#ffe28a}
+html[data-theme="light"]{color-scheme:light;--gold:#b8860b;--bg:#f5f6f8;--panel:#fff;--muted:#5f6368;--border:#d9dde3;--text:#171717;--input:#fff;--card:#f8f9fb;--secondary:#e9edf2;--secondary-border:#cbd1d9;--gold-text:#805b00}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;transition:background .2s,color .2s}button,input,select{font:inherit}a{color:var(--gold)}button{border:0;border-radius:9px;padding:12px 16px;cursor:pointer;font-weight:750}button:disabled{opacity:.55;cursor:wait}.primary{background:var(--gold);color:#111}.secondary{background:var(--secondary);color:var(--text);border:1px solid var(--secondary-border)}input,select{width:100%;background:var(--input);border:1px solid var(--secondary-border);border-radius:9px;color:var(--text);padding:13px;margin:6px 0 13px}select option{background:var(--panel);color:var(--text)}label{font-size:13px;color:var(--text)}.full{width:100%}.hidden{display:none!important}.muted{color:var(--muted);font-size:14px}.message{font-size:13px;margin-top:12px;overflow-wrap:anywhere}.error{color:#e65b5b}.success{color:#229447}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 5%;border-bottom:1px solid var(--border);gap:12px;position:sticky;top:0;background:var(--bg);z-index:20}.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}.logo-mark{width:42px;height:42px;display:grid;place-items:center;background:var(--gold);color:#fff;border-radius:7px;font-size:29px;font-weight:950;line-height:1;flex-shrink:0}.brand-name{font-size:21px;font-weight:900;letter-spacing:.3px}.brand-name span{color:var(--gold)}.header-actions{display:flex;align-items:center;gap:9px}.status{font-size:12px;color:#55b96a}.menu-button{font-size:22px;min-width:46px;padding:8px 12px}.menu{position:fixed;z-index:30;right:16px;top:76px;width:min(290px,calc(100vw - 32px));background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:10px;box-shadow:0 12px 35px #0005}.menu button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;margin:3px 0;background:transparent;color:var(--text);border:0}.menu button:hover{background:var(--secondary)}.menu .logout-item{color:#e65b5b}
+.notice-count{display:inline-grid;place-items:center;min-width:18px;height:18px;margin-left:5px;padding:0 4px;border-radius:99px;background:#d94841;color:#fff;font-size:11px}.announcement-card{border:1px solid var(--border);border-radius:12px;padding:15px;margin:12px 0;background:var(--panel)}.announcement-card h3{margin:0 0 8px}.announcement-date{font-size:12px;color:var(--muted);margin-bottom:9px}.admin-form{margin-top:14px}
+main{width:min(100% - 28px,850px);margin:auto}.hero{text-align:center;padding:32px 10px 22px}.eyebrow{color:var(--gold);font-size:12px;font-weight:800;letter-spacing:3px}h1{font-size:clamp(34px,8vw,54px);line-height:1.15;margin:12px 0}h1 span,.section-title span{color:var(--gold)}.panel{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:22px;margin:20px 0}.panel h2{font-size:21px;margin-bottom:10px}.tabs,.actions{display:flex;gap:10px;flex-wrap:wrap;margin:15px 0}.balance{color:var(--gold-text);font-size:clamp(32px,8vw,44px);font-weight:800;margin:8px 0;overflow-wrap:anywhere}.greeting{font-size:clamp(21px,5vw,28px);font-weight:850;margin-bottom:3px}.dashboard-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.settings-grid,.service-tools{display:grid;grid-template-columns:1fr 1fr;gap:12px}.service-list{display:grid;gap:12px;margin-top:18px}.service-card{display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px}.service-logo{width:48px;height:48px;object-fit:contain;flex-shrink:0;border-radius:12px;background:#fff;padding:5px}.service-info{flex:1;min-width:0}.service-card h3{font-size:16px;overflow-wrap:anywhere}.service-card .price{font-size:19px;color:var(--gold);font-weight:800;margin:3px 0}.service-meta{font-size:12px;color:var(--muted)}.service-card button{margin-top:7px}.features{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.feature{background:var(--panel);border:1px solid var(--border);border-radius:13px;padding:18px}.feature p{color:var(--muted);font-size:13px}.check-row{display:flex;align-items:flex-start;gap:9px;margin:5px 0 15px}.check-row input{width:auto;margin:4px 0 0;accent-color:var(--gold);flex-shrink:0}.check-row label{font-size:12px;color:var(--muted)}.support-link{text-decoration:none}footer{margin-top:35px;border-top:1px solid var(--border);padding:25px;text-align:center;color:var(--muted);font-size:12px}.footer-links{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:10px}.legal{margin:12px auto;max-width:850px;padding:0 16px;color:var(--muted);font-size:12px}.legal details{margin:8px 0}.section-heading{display:flex;justify-content:space-between;align-items:center;gap:12px}.section-heading h2{margin:0}.small-button{padding:9px 12px}
+@media(max-width:600px){.features,.service-tools,.settings-grid{grid-template-columns:1fr}.panel{padding:17px}.topbar{padding:11px 4%}.brand-name{font-size:18px}.logo-mark{width:38px;height:38px;font-size:26px}.status{display:none}.service-card{align-items:flex-start}.service-card button{width:100%}.dashboard-actions{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="topbar">
+<a class="brand" href="#" aria-label="SCOTAP OTP home"><span class="logo-mark" aria-hidden="true">S</span><span class="brand-name">SCOTAP<span> OTP</span></span></a>
+<div class="header-actions">
+<span class="status" id="header-status">● Customer Dashboard</span>
+<button class="secondary hidden" id="notifications-button" type="button" aria-label="Notifications">&#x1F514; <span id="notification-count" class="notice-count hidden">0</span></button>
+<button class="secondary menu-button hidden" id="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">&#x2630;</button>
+<a class="support-link" href="https://wa.me/2349121971385" target="_blank" rel="noopener noreferrer"><button class="secondary" type="button">&#x1F4AC; Support</button></a>
+</div>
+</header>
+<nav class="menu hidden" id="main-menu" aria-label="Customer menu">
+<button type="button" data-page="settings">⚙️ <span>Account settings</span></button>
+<button type="button" data-page="services">&#x1F4F1; <span>Available Services</span></button>
+<button type="button" data-page="notifications">&#x1F514; <span>Announcements</span></button>
+<button type="button" data-page="admin" id="admin-menu-item" class="hidden">🛠️ <span>Admin Dashboard</span></button>
+<button type="button" data-page="dashboard">&#x1F4B0; <span>Dashboard / Wallet</span></button>
+<button type="button" data-page="logout" class="logout-item">&#x1F6AA; <span>Log out</span></button>
+</nav>
+<main>
+<section class="hero" id="hero"><div class="eyebrow">WELCOME TO SCOTAP</div><h1>Your OTP.<br><span>Your Control.</span></h1><p class="muted">Explore available verification services and prices before funding your wallet.</p></section>
+<section class="panel" id="auth-panel"><h2 id="auth-title">Create your SCOTAP account</h2><p class="muted" id="auth-description">Create your profile to get started.</p><div class="tabs"><button class="primary" id="register-tab" type="button">Register</button><button class="secondary" id="login-tab" type="button">Log in</button></div>
+<form id="auth-form"><div id="register-fields"><label for="full-name">Full name</label><input id="full-name" type="text" autocomplete="name" maxlength="100" placeholder="Your full name"><label for="username">Username</label><input id="username" type="text" autocomplete="username" minlength="3" maxlength="24" pattern="[A-Za-z0-9_]{3,24}" placeholder="Choose a username (letters, numbers, _) " autocapitalize="none"></div><label for="email" id="email-label">Email address</label><input id="email" type="email" autocomplete="email" maxlength="254" required placeholder="you@example.com"><label for="password">Password</label><input id="password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required placeholder="At least 8 characters"><div id="confirm-password-field"><label for="confirm-password">Confirm password</label><input id="confirm-password" type="password" autocomplete="new-password" minlength="8" maxlength="128" placeholder="Enter password again"></div><div class="check-row" id="terms-row"><input id="terms-accepted" type="checkbox"><label for="terms-accepted">I agree to the <a href="#terms">Terms of Service</a> and <a href="#privacy">Privacy Policy</a>, and I will not use this service for fraud.</label></div><button class="primary full" id="auth-submit" type="submit">Create account</button></form><div id="auth-message" class="message" aria-live="polite"></div></section>
+<section class="hidden" id="customer-dashboard">
+<section class="panel page-panel" id="dashboard-page"><p class="muted" id="wallet-label">YOUR PERSONAL SCOTAP WALLET</p><div class="greeting" id="greeting">Welcome to SCOTAP!</div><p class="muted" id="profile-line"></p><div class="balance" id="balance">₦—</div><p class="muted">&#x1F4B0; Available wallet balance</p><div class="dashboard-actions"><button class="primary" id="show-deposit" type="button">&#x2795; Add Money</button><button class="secondary" id="refresh-button" type="button">&#x1F504; Refresh Balance</button></div><div id="wallet-message" class="message" aria-live="polite"></div><div id="deposit-area" class="hidden"><hr style="border:0;border-top:1px solid var(--border);margin:20px 0"><h2>&#x1F4B3; Add money to your wallet</h2><p class="muted">Choose how much to deposit. Paystack handles the payment securely.</p><form id="deposit-form"><label for="amount">Amount (NGN)</label><input id="amount" type="number" min="100" max="1000000" step="1" required placeholder="Example: 1000"><button class="primary full" id="deposit-button" type="submit">Continue to Paystack</button></form><button class="secondary full" id="hide-deposit" type="button">Cancel</button></div></section>
+<section class="panel page-panel hidden" id="settings-page"><div class="section-heading"><h2>⚙️ Account settings</h2><button class="secondary small-button" type="button" data-page="dashboard">← Back</button></div><p class="muted">Edit your account information, appearance, or password.</p><form id="profile-form" style="margin-top:16px"><h3 style="margin-bottom:10px">&#x1F464; Account Information</h3><label for="profile-full-name">Full name</label><input id="profile-full-name" type="text" maxlength="100" autocomplete="name" required placeholder="Your full name"><label for="profile-username">Username</label><input id="profile-username" type="text" minlength="3" maxlength="24" pattern="[A-Za-z0-9_]{3,24}" autocomplete="username" required placeholder="Your username"><label for="profile-email">Email address</label><input id="profile-email" type="email" maxlength="254" autocomplete="email" required placeholder="you@example.com"><button class="primary full" id="profile-submit" type="submit">Save account information</button><div id="profile-message" class="message" aria-live="polite"></div></form><hr style="border:0;border-top:1px solid var(--border);margin:20px 0"><div class="settings-grid" style="margin-top:15px"><div><label for="settings-theme">Appearance</label><select id="settings-theme"><option value="dark">&#x1F319; Dark mode</option><option value="light">☀️ Light mode</option></select></div><div><label>Support</label><a class="support-link" href="https://wa.me/2349121971385" target="_blank" rel="noopener noreferrer"><button class="secondary full" type="button">&#x1F4AC; Chat with support</button></a></div></div><hr style="border:0;border-top:1px solid var(--border);margin:20px 0"><h2>&#x1F510; Change password</h2><form id="password-form"><label for="current-password">Current password</label><input id="current-password" type="password" autocomplete="current-password" minlength="8" maxlength="128" required placeholder="Enter current password"><label for="new-password">New password</label><input id="new-password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required placeholder="At least 8 characters"><label for="confirm-new-password">Confirm new password</label><input id="confirm-new-password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required placeholder="Enter new password again"><button class="primary full" id="password-submit" type="submit">Update password</button></form><div id="settings-message" class="message" aria-live="polite"></div></section>
+<section class="panel page-panel hidden" id="services-page"><div class="section-heading"><h2>&#x1F4F1; Available Services</h2><button class="secondary small-button" type="button" data-page="dashboard">← Back</button></div><p class="muted">Choose a country to view supported apps and prices.</p><div class="service-tools" style="margin-top:15px"><div><label for="country-filter">Choose country</label><select id="country-filter"><option value="">Loading countries...</option></select></div><div><label for="service-search">Search service</label><input id="service-search" type="search" placeholder="Search WhatsApp, Telegram..."></div></div><button class="secondary full" id="reload-services" type="button">&#x1F504; Refresh countries and prices</button><div id="services-message" class="message" aria-live="polite">Log in to load available countries.</div><div id="service-list" class="service-list"></div></section>
+<section class="panel page-panel hidden" id="notifications-page"><div class="section-heading"><h2>&#x1F514; Announcements</h2><button class="secondary small-button" type="button" data-page="dashboard">← Back</button></div><p class="muted">Official announcements posted by SCOTAP administration.</p><button class="secondary" id="refresh-announcements" type="button">&#x1F504; Refresh announcements</button><div id="announcements-message" class="message" aria-live="polite"></div><div id="announcements-list"></div></section>
+<section class="panel page-panel hidden" id="admin-page"><div class="section-heading"><h2>🛠️ Admin Dashboard</h2><button class="secondary small-button" type="button" data-page="dashboard">← Back</button></div><p class="muted">Publish announcements for logged-in SCOTAP OTP users.</p><form id="announcement-form" class="admin-form"><label for="announcement-title">Announcement title</label><input id="announcement-title" maxlength="120" required placeholder="Example: Scheduled maintenance"><label for="announcement-message">Message</label><textarea id="announcement-message-input" maxlength="5000" rows="6" required placeholder="Write the announcement..."></textarea><button class="primary full" id="publish-announcement" type="submit">Publish announcement</button></form><div id="admin-message" class="message" aria-live="polite"></div><h3 style="margin-top:24px">Published announcements</h3><div id="admin-announcements-list"></div></section></section>
+<section id="public-features"><h2 class="section-title">Why <span>SCOTAP OTP?</span></h2><section class="features"><article class="feature"><h3>&#x1F510; Secure account</h3><p>Your own customer account.</p></article><article class="feature"><h3>&#x1F4B0; Personal wallet</h3><p>View your balance and add money when you're ready.</p></article><article class="feature"><h3>&#x26A1; OTP services</h3><p>Browse supported services before choosing to buy.</p></article></section></section>
+</main>
+<section class="legal" aria-label="Legal information"><details id="terms"><summary>Terms of Service</summary><p>Use SCOTAP OTP lawfully and responsibly. Do not use the service for fraud, impersonation, harassment, or to violate any law or another service's rules. Service availability and prices may change. Number purchases are not available until explicitly enabled on the website.</p></details><details id="privacy"><summary>Privacy Policy</summary><p>SCOTAP uses account details to provide account access and wallet services. Passwords are stored as password hashes, not plain text. Payment processing is handled by Paystack. Do not submit passwords or payment secrets to customer support. Contact support for privacy questions.</p></details></section>
+<footer>© <span id="year"></span> <strong style="color:var(--gold)">SCOTAP OTP</strong>. All rights reserved.<div class="footer-links"><a href="https://wa.me/2349121971385" target="_blank" rel="noopener noreferrer">&#x1F4AC; WhatsApp Support</a><a href="#terms">Terms of Service</a><a href="#privacy">Privacy Policy</a></div></footer>
+<script>
+"use strict";
+function repairEmojiText(value){if(typeof value!=="string"||!/[Ã°ÃÃÃ¢]/.test(value))return value;try{const bytes=Uint8Array.from(value,c=>c.charCodeAt(0)&255);const fixed=new TextDecoder("utf-8",{fatal:true}).decode(bytes);return /[Ã°ÃÃÃ¢]/.test(fixed)?value:fixed}catch{return value}}
+const API="https://scotap-otp-api.onaolapor39.workers.dev", MARKUP_NAIRA=1000, $=id=>document.getElementById(id);
+let mode="register",token=null,countries=[],services=[],servicesCountry="",currentUser=null;
+$("year").textContent=new Date().getFullYear();
+function showMessage(id,message,type=""){const el=$(id);el.textContent=message;el.className="message "+type}
+function money(kobo){return new Intl.NumberFormat("en-NG",{style:"currency",currency:"NGN"}).format(Number(kobo||0)/100)}
+function naira(value){const n=Number(value);if(!Number.isFinite(n))return null;return new Intl.NumberFormat("en-NG",{style:"currency",currency:"NGN",maximumFractionDigits:2}).format(n)}
+function applyTheme(theme){const safe=theme==="light"?"light":"dark";document.documentElement.dataset.theme=safe;$("settings-theme").value=safe;$("theme-color").setAttribute("content",safe==="dark"?"#090909":"#f5f6f8");try{localStorage.setItem("scotap_theme",safe)}catch{}}
+try{applyTheme(localStorage.getItem("scotap_theme")||"dark")}catch{applyTheme("dark")}
+$("settings-theme").addEventListener("change",e=>applyTheme(e.target.value));
+async function api(path,options={}){const headers={"Accept":"application/json"};if(options.body)headers["Content-Type"]="application/json";if(token)headers["Authorization"]="Bearer "+token;const response=await fetch(API+path,{...options,headers:{...headers,...(options.headers||{})},cache:"no-store"});const data=await response.json().catch(()=>({}));if(!response.ok||data.success!==true)throw new Error(data.error||"Request failed. Please try again.");return data}
+function setMode(next){mode=next;const reg=mode==="register";$("auth-title").textContent=reg?"Create your SCOTAP account":"Welcome back";$("auth-description").textContent=reg?"Enter your details and accept the terms to create an account.":"Log in using your email address or username.";$("auth-submit").textContent=reg?"Create account":"Log in";$("password").autocomplete=reg?"new-password":"current-password";$("register-tab").className=reg?"primary":"secondary";$("login-tab").className=reg?"secondary":"primary";$("register-fields").classList.toggle("hidden",!reg);$("confirm-password-field").classList.toggle("hidden",!reg);$("terms-row").classList.toggle("hidden",!reg);$("full-name").required=reg;$("username").required=reg;$("confirm-password").required=reg;$("terms-accepted").required=reg;$("email-label").textContent=reg?"Email address":"Email address or username";$("email").type=reg?"email":"text";$("email").autocomplete=reg?"email":"username";$("email").placeholder=reg?"you@example.com":"Email address or username";showMessage("auth-message","")}
+function timeGreeting(username){const h=new Date().getHours(),g=h<12?"Good morning":h<17?"Good afternoon":"Good evening";return `${g}, ${username||"there"}!`}
+function updateProfile(user){currentUser=user||{};$("profile-full-name").value=currentUser.full_name||"";$("profile-username").value=currentUser.username||"";$("profile-email").value=currentUser.email||"";const username=currentUser.username||"";$("greeting").textContent=timeGreeting(username);$("wallet-label").textContent=username?`${username.toUpperCase()}'S SCOTAP WALLET`:"YOUR PERSONAL SCOTAP WALLET";$("profile-line").textContent=currentUser.full_name?`${currentUser.full_name} · ${currentUser.email||""}`:(currentUser.email||"")}
+async function loadProfile(){const result=await api("/api/me");updateProfile(result.user)}
+function showPage(page){const pages={dashboard:"dashboard-page",settings:"settings-page",services:"services-page",notifications:"notifications-page",admin:"admin-page"};Object.values(pages).forEach(id=>$(id).classList.add("hidden"));if(pages[page])$(pages[page]).classList.remove("hidden");$("main-menu").classList.add("hidden");$("menu-toggle").setAttribute("aria-expanded","false");if(page==="services"&&token&&countries.length===0)loadServices();if(page==="notifications"&&token)loadAnnouncements();if(page==="admin"&&token)loadAdminAnnouncements();window.scrollTo({top:0,behavior:"smooth"})}
+function showLoggedIn(){$("auth-panel").classList.add("hidden");$("hero").classList.add("hidden");$("public-features").classList.add("hidden");$("customer-dashboard").classList.remove("hidden");$("menu-toggle").classList.remove("hidden");$("notifications-button").classList.remove("hidden");checkAdminStatus();loadAnnouncements();showPage("dashboard")}
+function showLoggedOut(){token=null;currentUser=null;countries=[];services=[];servicesCountry="";$("auth-panel").classList.remove("hidden");$("hero").classList.remove("hidden");$("public-features").classList.remove("hidden");$("customer-dashboard").classList.add("hidden");$("menu-toggle").classList.add("hidden");$("notifications-button").classList.add("hidden");$("admin-menu-item").classList.add("hidden");$("main-menu").classList.add("hidden");$("balance").textContent="₦—";$("greeting").textContent="Welcome to SCOTAP!";$("wallet-label").textContent="YOUR PERSONAL SCOTAP WALLET";$("profile-line").textContent="";$("country-filter").replaceChildren(new Option("Log in to load countries",""));$("service-list").replaceChildren();showMessage("services-message","Log in to load available countries.");$("current-password").value="";$("new-password").value="";$("confirm-new-password").value=""}
+async function refreshWallet(){if(!token)return;$("refresh-button").disabled=true;showMessage("wallet-message","Loading your wallet...");try{const d=await api("/api/wallet");$("balance").textContent=money(d.balance_kobo);showMessage("wallet-message","Wallet updated.","success")}catch(e){showMessage("wallet-message",e.message,"error")}finally{$("refresh-button").disabled=false}}
+$("register-tab").addEventListener("click",()=>setMode("register"));$("login-tab").addEventListener("click",()=>setMode("login"));
+$("auth-form").addEventListener("submit",async e=>{e.preventDefault();const b=$("auth-submit");b.disabled=true;showMessage("auth-message","Please wait...");try{let body;if(mode==="register"){if($("password").value!==$("confirm-password").value)throw new Error("Passwords do not match.");if(!$("terms-accepted").checked)throw new Error("You must accept the Terms of Service and Privacy Policy.");body={full_name:$("full-name").value.trim(),username:$("username").value.trim().toLowerCase(),email:$("email").value.trim(),password:$("password").value,confirm_password:$("confirm-password").value,terms_accepted:$("terms-accepted").checked}}else body={email:$("email").value.trim(),password:$("password").value};const result=await api(mode==="register"?"/api/register":"/api/login",{method:"POST",body:JSON.stringify(body)});if(!result.token)throw new Error("The server did not return a login token.");token=result.token;$("password").value="";$("confirm-password").value="";showLoggedIn();if(result.user)updateProfile(result.user);try{await loadProfile()}catch(err){if(!currentUser)throw err}await Promise.allSettled([refreshWallet()]);await verifyReturnPayment()}catch(err){showMessage("auth-message",err.message,"error")}finally{b.disabled=false}});
+$("menu-toggle").addEventListener("click",()=>{const m=$("main-menu"),open=m.classList.contains("hidden");m.classList.toggle("hidden",!open);$("menu-toggle").setAttribute("aria-expanded",String(open))});
+document.querySelectorAll("[data-page]").forEach(button=>button.addEventListener("click",()=>{const p=button.dataset.page;if(p==="logout"){showLoggedOut();$("deposit-area").classList.add("hidden");setMode("login");showMessage("auth-message","You have logged out.","success");return}showPage(p)}));
+$("refresh-button").addEventListener("click",refreshWallet);$("show-deposit").addEventListener("click",()=>{$("deposit-area").classList.remove("hidden");$("amount").focus()});$("hide-deposit").addEventListener("click",()=>$("deposit-area").classList.add("hidden"));
+$("deposit-form").addEventListener("submit",async e=>{e.preventDefault();const b=$("deposit-button");b.disabled=true;showMessage("wallet-message","Preparing your Paystack payment...");try{const amount=Number($("amount").value);if(!Number.isSafeInteger(amount)||amount<100||amount>1000000)throw new Error("Enter an amount between ₦100 and ₦1,000,000.");const result=await api("/api/payments/initialize",{method:"POST",body:JSON.stringify({amount_naira:amount})});if(!result.authorization_url)throw new Error("Paystack did not return a payment link.");if(result.reference)sessionStorage.setItem("scotap_pending_payment",result.reference);window.location.assign(result.authorization_url)}catch(err){showMessage("wallet-message",err.message,"error");b.disabled=false}});
+$("profile-form").addEventListener("submit",async e=>{e.preventDefault();const b=$("profile-submit");b.disabled=true;showMessage("profile-message","Saving account information...");try{const full_name=$("profile-full-name").value.trim(),username=$("profile-username").value.trim(),email=$("profile-email").value.trim();if(!/^[A-Za-z0-9_]{3,24}$/.test(username))throw new Error("Username must be 3–24 letters, numbers, or underscores.");const result=await api("/api/profile/update",{method:"POST",body:JSON.stringify({full_name,username,email})});if(result.user)updateProfile(result.user);else await loadProfile();showMessage("profile-message",result.message||"Account information updated successfully.","success")}catch(err){showMessage("profile-message",err.message,"error")}finally{b.disabled=false}});
+$("password-form").addEventListener("submit",async e=>{e.preventDefault();const b=$("password-submit");b.disabled=true;showMessage("settings-message","Updating your password...");try{const current=$("current-password").value,next=$("new-password").value,confirm=$("confirm-new-password").value;if(next!==confirm)throw new Error("Your new passwords do not match.");if(next.length<8||next.length>128)throw new Error("New password must be 8–128 characters.");const result=await api("/api/password/change",{method:"POST",body:JSON.stringify({current_password:current,new_password:next,confirm_new_password:confirm})});$("password-form").reset();showMessage("settings-message",result.message||"Password changed successfully.","success")}catch(err){showMessage("settings-message",err.message,"error")}finally{b.disabled=false}});
+function getList(response,keys){let root=response;for(let i=0;i<5;i++){if(Array.isArray(root))return root;if(!root||typeof root!=="object")break;for(const key of keys)if(Array.isArray(root[key]))return root[key];if(root.data&&typeof root.data==="object")root=root.data;else break}return[]}
+function field(obj,names){for(const name of names){const v=obj?.[name];if(v!==undefined&&v!==null&&v!=="")return v}return null}
+function countryName(c){if(typeof c==="string")return repairEmojiText(c);return repairEmojiText(String(field(c,["country_name","name","country","title","english"])||"Unknown country"))}
+function countryCode(c){if(typeof c==="string")return c;return String(field(c,["country_code","code","iso","value"])||"")}
+function getServiceName(s){return repairEmojiText(String(field(s,["service_name","name","service","title","product","code"])||"Verification service"))}
+function getServicePrice(s){const raw=field(s,["your_price","price_naira","price_ngn","price","cost","amount","retail_price"]);if(raw===null)return null;const n=Number(raw);if(!Number.isFinite(n)||n<0)return null;const unit=String(field(s,["price_currency","unit"])||"").toLowerCase();return unit.includes("kobo")||unit.includes("kopeck")||unit.includes("cent")?n/100:n}
+function logoForService(name){
+  const n = name.toLowerCase();
+  const brands = [
+    [/whatsapp/, "whatsapp", "25D366", "💬"],
+    [/telegram/, "telegram", "26A5E4", "✈️"],
+    [/instagram/, "instagram", "E4405F", "📸"],
+    [/facebook|meta/, "facebook", "0866FF", "📘"],
+    [/google|gmail|youtube/, "google", "4285F4", "🌐"],
+    [/tiktok/, "tiktok", "000000", "🎵"],
+    [/twitter|x\.com|\bx\b/, "x", "000000", "𝕏"],
+    [/discord/, "discord", "5865F2", "🎮"],
+    [/snapchat/, "snapchat", "FFFC00", "👻"],
+    [/microsoft|outlook|hotmail/, "microsoft", "5E5E5E", "🪟"],
+    [/apple|icloud/, "apple", "000000", "🍎"],
+    [/uber/, "uber", "000000", "🚗"],
+    [/amazon/, "amazon", "FF9900", "📦"],
+    [/viber/, "viber", "7360F2", "📞"],
+    [/signal/, "signal", "3A76F0", "🔵"],
+    [/reddit/, "reddit", "FF4500", "👽"],
+    [/line/, "line", "06C755", "💚"],
+    [/wechat/, "wechat", "07C160", "💬"],
+    [/yahoo/, "yahoo", "6001D2", "✉️"],
+    [/netflix/, "netflix", "E50914", "🎬"],
+    [/spotify/, "spotify", "1DB954", "🎧"],
+    [/paypal/, "paypal", "003087", "💳"],
+    [/binance/, "binance", "F0B90B", "🟡"],
+    [/coinbase/, "coinbase", "0052FF", "💰"],
+    [/steam/, "steam", "000000", "🎮"],
+    [/twitch/, "twitch", "9146FF", "🟣"],
+    [/linkedin/, "linkedin", "0A66C2", "💼"],
+    [/pinterest/, "pinterest", "E60023", "📌"],
+    [/skype/, "skype", "00AFF0", "💬"],
+    [/zoom/, "zoom", "2D8CFF", "📹"],
+    [/slack/, "slack", "4A154B", "💬"],
+    [/dropbox/, "dropbox", "0061FF", "📦"],
+    [/github/, "github", "181717", "🐙"],
+    [/adobe/, "adobe", "FF0000", "🎨"],
+    [/samsung/, "samsung", "1428A0", "📱"],
+    [/huawei/, "huawei", "FF0000", "📱"],
+    [/xiaomi/, "xiaomi", "FF6900", "📱"],
+    [/revolut/, "revolut", "0075EB", "💳"],
+    [/cashapp|cash app/, "cashapp", "00D632", "💵"],
+    [/venmo/, "venmo", "3D95CE", "💸"],
+    [/wise|transferwise/, "wise", "9FE870", "💸"],
+    [/airbnb/, "airbnb", "FF5A5F", "🏠"],
+    [/uber eats|ubereats/, "ubereats", "06C167", "🍔"],
+    [/doordash/, "doordash", "FF3008", "🛵"],
+    [/bolt/, "bolt", "34D186", "⚡"],
+    [/glovo/, "glovo", "FFC244", "🛵"],
+    [/jumia/, "jumia", "F68B1E", "🛒"],
+    [/konga/, "konga", "EC1C24", "🛒"],
+    [/paystack/, "paystack", "00C3F7", "💳"],
+    [/flutterwave/, "flutterwave", "F5A623", "💳"],
+    [/opay/, "opay", "1B5E20", "💚"],
+    [/palmpay/, "palmpay", "00A86B", "💚"],
+    [/kuda/, "kuda", "40196D", "💜"],
+    [/moniepoint/, "moniepoint", "000000", "🏦"]
+  ];
+  const match = brands.find(x => x[0].test(n));
+  if (match) {
+    return { url: `https://cdn.simpleicons.org/${match[1]}/${match[2]}`, fallback: match[3] };
+  }
+  const clean = n.replace(/[^a-z0-9]/g, "");
+  return { url: `https://cdn.simpleicons.org/${clean}/555555`, fallback: "📱" };
+}
+function renderCountries(){const s=$("country-filter"),prev=s.value;s.replaceChildren(new Option("Choose a country",""));countries.forEach(c=>{const name=countryName(c),code=countryCode(c);if(code)s.add(new Option(name,code))});if([...s.options].some(o=>o.value===prev))s.value=prev}
+function renderServices(){const list=$("service-list");list.replaceChildren();const code=$("country-filter").value,search=$("service-search").value.trim().toLowerCase();if(!code){showMessage("services-message","Choose a country to see its services and prices.");return}if(servicesCountry!==code){showMessage("services-message","Loading services for the selected country...");return}const c=countries.find(x=>countryCode(x)===code),filtered=services.filter(s=>!search||getServiceName(s).toLowerCase().includes(search));if(!filtered.length){showMessage("services-message","No services found for this search or country. Try refreshing.","error");return}showMessage("services-message",`${filtered.length} service(s) available. Prices are shown below.`,"success");filtered.forEach(service=>{const card=document.createElement("article");card.className="service-card";const logo=document.createElement("img");logo.className="service-logo";logo.alt="";logo.loading="lazy";const brand=logoForService(getServiceName(service));logo.src=brand.url||"";logo.onerror=()=>{const fallback=document.createElement("div");fallback.className="service-logo";fallback.style.display="grid";fallback.style.placeItems="center";fallback.style.fontSize="25px";fallback.textContent=brand.fallback;logo.replaceWith(fallback)};if(!brand.url){const fallback=document.createElement("div");fallback.className="service-logo";fallback.style.display="grid";fallback.style.placeItems="center";fallback.style.fontSize="25px";fallback.textContent=brand.fallback;logo.replaceWith(fallback)}const info=document.createElement("div");info.className="service-info";const name=document.createElement("h3");name.textContent=getServiceName(service);const country=document.createElement("p");country.className="service-meta";country.textContent="🌍 "+(c?countryName(c):code);const amount=getServicePrice(service),price=document.createElement("p");price.className="price";const sell=amount===null?null:amount+MARKUP_NAIRA;price.textContent=sell===null?"Price unavailable":naira(sell);const note=document.createElement("p");note.className="service-meta";note.textContent=amount===null?"Provider price unavailable.":"Availability is not guaranteed.";const choose=document.createElement("button");choose.className="secondary";choose.type="button";choose.textContent="View service";choose.addEventListener("click",()=>showMessage("services-message",amount===null?"Provider price unavailable.":`${getServiceName(service)} costs ${naira(sell)}. Number purchasing is not enabled yet. No money has been deducted.`,"error"));info.append(name,country,price,note,choose);card.append(logo,info);list.append(card)})}
+async function loadServices(){if(!token)return;const b=$("reload-services");b.disabled=true;showMessage("services-message","Loading available countries...");$("service-list").replaceChildren();try{const cr=await api("/api/countries");countries=getList(cr,["countries","results","items"]);if(!countries.length)throw new Error("OTP Suite returned no countries.");renderCountries();const code=$("country-filter").value;if(!code){services=[];servicesCountry="";showMessage("services-message",`${countries.length} country/countries loaded. Choose a country to see services and prices.`,"success");return}showMessage("services-message","Loading services for "+code+"...");const query=new URLSearchParams({country:code}),sr=await api("/api/services?"+query.toString());services=getList(sr,["services","results","items"]);servicesCountry=code;renderServices();if(!services.length)showMessage("services-message","The API returned no services for "+code+". Check the provider's catalogue.","error")}catch(err){services=[];servicesCountry="";$("service-list").replaceChildren();showMessage("services-message","Could not load countries or services: "+err.message,"error")}finally{b.disabled=false}}
+$("reload-services").addEventListener("click",loadServices);$("country-filter").addEventListener("change",()=>{services=[];servicesCountry="";$("service-list").replaceChildren();if($("country-filter").value)loadServices();else showMessage("services-message","Choose a country to load its services.")});$("service-search").addEventListener("input",renderServices);
+async function verifyReturnPayment(){if(!token)return;const p=new URLSearchParams(window.location.search),ref=p.get("reference")||p.get("trxref")||sessionStorage.getItem("scotap_pending_payment");if(!ref)return;showMessage("wallet-message","Checking your payment with Paystack...");try{const r=await api("/api/payments/verify",{method:"POST",body:JSON.stringify({reference:ref})});sessionStorage.removeItem("scotap_pending_payment");await refreshWallet();showMessage("wallet-message",r.already_credited?"This payment was already credited.":"Payment verified. Your wallet has been updated.","success");history.replaceState({},"",window.location.pathname)}catch(err){showMessage("wallet-message","Payment verification could not be confirmed: "+err.message+". Check your payment status before paying again.","error")}}
+let scotapAnnouncements=[];
+function escapeAnnouncement(value){return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]))}
+function announcementCards(items){if(!Array.isArray(items)||!items.length)return '<p class="muted">No announcements yet.</p>';return items.map(a=>`<article class="announcement-card"><h3>${escapeAnnouncement(a.title||"Announcement")}</h3><div class="announcement-date">${escapeAnnouncement(a.created_at?new Date(a.created_at).toLocaleString():"")}</div><div>${escapeAnnouncement(a.message||"").replace(/\n/g,"<br>")}</div></article>`).join("")}
+async function checkAdminStatus(){if(!token)return;try{const r=await api("/api/admin/status");const isAdmin=r.is_admin===true;$("admin-menu-item").classList.toggle("hidden",!isAdmin);if(!isAdmin&&$("admin-page"))$("admin-page").classList.add("hidden")}catch(e){$("admin-menu-item").classList.add("hidden")}}
+async function loadAnnouncements(){if(!token)return;const box=$("announcements-list"),msg=$("announcements-message");if(!box)return;msg.textContent="Loading announcements...";try{const r=await api("/api/announcements");scotapAnnouncements=Array.isArray(r.announcements)?r.announcements:(Array.isArray(r.items)?r.items:[]);box.innerHTML=announcementCards(scotapAnnouncements);msg.textContent=scotapAnnouncements.length?"Latest official announcements.":"No announcements have been published yet.";const count=$("notification-count");count.textContent=String(scotapAnnouncements.length);count.classList.toggle("hidden",scotapAnnouncements.length===0)}catch(e){msg.textContent="Could not load announcements: "+e.message}}
+async function loadAdminAnnouncements(){if(!token)return;try{const r=await api("/api/admin/status");if(r.is_admin!==true){showPage("dashboard");return}const a=await api("/api/announcements");const list=Array.isArray(a.announcements)?a.announcements:(Array.isArray(a.items)?a.items:[]);$("admin-announcements-list").innerHTML=announcementCards(list)}catch(e){showMessage("admin-message","Admin access could not be verified: "+e.message,"error")}}
+$("notifications-button").addEventListener("click",()=>showPage("notifications"));
+$("refresh-announcements").addEventListener("click",loadAnnouncements);
+$("announcement-form").addEventListener("submit",async e=>{e.preventDefault();const button=$("publish-announcement");button.disabled=true;showMessage("admin-message","Publishing announcement...");try{const result=await api("/api/admin/announcements",{method:"POST",body:JSON.stringify({title:$("announcement-title").value.trim(),message:$("announcement-message-input").value.trim()})});showMessage("admin-message",result.message||"Announcement published successfully.","success");$("announcement-title").value="";$("announcement-message-input").value="";await loadAnnouncements();await loadAdminAnnouncements()}catch(err){showMessage("admin-message","Could not publish announcement: "+err.message,"error")}finally{button.disabled=false}});
+setMode("register");showLoggedOut();
+</script>
+</body>
+</html>
