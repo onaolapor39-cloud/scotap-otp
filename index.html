@@ -85,7 +85,17 @@ main{width:min(100% - 28px,850px);margin:auto}.hero{text-align:center;padding:32
 <footer>Â© <span id="year"></span> <strong style="color:var(--gold)">SCOTAP OTP</strong>. All rights reserved.<div class="footer-links"><a href="https://wa.me/2349121971385" target="_blank" rel="noopener noreferrer">&#x1F4AC; WhatsApp Support</a><a href="#terms">Terms of Service</a><a href="#privacy">Privacy Policy</a></div></footer>
 <script>
 "use strict";
-function repairEmojiText(value){if(typeof value!=="string"||!/[ÃÂ°ÃÂÃÂÃÂ¢]/.test(value))return value;try{const bytes=Uint8Array.from(value,c=>c.charCodeAt(0)&255);const fixed=new TextDecoder("utf-8",{fatal:true}).decode(bytes);return /[ÃÂ°ÃÂÃÂÃÂ¢]/.test(fixed)?value:fixed}catch{return value}}
+function repairEmojiText(value){
+  if(typeof value!=="string")return value;
+  if(/[ÃÃÃ°Å¸]/.test(value)){
+    try{
+      const bytes=Uint8Array.from(value,c=>c.charCodeAt(0)&255);
+      const fixed=new TextDecoder("utf-8",{fatal:false}).decode(bytes);
+      if(fixed && fixed!==value && !/[ÃÃ]/.test(fixed)) return fixed;
+    }catch(e){}
+  }
+  return value;
+}).decode(bytes);return /[ÃÂ°ÃÂÃÂÃÂ¢]/.test(fixed)?value:fixed}catch{return value}}
 const API="https://scotap-otp-api.onaolapor39.workers.dev", MARKUP_NAIRA=1000, $=id=>document.getElementById(id);
 let mode="register",token=null,countries=[],services=[],servicesCountry="",currentUser=null;
 let activePurchase=null,pollInterval=null,countdownInterval=null;
