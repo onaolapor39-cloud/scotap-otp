@@ -233,7 +233,7 @@ function renderServices(){
   if(servicesCountry!==code){showMessage("services-message","Loading services for the selected country...");return}
   const c=countries.find(x=>countryCode(x)===code),filtered=services.filter(s=>!search||getServiceName(s).toLowerCase().includes(search));
   if(!filtered.length){showMessage("services-message","No services found for this search or country. Try refreshing.","error");return}
-  showMessage("services-message",`${filtered.length} service(s) available. Prices include ₦${MARKUP_NAIRA} markup.`,"success");
+  showMessage("services-message",`${filtered.length} service(s) available.`,"success");
   filtered.forEach(service=>{
     const card=document.createElement("article");card.className="service-card";
     const logo=document.createElement("img");logo.className="service-logo";logo.alt="";logo.loading="lazy";
@@ -245,7 +245,6 @@ function renderServices(){
     const country=document.createElement("p");country.className="service-meta";country.textContent="🌍 "+(c?countryName(c):code);
     const amount=getServicePrice(service),price=document.createElement("p");price.className="price";
     const sell=amount===null?null:amount+MARKUP_NAIRA;price.textContent=sell===null?"Price unavailable":naira(sell);
-    const note=document.createElement("p");note.className="service-meta";note.textContent=amount===null?"Provider price unavailable.":"Includes ₦1,000 markup.";
     const choose=document.createElement("button");choose.className="primary";choose.type="button";choose.textContent="Buy Number";
     choose.addEventListener("click",async()=>{
       if(!confirm(`Buy ${getServiceName(service)} for ${naira(sell)}?`))return;
@@ -259,7 +258,7 @@ function renderServices(){
         await refreshWallet();
       }catch(err){showMessage("services-message",err.message,"error");choose.disabled=false}
     });
-    info.append(name,country,price,note,choose);card.append(logo,info);list.append(card)
+    info.append(name,country,price,choose);card.append(logo,info);list.append(card)
   })
 }
 async function loadServices(){if(!token)return;const b=$("reload-services");b.disabled=true;showMessage("services-message","Loading available countries...");$("service-list").replaceChildren();try{const cr=await api("/api/countries");countries=getList(cr,["countries","results","items"]);if(!countries.length)throw new Error("OTP Suite returned no countries.");renderCountries();const code=$("country-filter").value;if(!code){services=[];servicesCountry="";showMessage("services-message",`${countries.length} country/countries loaded. Choose a country to see services and prices.`,"success");return}showMessage("services-message","Loading services for "+code+"...");const query=new URLSearchParams({country:code}),sr=await api("/api/services?"+query.toString());services=getList(sr,["services","results","items"]);servicesCountry=code;renderServices();if(!services.length)showMessage("services-message","The API returned no services for "+code+". Check the provider's catalogue.","error")}catch(err){services=[];servicesCountry="";$("service-list").replaceChildren();showMessage("services-message","Could not load countries or services: "+err.message,"error")}finally{b.disabled=false}}
