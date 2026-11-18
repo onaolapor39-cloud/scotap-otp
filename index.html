@@ -10,6 +10,12 @@
 
 <meta name="theme-color" content="#090909" id="theme-color">
 
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SCOTAP OTP">
+<link rel="apple-touch-icon" href="logo.png">
+
 <title>SCOTAP OTP | Premium OTP Services</title>
 
 <style>
@@ -41,6 +47,11 @@ main{width:min(100% - 28px,850px);margin:auto}.hero{text-align:center;padding:32
 .landing-features,.landing-steps,.landing-cta{margin:40px 0;text-align:center}
 
 .landing-cta{background:var(--panel);border-radius:16px;padding:30px}
+
+#activity-toasts{position:fixed;bottom:20px;right:20px;z-index:1000;display:flex;flex-direction:column;gap:10px;max-width:320px;pointer-events:none}
+.activity-toast{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px 14px;box-shadow:0 8px 24px #0004;font-size:13px;animation:toastIn .3s ease;pointer-events:auto}
+.activity-toast strong{color:var(--gold)}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
 
 </style>
 
@@ -232,7 +243,22 @@ main{width:min(100% - 28px,850px);margin:auto}.hero{text-align:center;padding:32
 
 <section class="panel page-panel hidden" id="notifications-page"><div class="section-heading"><h2>&#x1F514; Announcements</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Official announcements posted by SCOTAP administration.</p><button class="secondary" id="refresh-announcements" type="button">&#x1F504; Refresh announcements</button><div id="announcements-message" class="message" aria-live="polite"></div><div id="announcements-list"></div></section>
 
-<section class="panel page-panel hidden" id="admin-page"><div class="section-heading"><h2>&#x1F6E0;&#xFE0F; Admin Dashboard</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Publish announcements for logged-in SCOTAP OTP users.</p><form id="announcement-form" class="admin-form"><label for="announcement-title">Announcement title</label><input id="announcement-title" maxlength="120" required placeholder="Example: Scheduled maintenance"><label for="announcement-message">Message</label><textarea id="announcement-message-input" maxlength="5000" rows="6" required placeholder="Write the announcement..."></textarea><button class="primary full" id="publish-announcement" type="submit">Publish announcement</button></form><div id="admin-message" class="message" aria-live="polite"></div><h3 style="margin-top:24px">Published announcements</h3><div id="admin-announcements-list"></div></section></section>
+<section class="panel page-panel hidden" id="admin-page"><div class="section-heading"><h2>&#x1F6E0;&#xFE0F; Admin Dashboard</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Publish announcements for logged-in SCOTAP OTP users.</p><form id="announcement-form" class="admin-form"><label for="announcement-title">Announcement title</label><input id="announcement-title" maxlength="120" required placeholder="Example: Scheduled maintenance"><label for="announcement-message">Message</label><textarea id="announcement-message-input" maxlength="5000" rows="6" required placeholder="Write the announcement..."></textarea><button class="primary full" id="publish-announcement" type="submit">Publish announcement</button></form><div id="admin-message" class="message" aria-live="polite"></div><h3 style="margin-top:24px">Published announcements</h3><div id="admin-announcements-list"></div>
+
+<hr style="border:0;border-top:1px solid var(--border);margin:28px 0">
+
+<h3>User Management</h3>
+<p class="muted">Search by username or email to view details, ban/unban, or reset password.</p>
+
+<form id="admin-search-form" class="admin-form">
+  <label for="admin-search-query">Username or Email</label>
+  <input id="admin-search-query" type="text" required placeholder="Enter username or email" autocomplete="off">
+  <button class="primary full" type="submit">Search User</button>
+</form>
+<div id="admin-search-message" class="message"></div>
+<div id="admin-user-result" class="hidden" style="margin-top:16px"></div>
+
+</section></section>
 
 <section id="public-features"><h2 class="section-title">Why <span>SCOTAP OTP?</span></h2><section class="features"><article class="feature"><h3>&#x1F510; Secure account</h3><p>Your own customer account.</p></article><article class="feature"><h3>&#x1F4B0; Personal wallet</h3><p>View your balance and add money when you're ready.</p></article><article class="feature"><h3>&#x26A1; OTP services</h3><p>Browse supported services before choosing to buy.</p></article></section></section>
 
@@ -270,6 +296,8 @@ main{width:min(100% - 28px,850px);margin:auto}.hero{text-align:center;padding:32
 </main>
 
 <footer>&#xA9; <span id="year"></span> <strong style="color:var(--gold)">SCOTAP OTP</strong>. All rights reserved.<div class="footer-links"><a href="https://wa.me/2349121971385" target="_blank" rel="noopener noreferrer">&#x1F4AC; WhatsApp Support</a><a href="#" data-legal="terms">Terms of Service</a><a href="#" data-legal="privacy">Privacy Policy</a></div></footer>
+
+<div id="activity-toasts"></div>
 
 <script>
 
@@ -882,6 +910,131 @@ document.querySelectorAll("[data-legal]").forEach(link=>{
 
 $("terms-back")?.addEventListener("click",closeLegalPage);
 $("privacy-back")?.addEventListener("click",closeLegalPage);
+
+// ===== FAKE ACTIVITY TOASTS (every 5 seconds) =====
+const toastContainer = document.getElementById("activity-toasts");
+const fakeNames = ["alex_ng","sammy_k","user4421","chuks_dev","mary_j","tony_pro","nkechi22","bola_otp","david_x","fatima_m","ken_ng","precious_1","yemi_otp","grace_b","uche_2026","amina_s","john_doe99","linda_k","peter_v","sarah_m"];
+const fakeServices = ["WhatsApp","Telegram","Instagram","Google","Facebook","TikTok","Signal","Twitter/X","Discord","Snapchat"];
+const fakeCountries = ["Nigeria","USA","UK","India","Ghana","Kenya","South Africa","Canada","Germany","Brazil"];
+
+function showFakeToast() {
+  if (!toastContainer) return;
+  const name = fakeNames[Math.floor(Math.random() * fakeNames.length)] + Math.floor(Math.random()*900+100);
+  const service = fakeServices[Math.floor(Math.random() * fakeServices.length)];
+  const country = fakeCountries[Math.floor(Math.random() * fakeCountries.length)];
+  const actions = ["bought a number for", "just verified with", "purchased OTP for"];
+  const action = actions[Math.floor(Math.random() * actions.length)];
+  const toast = document.createElement("div");
+  toast.className = "activity-toast";
+  toast.innerHTML = `<strong>${name}</strong> ${action} <strong>${service}</strong> (${country})`;
+  toastContainer.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    toast.style.transform = "translateX(20px)";
+    toast.style.transition = "all .3s";
+    setTimeout(() => toast.remove(), 300);
+  }, 4200);
+}
+
+// Start fake activity toasts every 5 seconds (public social proof)
+setInterval(showFakeToast, 5000);
+setTimeout(showFakeToast, 1500); // first one a bit sooner
+
+// ===== ADMIN USER MANAGEMENT =====
+const adminSearchForm = document.getElementById("admin-search-form");
+const adminSearchQuery = document.getElementById("admin-search-query");
+const adminSearchMsg = document.getElementById("admin-search-message");
+const adminUserResult = document.getElementById("admin-user-result");
+
+if (adminSearchForm) {
+  adminSearchForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const q = adminSearchQuery.value.trim();
+    if (!q) return;
+    adminSearchMsg.textContent = "Searching...";
+    adminSearchMsg.className = "message";
+    adminUserResult.classList.add("hidden");
+    adminUserResult.innerHTML = "";
+    try {
+      const res = await api("/api/admin/search-user", {
+        method: "POST",
+        body: JSON.stringify({ query: q })
+      });
+      const u = res.user;
+      adminSearchMsg.textContent = "";
+      adminUserResult.classList.remove("hidden");
+      adminUserResult.innerHTML = `
+        <div class="panel" style="background:var(--card)">
+          <h3 style="margin-bottom:8px">${u.full_name || "No name"}</h3>
+          <p><strong>Username:</strong> ${u.username}</p>
+          <p><strong>Email:</strong> ${u.email}</p>
+          <p><strong>Wallet Balance:</strong> â¦${Number(u.balance_naira).toLocaleString(undefined,{minimumFractionDigits:2})}</p>
+          <p><strong>Total Spent:</strong> â¦${Number(u.total_spent_naira).toLocaleString(undefined,{minimumFractionDigits:2})}</p>
+          <p><strong>Status:</strong> ${u.banned ? '<span style="color:#e65b5b">Banned</span>' : '<span style="color:#229447">Active</span>'}</p>
+          ${u.banned && u.ban_reason ? `<p><strong>Ban Reason:</strong> ${u.ban_reason}</p>` : ""}
+          <hr style="border:0;border-top:1px solid var(--border);margin:14px 0">
+          <label for="ban-reason">Ban Reason (required when banning)</label>
+          <input id="ban-reason" type="text" placeholder="Enter reason for ban" value="${u.ban_reason || ""}">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+            <button class="primary" id="ban-btn" type="button" ${u.banned ? "disabled" : ""}>Ban User</button>
+            <button class="secondary" id="unban-btn" type="button" ${!u.banned ? "disabled" : ""}>Unban User</button>
+          </div>
+          <hr style="border:0;border-top:1px solid var(--border);margin:18px 0">
+          <h4>Reset Password</h4>
+          <label for="new-admin-password">New Password</label>
+          <input id="new-admin-password" type="text" minlength="8" placeholder="At least 8 characters">
+          <button class="primary" id="reset-pw-btn" type="button" style="margin-top:8px">Set New Password</button>
+          <div id="admin-action-msg" class="message"></div>
+        </div>`;
+
+      document.getElementById("ban-btn")?.addEventListener("click", async () => {
+        const reason = document.getElementById("ban-reason").value.trim();
+        if (reason.length < 3) { alert("Please enter a ban reason (at least 3 characters)"); return; }
+        if (!confirm(`Ban ${u.username}?`)) return;
+        try {
+          await api("/api/admin/ban-user", { method: "POST", body: JSON.stringify({ username: u.username, reason }) });
+          document.getElementById("admin-action-msg").textContent = "User banned.";
+          document.getElementById("admin-action-msg").className = "message success";
+          adminSearchForm.dispatchEvent(new Event("submit"));
+        } catch (err) {
+          document.getElementById("admin-action-msg").textContent = err.message;
+          document.getElementById("admin-action-msg").className = "message error";
+        }
+      });
+
+      document.getElementById("unban-btn")?.addEventListener("click", async () => {
+        if (!confirm(`Unban ${u.username}?`)) return;
+        try {
+          await api("/api/admin/unban-user", { method: "POST", body: JSON.stringify({ username: u.username }) });
+          document.getElementById("admin-action-msg").textContent = "User unbanned.";
+          document.getElementById("admin-action-msg").className = "message success";
+          adminSearchForm.dispatchEvent(new Event("submit"));
+        } catch (err) {
+          document.getElementById("admin-action-msg").textContent = err.message;
+          document.getElementById("admin-action-msg").className = "message error";
+        }
+      });
+
+      document.getElementById("reset-pw-btn")?.addEventListener("click", async () => {
+        const np = document.getElementById("new-admin-password").value;
+        if (np.length < 8) { alert("Password must be at least 8 characters"); return; }
+        if (!confirm(`Reset password for ${u.username}?`)) return;
+        try {
+          const r = await api("/api/admin/reset-password", { method: "POST", body: JSON.stringify({ username: u.username, new_password: np }) });
+          document.getElementById("admin-action-msg").textContent = r.message + (r.new_password ? " New password: " + r.new_password : "");
+          document.getElementById("admin-action-msg").className = "message success";
+          document.getElementById("new-admin-password").value = "";
+        } catch (err) {
+          document.getElementById("admin-action-msg").textContent = err.message;
+          document.getElementById("admin-action-msg").className = "message error";
+        }
+      });
+    } catch (err) {
+      adminSearchMsg.textContent = err.message;
+      adminSearchMsg.className = "message error";
+    }
+  });
+}
 
 </script>
 
