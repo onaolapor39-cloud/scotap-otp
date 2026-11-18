@@ -910,15 +910,16 @@ $("privacy-back")?.addEventListener("click",closeLegalPage);
 
 // ===== SCOTAP USA SERVICE TOASTS (every 5 seconds) =====
 const toastContainer = document.getElementById("activity-toasts");
-const fakeServices = ["WhatsApp","Telegram","Instagram","Google","Facebook","TikTok","Signal","Twitter/X","Discord","Snapchat"];
-const demoCountry = "USA";
+const sampleServices = ["WhatsApp","Telegram","Instagram","Google","Facebook","TikTok","Signal","Twitter/X","Discord","Snapchat"];
+const sampleNameParts = ["mary","alex","james","zara","mike","ella","david","tomi","luca","nina","sam","chidi"];
 
 function showFakeToast() {
   if (!toastContainer) return;
-  const service = fakeServices[Math.floor(Math.random() * fakeServices.length)];
+  const service = sampleServices[Math.floor(Math.random() * sampleServices.length)];
+  const username = `${sampleNameParts[Math.floor(Math.random() * sampleNameParts.length)]}_${Math.floor(100 + Math.random() * 9900)}`;
   const toast = document.createElement("div");
   toast.className = "activity-toast";
-  toast.innerHTML = `<strong>SCOTAP OTP</strong><br>USA number verification available for <strong>${service}</strong>`;
+  toast.innerHTML = `<strong>Sample activity</strong><br>${username} just verified with <strong>${service}</strong> (USA)`;
   toastContainer.appendChild(toast);
   setTimeout(() => {
     toast.style.opacity = "0";
