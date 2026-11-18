@@ -2,7 +2,7 @@
   "name": "SCOTAP OTP",
   "short_name": "SCOTAP OTP",
   "description": "Premium OTP Services - Virtual Numbers Instantly",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#090909",
   "theme_color": "#f5c542",
@@ -20,5 +20,6 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "scope": "./"
 }
