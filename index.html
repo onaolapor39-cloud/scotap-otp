@@ -929,9 +929,11 @@ function showFakeToast() {
   }, 4200);
 }
 
-// Show a truthful service availability toast every 5 seconds
-setInterval(showFakeToast, 5000);
-setTimeout(showFakeToast, 1500); // first one a bit sooner
+// ===== FAKE ACTIVITY TOASTS (every 5 seconds) =====
+const toastContainer = document.getElementById("activity-toasts");
+const fakeNames = ["alex_ng","sammy_k","user4421","chuks_dev","mary_j","tony_pro","nkechi22","bola_otp","david_x","fatima_m","ken_ng","precious_1","yemi_otp","grace_b","uche_2026","amina_s","john_doe99","linda_k","peter_v","sarah_m"];
+const fakeServices = ["WhatsApp","Telegram","Instagram","Google","Facebook","TikTok","Signal","Twitter/X","Discord","Snapchat"];
+const fakeCountries = ["USA"];
 
 // ===== ADMIN USER MANAGEMENT =====
 const adminSearchForm = document.getElementById("admin-search-form");
