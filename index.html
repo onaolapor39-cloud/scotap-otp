@@ -908,21 +908,17 @@ document.querySelectorAll("[data-legal]").forEach(link=>{
 $("terms-back")?.addEventListener("click",closeLegalPage);
 $("privacy-back")?.addEventListener("click",closeLegalPage);
 
-// ===== DEMO ACTIVITY TOASTS (every 5 seconds; not real purchases) =====
+// ===== SCOTAP USA SERVICE TOASTS (every 5 seconds) =====
 const toastContainer = document.getElementById("activity-toasts");
-const fakeNames = ["alex_ng","sammy_k","user4421","chuks_dev","mary_j","tony_pro","nkechi22","bola_otp","david_x","fatima_m","ken_ng","precious_1","yemi_otp","grace_b","uche_2026","amina_s","john_doe99","linda_k","peter_v","sarah_m"];
 const fakeServices = ["WhatsApp","Telegram","Instagram","Google","Facebook","TikTok","Signal","Twitter/X","Discord","Snapchat"];
 const demoCountry = "USA";
 
 function showFakeToast() {
   if (!toastContainer) return;
-  const name = fakeNames[Math.floor(Math.random() * fakeNames.length)] + Math.floor(Math.random()*900+100);
   const service = fakeServices[Math.floor(Math.random() * fakeServices.length)];
-  const actions = ["bought a number for", "just verified with", "purchased OTP for"];
-  const action = actions[Math.floor(Math.random() * actions.length)];
   const toast = document.createElement("div");
   toast.className = "activity-toast";
-  toast.innerHTML = `<strong>Demo activity (not a real purchase)</strong><br><strong>${name}</strong> ${action} <strong>${service}</strong> (${demoCountry})`;
+  toast.innerHTML = `<strong>SCOTAP OTP</strong><br>USA number verification available for <strong>${service}</strong>`;
   toastContainer.appendChild(toast);
   setTimeout(() => {
     toast.style.opacity = "0";
@@ -932,7 +928,7 @@ function showFakeToast() {
   }, 4200);
 }
 
-// Start clearly labelled demo activity toasts every 5 seconds
+// Show a truthful service availability toast every 5 seconds
 setInterval(showFakeToast, 5000);
 setTimeout(showFakeToast, 1500); // first one a bit sooner
 
