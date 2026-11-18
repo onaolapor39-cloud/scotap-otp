@@ -243,9 +243,7 @@ main{width:min(100% - 28px,850px);margin:auto}.hero{text-align:center;padding:32
 
 <section class="panel page-panel hidden" id="notifications-page"><div class="section-heading"><h2>&#x1F514; Announcements</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Official announcements posted by SCOTAP administration.</p><button class="secondary" id="refresh-announcements" type="button">&#x1F504; Refresh announcements</button><div id="announcements-message" class="message" aria-live="polite"></div><div id="announcements-list"></div></section>
 
-<section class="panel page-panel hidden" id="admin-page"><div class="section-heading"><h2>&#x1F6E0;&#xFE0F; Admin Dashboard</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Publish announcements for logged-in SCOTAP OTP users.</p><form id="announcement-form" class="admin-form"><label for="announcement-title">Announcement title</label><input id="announcement-title" maxlength="120" required placeholder="Example: Scheduled maintenance"><label for="announcement-message">Message</label><textarea id="announcement-message-input" maxlength="5000" rows="6" required placeholder="Write the announcement..."></textarea><button class="primary full" id="publish-announcement" type="submit">Publish announcement</button></form><div id="admin-message" class="message" aria-live="polite"></div><h3 style="margin-top:24px">Published announcements</h3><div id="admin-announcements-list"></div>
-
-<hr style="border:0;border-top:1px solid var(--border);margin:28px 0">
+<section class="panel page-panel hidden" id="admin-page"><div class="section-heading"><h2>&#x1F6E0;&#xFE0F; Admin Dashboard</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Publish announcements for logged-in SCOTAP OTP users.</p><form id="announcement-form" class="admin-form"><label for="announcement-title">Announcement title</label><input id="announcement-title" maxlength="120" required placeholder="Example: Scheduled maintenance"><label for="announcement-message">Message</label><textarea id="announcement-message-input" maxlength="5000" rows="6" required placeholder="Write the announcement..."></textarea><button class="primary full" id="publish-announcement" type="submit">Publish announcement</button></form><div id="admin-message" class="message" aria-live="polite"></div><hr style="border:0;border-top:1px solid var(--border);margin:28px 0">
 
 <h3>User Management</h3>
 <p class="muted">Search by username or email to view details, ban/unban, or reset password.</p>
@@ -335,7 +333,7 @@ function updateProfile(user){currentUser=user||{};$("profile-full-name").value=c
 
 async function loadProfile(){const result=await api("/api/me");updateProfile(result.user)}
 
-function showPage(page){const pages={dashboard:"dashboard-page",settings:"settings-page",services:"services-page",transactions:"transactions-page",numbers:"numbers-page",notifications:"notifications-page",admin:"admin-page",terms:"terms-page",privacy:"privacy-page"};Object.values(pages).forEach(id=>{const el=$(id);if(el)el.classList.add("hidden")});if(pages[page])$(pages[page]).classList.remove("hidden");$("main-menu").classList.add("hidden");$("menu-toggle").setAttribute("aria-expanded","false");if(page==="services"&&token&&countries.length===0)loadServices();if(page==="notifications"&&token){loadAnnouncements();markAnnouncementsRead();}if(page==="admin"&&token)loadAdminAnnouncements();if(page==="transactions"&&token)loadTransactions();if(page==="numbers"&&token)loadNumbers();if(page==="dashboard"&&token)loadRecentActivity();window.scrollTo({top:0,behavior:"smooth"})}
+function showPage(page){const pages={dashboard:"dashboard-page",settings:"settings-page",services:"services-page",transactions:"transactions-page",numbers:"numbers-page",notifications:"notifications-page",admin:"admin-page",terms:"terms-page",privacy:"privacy-page"};Object.values(pages).forEach(id=>{const el=$(id);if(el)el.classList.add("hidden")});if(pages[page])$(pages[page]).classList.remove("hidden");$("main-menu").classList.add("hidden");$("menu-toggle").setAttribute("aria-expanded","false");if(page==="services"&&token&&countries.length===0)loadServices();if(page==="notifications"&&token){loadAnnouncements();markAnnouncementsRead();}if(page==="transactions"&&token)loadTransactions();if(page==="numbers"&&token)loadNumbers();if(page==="dashboard"&&token)loadRecentActivity();window.scrollTo({top:0,behavior:"smooth"})}
 
 function saveToken(t){token=t;try{if(t)localStorage.setItem("scotap_token",t);else localStorage.removeItem("scotap_token")}catch{}}
 
@@ -799,13 +797,12 @@ async function checkAdminStatus(){if(!token)return;try{const r=await api("/api/a
 
 async function loadAnnouncements(){if(!token)return;const box=$("announcements-list"),msg=$("announcements-message");if(!box)return;msg.textContent="Loading announcements...";try{const r=await api("/api/announcements");scotapAnnouncements=Array.isArray(r.announcements)?r.announcements:(Array.isArray(r.items)?r.items:[]);box.innerHTML=announcementCards(scotapAnnouncements);msg.textContent=scotapAnnouncements.length?"Latest official announcements.":"No announcements have been published yet.";updateNotificationBadge()}catch(e){msg.textContent="Could not load announcements: "+e.message}}
 
-async function loadAdminAnnouncements(){if(!token)return;try{const r=await api("/api/admin/status");if(r.is_admin!==true){showPage("dashboard");return}const a=await api("/api/announcements");const list=Array.isArray(a.announcements)?a.announcements:(Array.isArray(a.items)?a.items:[]);$("admin-announcements-list").innerHTML=announcementCards(list)}catch(e){showMessage("admin-message","Admin access could not be verified: "+e.message,"error")}}
 
 $("notifications-button").addEventListener("click",()=>showPage("notifications"));
 
 $("refresh-announcements").addEventListener("click",loadAnnouncements);
 
-$("announcement-form").addEventListener("submit",async e=>{e.preventDefault();const button=$("publish-announcement");button.disabled=true;showMessage("admin-message","Publishing announcement...");try{const result=await api("/api/admin/announcements",{method:"POST",body:JSON.stringify({title:$("announcement-title").value.trim(),message:$("announcement-message-input").value.trim()})});showMessage("admin-message",result.message||"Announcement published successfully.","success");$("announcement-title").value="";$("announcement-message-input").value="";await loadAnnouncements();await loadAdminAnnouncements()}catch(err){showMessage("admin-message","Could not publish announcement: "+err.message,"error")}finally{button.disabled=false}});
+$("announcement-form").addEventListener("submit",async e=>{e.preventDefault();const button=$("publish-announcement");button.disabled=true;showMessage("admin-message","Publishing announcement...");try{const result=await api("/api/admin/announcements",{method:"POST",body:JSON.stringify({title:$("announcement-title").value.trim(),message:$("announcement-message-input").value.trim()})});showMessage("admin-message",result.message||"Announcement published successfully.","success");$("announcement-title").value="";$("announcement-message-input").value="";await loadAnnouncements()}catch(err){showMessage("admin-message","Could not publish announcement: "+err.message,"error")}finally{button.disabled=false}});
 
 // Restore session on page load
 
@@ -911,22 +908,21 @@ document.querySelectorAll("[data-legal]").forEach(link=>{
 $("terms-back")?.addEventListener("click",closeLegalPage);
 $("privacy-back")?.addEventListener("click",closeLegalPage);
 
-// ===== FAKE ACTIVITY TOASTS (every 5 seconds) =====
+// ===== DEMO ACTIVITY TOASTS (every 5 seconds; not real purchases) =====
 const toastContainer = document.getElementById("activity-toasts");
 const fakeNames = ["alex_ng","sammy_k","user4421","chuks_dev","mary_j","tony_pro","nkechi22","bola_otp","david_x","fatima_m","ken_ng","precious_1","yemi_otp","grace_b","uche_2026","amina_s","john_doe99","linda_k","peter_v","sarah_m"];
 const fakeServices = ["WhatsApp","Telegram","Instagram","Google","Facebook","TikTok","Signal","Twitter/X","Discord","Snapchat"];
-const fakeCountries = ["Nigeria","USA","UK","India","Ghana","Kenya","South Africa","Canada","Germany","Brazil"];
+const demoCountry = "USA";
 
 function showFakeToast() {
   if (!toastContainer) return;
   const name = fakeNames[Math.floor(Math.random() * fakeNames.length)] + Math.floor(Math.random()*900+100);
   const service = fakeServices[Math.floor(Math.random() * fakeServices.length)];
-  const country = fakeCountries[Math.floor(Math.random() * fakeCountries.length)];
   const actions = ["bought a number for", "just verified with", "purchased OTP for"];
   const action = actions[Math.floor(Math.random() * actions.length)];
   const toast = document.createElement("div");
   toast.className = "activity-toast";
-  toast.innerHTML = `<strong>${name}</strong> ${action} <strong>${service}</strong> (${country})`;
+  toast.innerHTML = `<strong>Demo activity (not a real purchase)</strong><br><strong>${name}</strong> ${action} <strong>${service}</strong> (${demoCountry})`;
   toastContainer.appendChild(toast);
   setTimeout(() => {
     toast.style.opacity = "0";
@@ -936,7 +932,7 @@ function showFakeToast() {
   }, 4200);
 }
 
-// Start fake activity toasts every 5 seconds (public social proof)
+// Start clearly labelled demo activity toasts every 5 seconds
 setInterval(showFakeToast, 5000);
 setTimeout(showFakeToast, 1500); // first one a bit sooner
 
