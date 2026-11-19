@@ -279,7 +279,7 @@ main{width:min(100% - 28px,850px);margin:auto}.hero{text-align:center;padding:32
 </form>
 <div id="admin-search-message" class="message"></div>
 <div id="admin-user-result" class="hidden" style="margin-top:16px"></div>
-</section>
+
 
 <section class="panel page-panel hidden" id="tickets-page">
   <div class="section-heading"><h2>&#x1F3AB; Support Tickets</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div>
@@ -333,7 +333,7 @@ main{width:min(100% - 28px,850px);margin:auto}.hero{text-align:center;padding:32
   <div id="admin-deposits-list" style="overflow-x:auto"></div>
 </section>
 
-</section>
+</section></section>
 
 <section id="public-features"><h2 class="section-title">Why <span>SCOTAP OTP?</span></h2><section class="features"><article class="feature"><h3>&#x1F510; Secure account</h3><p>Your own customer account.</p></article><article class="feature"><h3>&#x1F4B0; Personal wallet</h3><p>View your balance and add money when you're ready.</p></article><article class="feature"><h3>&#x26A1; OTP services</h3><p>Browse supported services before choosing to buy.</p></article></section></section>
 
@@ -1044,8 +1044,8 @@ if (adminSearchForm) {
           <h3 style="margin-bottom:8px">${u.full_name || "No name"}</h3>
           <p><strong>Username:</strong> ${u.username}</p>
           <p><strong>Email:</strong> ${u.email}</p>
-          <p><strong>Wallet Balance:</strong> ₦${Number(u.balance_naira).toLocaleString(undefined,{minimumFractionDigits:2})}</p>
-          <p><strong>Total Spent:</strong> ₦${Number(u.total_spent_naira).toLocaleString(undefined,{minimumFractionDigits:2})}</p>
+          <p><strong>Wallet Balance:</strong> â¦${Number(u.balance_naira).toLocaleString(undefined,{minimumFractionDigits:2})}</p>
+          <p><strong>Total Spent:</strong> â¦${Number(u.total_spent_naira).toLocaleString(undefined,{minimumFractionDigits:2})}</p>
           <p><strong>Status:</strong> ${u.banned ? '<span style="color:#e65b5b">Banned</span>' : '<span style="color:#229447">Active</span>'}</p>
           ${u.banned && u.ban_reason ? `<p><strong>Ban Reason:</strong> ${u.ban_reason}</p>` : ""}
           <hr style="border:0;border-top:1px solid var(--border);margin:14px 0">
