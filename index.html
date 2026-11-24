@@ -141,9 +141,9 @@ main{width:min(100% - 28px,850px);margin:auto}.hero{text-align:center;padding:32
 
     <div class="landing-actions">
 
-      <button class="primary" id="go-register" type="button">Create Account</button>
+      <button class="primary" id="go-register" type="button" onclick="openAuthFromLanding('register')">Create Account</button>
 
-      <button class="secondary" id="go-login" type="button">Log in</button>
+      <button class="secondary" id="go-login" type="button" onclick="openAuthFromLanding('login')">Log in</button>
 
     </div>
 
@@ -185,7 +185,7 @@ main{width:min(100% - 28px,850px);margin:auto}.hero{text-align:center;padding:32
 
     <h2>Ready to get started?</h2>
 
-    <button class="primary" id="go-register-2" type="button">Create Account Now</button>
+    <button class="primary" id="go-register-2" type="button" onclick="openAuthFromLanding('register')">Create Account Now</button>
 
   </div>
 
@@ -556,7 +556,7 @@ function logoForService(name){
 
     [/tiktok/, "tiktok", "000000", "&#x1F3B5;"],
 
-    [/twitter|x\.com|x/, "x", "000000", "&#x1D54F;"],
+    [/twitter|x\.com|\bx\b/, "x", "000000", "&#x1D54F;"],
 
     [/discord/, "discord", "5865F2", "&#x1F3AE;"],
 
@@ -945,6 +945,15 @@ $("announcement-form").addEventListener("submit",async e=>{e.preventDefault();co
 
 })();
 
+function openAuthFromLanding(m){
+  const lp=document.getElementById("landing-page");
+  const hr=document.getElementById("hero");
+  const ap=document.getElementById("auth-panel");
+  if(lp)lp.classList.add("hidden");
+  if(hr)hr.classList.remove("hidden");
+  if(ap)ap.classList.remove("hidden");
+  if(typeof setMode==="function")setMode(m);
+}
 document.getElementById("go-register")?.addEventListener("click", () => {
 
   document.getElementById("landing-page").classList.add("hidden");
