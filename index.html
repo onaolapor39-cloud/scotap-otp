@@ -106,12 +106,14 @@ body.ticket-open{overflow:hidden}
 #ticket-view-page #ticket-view-message{flex:0 0 auto;margin-top:6px}
 .chat-msg{max-width:min(84%,560px)}
 .chat-msg.customer{background:#fff;color:#171717}
-.chat-msg.support{background:var(--gold);color:#171717}
+.chat-msg.support{background:var(--gold);color:#fff}
 .chat-msg.customer.outgoing{margin-left:auto;margin-right:0;border-top-right-radius:3px}
 .chat-msg.customer.incoming{margin-left:0;margin-right:auto;border-top-left-radius:3px}
 .chat-msg.support.outgoing{margin-left:auto;margin-right:0;border-top-right-radius:3px}
 .chat-msg.support.incoming{margin-left:0;margin-right:auto;border-top-left-radius:3px}
-.chat-msg.customer .meta,.chat-msg.support .meta{color:#555}
+.chat-msg.customer .meta{color:#555}
+.chat-msg.support .meta{color:#fff!important}
+.chat-msg.support .chat-files a{color:#fff!important}
 .chat-files a{color:#765400}
 @media(max-width:600px){#ticket-view-page{padding:10px 12px}#ticket-view-page .panel{padding:12px}#ticket-view-page .whatsapp-chat{padding:12px 10px}}
 #create-ticket-form{margin-top:16px}
@@ -382,7 +384,7 @@ body.ticket-open{overflow:hidden}
     <button class="primary" id="admin-tickets-open-tab" type="button">Open Tickets</button>
     <button class="secondary" id="admin-tickets-closed-tab" type="button">Closed Tickets</button>
   </div>
-  <input id="admin-tickets-search" type="search" placeholder="Search by username, email or subject..." style="margin-bottom:10px">
+  <input id="admin-tickets-search" type="search" placeholder="Search ticket number, username, email or subject..." style="margin-bottom:10px">
   <button class="secondary" id="admin-tickets-refresh" type="button">&#x1F504; Refresh</button>
   <div id="admin-tickets-message" class="message"></div>
   <div id="admin-tickets-list"></div>
@@ -1398,7 +1400,7 @@ async function loadTickets() {
           <strong>${escapeHtml(t.subject)}</strong>
           <span class="${t.status === "open" ? "status-open" : "status-closed"}">${t.status.toUpperCase()}</span>
         </div>
-        <div class="muted" style="font-size:12px;margin-top:4px">Ticket #${escapeHtml(t.ticket_number || t.id)} · ${t.category === "virtual_numbers" ? "Virtual Numbers" : "Wallet Funding"} · ${t.created_at ? new Date(t.created_at).toLocaleString() : ""}
+        <div class="muted" style="font-size:12px;margin-top:4px">${escapeHtml(formatTicketNumber(t.ticket_number || t.id))} · ${t.category === "virtual_numbers" ? "Virtual Numbers" : "Wallet Funding"} · ${t.created_at ? new Date(t.created_at).toLocaleString() : ""}
         </div>
       </div>`).join("");
     box.querySelectorAll(".ticket-item").forEach(el => {
@@ -1412,6 +1414,13 @@ async function loadTickets() {
 
 function escapeHtml(s) {
   return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+function formatTicketNumber(value) {
+  const raw = String(value ?? "");
+  const match = raw.match(/(\d+)$/);
+  const number = match ? match[1] : raw;
+  return `Ticket ${/^\d+$/.test(number) ? number.padStart(3, "0") : number}`;
 }
 
 async function openTicket(id) {
@@ -1513,11 +1522,24 @@ async function loadAdminTickets(status) {
   }
   showMessage("admin-tickets-message", "Loading...");
   try {
-    const search = ($("admin-tickets-search")?.value || "").trim();
-    let url = "/api/admin/tickets?status=" + encodeURIComponent(adminTicketsStatus);
-    if (search) url += "&search=" + encodeURIComponent(search);
+    const search = ($("admin-tickets-search")?.value || "").trim().toLowerCase();
+    // Fetch the selected status list, then match ticket number and customer details locally.
+    // This also supports searches such as "Ticket 001" even if the API only searches text fields.
+    const url = "/api/admin/tickets?status=" + encodeURIComponent(adminTicketsStatus);
     const r = await api(url);
-    const list = r.tickets || [];
+    let list = r.tickets || [];
+    if (search) {
+      const normalizedSearch = search.replace(/^ticket\s*#?\s*/i, "").trim();
+      list = list.filter(t => {
+        const ticketLabel = formatTicketNumber(t.ticket_number || t.id).toLowerCase();
+        const rawTicketNumber = String(t.ticket_number || t.id || "").toLowerCase();
+        const paddedNumber = normalizedSearch && /^\d+$/.test(normalizedSearch)
+          ? normalizedSearch.padStart(3, "0") : normalizedSearch;
+        return ticketLabel.includes(search) || ticketLabel.includes("ticket " + paddedNumber) ||
+          rawTicketNumber.includes(normalizedSearch) ||
+          [t.username, t.email, t.subject].some(value => String(value || "").toLowerCase().includes(search));
+      });
+    }
     const box = $("admin-tickets-list");
     if (!list.length) {
       box.innerHTML = '<p class="muted">No tickets found.</p>';
@@ -1530,7 +1552,7 @@ async function loadAdminTickets(status) {
           <strong>${escapeHtml(t.subject)}</strong>
           <span class="${t.status === "open" ? "status-open" : "status-closed"}">${t.status.toUpperCase()}</span>
         </div>
-        <div class="muted" style="font-size:12px;margin-top:4px">Ticket #${escapeHtml(t.ticket_number || t.id)} · ${escapeHtml(t.username || "")} · ${t.category === "virtual_numbers" ? "Virtual Numbers" : "Wallet Funding"} · ${t.created_at ? new Date(t.created_at).toLocaleString() : ""}
+        <div class="muted" style="font-size:12px;margin-top:4px">${escapeHtml(formatTicketNumber(t.ticket_number || t.id))} · ${escapeHtml(t.username || "")} · ${t.category === "virtual_numbers" ? "Virtual Numbers" : "Wallet Funding"} · ${t.created_at ? new Date(t.created_at).toLocaleString() : ""}
         </div>
         ${t.status === "open" ? `<button class="secondary small-button close-ticket-btn" data-id="${t.id}" style="margin-top:8px">Close Ticket</button>` : (t.close_reason ? `<div class="muted" style="font-size:12px">Reason: ${escapeHtml(t.close_reason)}</div>` : "")}
       </div>`).join("");
