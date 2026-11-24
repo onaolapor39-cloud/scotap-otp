@@ -95,6 +95,25 @@ html[data-theme="light"] .chat-msg.user{background:#d9fdd3;color:#111}
 html[data-theme="light"] .chat-msg.admin{background:#fff;color:#111}
 html[data-theme="light"] .chat-msg .meta{color:#667781}
 html[data-theme="light"] .chat-files a{color:#087e67}
+
+/* Ticket conversations use their own screen; only the messages area scrolls. */
+body.ticket-open{overflow:hidden}
+#ticket-view-page{position:fixed!important;top:var(--ticket-top,0px);left:0;right:0;bottom:0;z-index:19;margin:0!important;width:100%;max-width:none;min-height:0;height:auto;padding:14px clamp(14px,4vw,34px);border-radius:0;display:flex;flex-direction:column;overflow:hidden;gap:0}
+#ticket-view-page .section-heading{flex:0 0 auto;margin-bottom:8px}
+#ticket-view-page #ticket-meta{flex:0 0 auto;margin-bottom:8px!important}
+#ticket-view-page .whatsapp-chat{flex:1 1 auto;height:auto;min-height:0;max-height:none;margin:0;border-radius:14px 14px 0 0;overscroll-behavior:contain}
+#ticket-view-page .whatsapp-composer{flex:0 0 auto;border-radius:0 0 14px 14px}
+#ticket-view-page #ticket-view-message{flex:0 0 auto;margin-top:6px}
+.chat-msg{max-width:min(84%,560px)}
+.chat-msg.customer{background:#fff;color:#171717}
+.chat-msg.support{background:var(--gold);color:#171717}
+.chat-msg.customer.outgoing{margin-left:auto;margin-right:0;border-top-right-radius:3px}
+.chat-msg.customer.incoming{margin-left:0;margin-right:auto;border-top-left-radius:3px}
+.chat-msg.support.outgoing{margin-left:auto;margin-right:0;border-top-right-radius:3px}
+.chat-msg.support.incoming{margin-left:0;margin-right:auto;border-top-left-radius:3px}
+.chat-msg.customer .meta,.chat-msg.support .meta{color:#555}
+.chat-files a{color:#765400}
+@media(max-width:600px){#ticket-view-page{padding:10px 12px}#ticket-view-page .panel{padding:12px}#ticket-view-page .whatsapp-chat{padding:12px 10px}}
 #create-ticket-form{margin-top:16px}
 #create-ticket-form.hidden{display:none!important}
 
@@ -437,7 +456,7 @@ function repairEmojiText(value){if(typeof value!=="string"||!/[&#xC3;&#xB0;&#xC3
 const API="https://scotap-otp-api.onaolapor39.workers.dev", $=id=>document.getElementById(id);
 let MARKUP_NAIRA = 1000;
 
-let mode="register",token=null,countries=[],services=[],servicesCountry="",currentUser=null;
+let mode="register",token=null,countries=[],services=[],servicesCountry="",currentUser=null,isAdminUser=false;
 
 let activePurchase=null,pollInterval=null,countdownInterval=null;
 let skipTicketListLoad=false;
@@ -466,7 +485,7 @@ function updateProfile(user){currentUser=user||{};$("profile-full-name").value=c
 
 async function loadProfile(){const result=await api("/api/me");updateProfile(result.user)}
 
-function showPage(page){const pages={dashboard:"dashboard-page",settings:"settings-page",services:"services-page",transactions:"transactions-page",numbers:"numbers-page",notifications:"notifications-page",admin:"admin-page",tickets:"tickets-page","ticket-view":"ticket-view-page","admin-tickets":"admin-tickets-page","admin-orders":"admin-orders-page","admin-deposits":"admin-deposits-page",terms:"terms-page",privacy:"privacy-page"};Object.values(pages).forEach(id=>{const el=$(id);if(el)el.classList.add("hidden")});if(pages[page])$(pages[page]).classList.remove("hidden");$("main-menu").classList.add("hidden");$("menu-toggle").setAttribute("aria-expanded","false");if(page==="services"&&token&&countries.length===0)loadServices();if(page==="notifications"&&token){loadAnnouncements();markAnnouncementsRead();}if(page==="transactions"&&token)loadTransactions();if(page==="numbers"&&token)loadNumbers();if(page==="dashboard"&&token)loadRecentActivity();if(page==="tickets"&&token&&!skipTicketListLoad)loadTickets();if(page==="admin-tickets"&&token)loadAdminTickets("open");
+function showPage(page){document.body.classList.toggle("ticket-open",page==="ticket-view");if(page==="ticket-view"){const topbar=document.querySelector(".topbar");document.documentElement.style.setProperty("--ticket-top",(topbar?.getBoundingClientRect().height||0)+"px")}const pages={dashboard:"dashboard-page",settings:"settings-page",services:"services-page",transactions:"transactions-page",numbers:"numbers-page",notifications:"notifications-page",admin:"admin-page",tickets:"tickets-page","ticket-view":"ticket-view-page","admin-tickets":"admin-tickets-page","admin-orders":"admin-orders-page","admin-deposits":"admin-deposits-page",terms:"terms-page",privacy:"privacy-page"};Object.values(pages).forEach(id=>{const el=$(id);if(el)el.classList.add("hidden")});if(pages[page])$(pages[page]).classList.remove("hidden");$("main-menu").classList.add("hidden");$("menu-toggle").setAttribute("aria-expanded","false");if(page==="services"&&token&&countries.length===0)loadServices();if(page==="notifications"&&token){loadAnnouncements();markAnnouncementsRead();}if(page==="transactions"&&token)loadTransactions();if(page==="numbers"&&token)loadNumbers();if(page==="dashboard"&&token)loadRecentActivity();if(page==="tickets"&&token&&!skipTicketListLoad)loadTickets();if(page==="admin-tickets"&&token)loadAdminTickets("open");
 if(page==="admin"&&token)loadCurrentMarkupForAdmin();if(page==="admin-orders"&&token)loadAdminOrders();if(page==="admin-deposits"&&token)loadAdminDeposits();window.scrollTo({top:0,behavior:"smooth"})}
 
 function saveToken(t){token=t;try{if(t)localStorage.setItem("scotap_token",t);else localStorage.removeItem("scotap_token")}catch{}}
@@ -939,7 +958,7 @@ function updateNotificationBadge(){
 
 }
 
-async function checkAdminStatus(){if(!token)return;try{const r=await api("/api/admin/status");const isAdmin=r.is_admin===true;$("admin-menu-item").classList.toggle("hidden",!isAdmin);$("admin-tickets-menu")?.classList.toggle("hidden",!isAdmin);$("admin-orders-menu")?.classList.toggle("hidden",!isAdmin);$("admin-deposits-menu")?.classList.toggle("hidden",!isAdmin);if(!isAdmin&&$("admin-page"))$("admin-page").classList.add("hidden")}catch(e){$("admin-menu-item").classList.add("hidden");$("admin-tickets-menu")?.classList.add("hidden");$("admin-orders-menu")?.classList.add("hidden");$("admin-deposits-menu")?.classList.add("hidden")}}
+async function checkAdminStatus(){if(!token){isAdminUser=false;return}try{const r=await api("/api/admin/status");const isAdmin=r.is_admin===true;isAdminUser=isAdmin;$("admin-menu-item").classList.toggle("hidden",!isAdmin);$("admin-tickets-menu")?.classList.toggle("hidden",!isAdmin);$("admin-orders-menu")?.classList.toggle("hidden",!isAdmin);$("admin-deposits-menu")?.classList.toggle("hidden",!isAdmin);if(!isAdmin&&$("admin-page"))$("admin-page").classList.add("hidden")}catch(e){isAdminUser=false;$("admin-menu-item").classList.add("hidden");$("admin-tickets-menu")?.classList.add("hidden");$("admin-orders-menu")?.classList.add("hidden");$("admin-deposits-menu")?.classList.add("hidden")}}
 
 async function loadAnnouncements(){if(!token)return;const box=$("announcements-list"),msg=$("announcements-message");if(!box)return;msg.textContent="Loading announcements...";try{const r=await api("/api/announcements");scotapAnnouncements=Array.isArray(r.announcements)?r.announcements:(Array.isArray(r.items)?r.items:[]);box.innerHTML=announcementCards(scotapAnnouncements);msg.textContent=scotapAnnouncements.length?"Latest official announcements.":"No announcements have been published yet.";updateNotificationBadge()}catch(e){msg.textContent="Could not load announcements: "+e.message}}
 
@@ -1379,8 +1398,7 @@ async function loadTickets() {
           <strong>${escapeHtml(t.subject)}</strong>
           <span class="${t.status === "open" ? "status-open" : "status-closed"}">${t.status.toUpperCase()}</span>
         </div>
-        <div class="muted" style="font-size:12px;margin-top:4px">
-          ${t.category === "virtual_numbers" ? "Virtual Numbers" : "Wallet Funding"} · ${t.created_at ? new Date(t.created_at).toLocaleString() : ""}
+        <div class="muted" style="font-size:12px;margin-top:4px">Ticket #${escapeHtml(t.ticket_number || t.id)} · ${t.category === "virtual_numbers" ? "Virtual Numbers" : "Wallet Funding"} · ${t.created_at ? new Date(t.created_at).toLocaleString() : ""}
         </div>
       </div>`).join("");
     box.querySelectorAll(".ticket-item").forEach(el => {
@@ -1407,13 +1425,14 @@ async function openTicket(id) {
     const r = await api("/api/tickets/" + encodeURIComponent(id));
     const t = r.ticket;
     currentTicketStatus = t.status;
-    $("ticket-view-title").textContent = t.subject || "Ticket";
+    $("ticket-view-title").textContent = t.subject || "Support Ticket";
+    const ticketNumber = t.ticket_number || t.id;
     $("ticket-meta").innerHTML = `
-      <span class="${t.status === "open" ? "status-open" : "status-closed"}">${t.status.toUpperCase()}</span>
+      <strong>Ticket #${escapeHtml(ticketNumber)}</strong> · <span class="${t.status === "open" ? "status-open" : "status-closed"}">${t.status.toUpperCase()}</span>
       · ${t.category === "virtual_numbers" ? "Virtual Numbers" : "Wallet Funding"}
       · Created ${t.created_at ? new Date(t.created_at).toLocaleString() : ""}
       ${t.close_reason ? `<br><strong>Close reason:</strong> ${escapeHtml(t.close_reason)}` : ""}
-      ${t.username ? `<br>User: ${escapeHtml(t.username)} (${escapeHtml(t.email || "")})` : ""}
+      ${isAdminUser && t.username ? `<br>Customer: ${escapeHtml(t.username)} (${escapeHtml(t.email || "")})` : ""}
     `;
     const msgs = r.messages || [];
     const files = r.files || [];
@@ -1423,13 +1442,16 @@ async function openTicket(id) {
       if (!filesByMsg[k]) filesByMsg[k] = [];
       filesByMsg[k].push(f);
     });
+    const customerName = t.username || currentUser?.username || "Customer";
     $("ticket-chat").innerHTML = msgs.map(m => {
-      const cls = m.is_admin ? "admin" : "user";
-      const who = m.is_admin ? "Support" : "You";
+      const isSupport = !!m.is_admin;
+      const role = isSupport ? "support" : "customer";
+      const outgoing = isAdminUser ? isSupport : !isSupport;
+      const who = isSupport ? "SCOTAPOTP Support" : customerName;
       const fs = (filesByMsg[m.id] || []).map(f =>
         `<a href="#" class="ticket-file-link" data-id="${f.id}">${escapeHtml(f.filename)}</a>`
       ).join("");
-      return `<div class="chat-msg ${cls}"><div class="meta">${who} · ${m.created_at ? new Date(m.created_at).toLocaleString() : ""}</div>
+      return `<div class="chat-msg ${role} ${outgoing ? "outgoing" : "incoming"}"><div class="meta">${escapeHtml(who)} · ${m.created_at ? new Date(m.created_at).toLocaleString() : ""}</div>
         <div>${escapeHtml(m.message || "").replace(/\n/g, "<br>")}</div>
         ${fs ? `<div class="chat-files">${fs}</div>` : ""}</div>`;
     }).join("");
@@ -1508,8 +1530,7 @@ async function loadAdminTickets(status) {
           <strong>${escapeHtml(t.subject)}</strong>
           <span class="${t.status === "open" ? "status-open" : "status-closed"}">${t.status.toUpperCase()}</span>
         </div>
-        <div class="muted" style="font-size:12px;margin-top:4px">
-          ${escapeHtml(t.username || "")} · ${t.category === "virtual_numbers" ? "Virtual Numbers" : "Wallet Funding"} · ${t.created_at ? new Date(t.created_at).toLocaleString() : ""}
+        <div class="muted" style="font-size:12px;margin-top:4px">Ticket #${escapeHtml(t.ticket_number || t.id)} · ${escapeHtml(t.username || "")} · ${t.category === "virtual_numbers" ? "Virtual Numbers" : "Wallet Funding"} · ${t.created_at ? new Date(t.created_at).toLocaleString() : ""}
         </div>
         ${t.status === "open" ? `<button class="secondary small-button close-ticket-btn" data-id="${t.id}" style="margin-top:8px">Close Ticket</button>` : (t.close_reason ? `<div class="muted" style="font-size:12px">Reason: ${escapeHtml(t.close_reason)}</div>` : "")}
       </div>`).join("");
