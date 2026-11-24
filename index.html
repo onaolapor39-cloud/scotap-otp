@@ -869,8 +869,7 @@ let scotapAnnouncements=[];
 
 function escapeAnnouncement(value){return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]))}
 
-function announcementCards(items){if(!Array.isArray(items)||!items.length)return '<p class="muted">No announcements yet.</p>';return items.map(a=>`<article class="announcement-card"><h3>${escapeAnnouncement(a.title||"Announcement")}</h3><div class="announcement-date">${escapeAnnouncement(a.created_at?new Date(a.created_at).toLocaleString():"")}</div><div>${escapeAnnouncement(a.message||"").replace(/
-/g,"<br>")}</div></article>`).join("")}
+function announcementCards(items){if(!Array.isArray(items)||!items.length)return '<p class="muted">No announcements yet.</p>';return items.map(a=>`<article class="announcement-card"><h3>${escapeAnnouncement(a.title||"Announcement")}</h3><div class="announcement-date">${escapeAnnouncement(a.created_at?new Date(a.created_at).toLocaleString():"")}</div><div>${escapeAnnouncement(a.message||"").replace(/\n/g,"<br>")}</div></article>`).join("")}
 
 function markAnnouncementsRead(){
 
@@ -1450,8 +1449,7 @@ async function openTicket(id) {
         const timeShort = formatBubbleTime(m.created_at);
         return `
           <div class="chat-msg ${cls}">
-            ${m.message ? `<div class="body-text">${escapeHtml(m.message).replace(/
-/g, "<br>")}</div>` : ""}
+            ${m.message ? `<div class="body-text">${escapeHtml(m.message).replace(/\n/g, "<br>")}</div>` : ""}
             ${fs ? `<div class="chat-files">${fs}</div>` : ""}
             <div class="meta">
               <span class="sender-tag">${who}</span>
