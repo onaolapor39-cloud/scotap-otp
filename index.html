@@ -38,11 +38,11 @@ html[data-theme="light"] body {
   background-attachment: scroll;
 }
 
-:root{color-scheme:dark;--gold:#f5c542;--bg:#090909;--panel:#151515;--muted:#aaa;--border:#303030;--text:#fff;--input:#090909;--card:#101010;--secondary:#292929;--secondary-border:#414141;--gold-text:#ffe28a;--wa-out:#3a2e0d;--wa-out-border:#6e5614;--wa-in:#1b1d21;--wa-in-border:#2d3138}
+:root{color-scheme:dark;--gold:#f5c542;--bg:#090909;--panel:#151515;--muted:#aaa;--border:#303030;--text:#fff;--input:#090909;--card:#101010;--secondary:#292929;--secondary-border:#414141;--gold-text:#ffe28a}
 
-html[data-theme="light"]{color-scheme:light;--gold:#b8860b;--bg:#f5f6f8;--panel:#fff;--muted:#5f6368;--border:#d9dde3;--text:#171717;--input:#fff;--card:#f8f9fb;--secondary:#e9edf2;--secondary-border:#cbd1d9;--gold-text:#805b00;--wa-out:#fff3c4;--wa-out-border:#e3c45b;--wa-in:#ffffff;--wa-in-border:#dfe3ea}
+html[data-theme="light"]{color-scheme:light;--gold:#b8860b;--bg:#f5f6f8;--panel:#fff;--muted:#5f6368;--border:#d9dde3;--text:#171717;--input:#fff;--card:#f8f9fb;--secondary:#e9edf2;--secondary-border:#cbd1d9;--gold-text:#805b00}
 
-*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;transition:background .2s,color .2s}button,input,select,textarea{font:inherit}a{color:var(--gold)}button{border:0;border-radius:9px;padding:12px 16px;cursor:pointer;font-weight:750}button:disabled{opacity:.55;cursor:wait}.primary{background:var(--gold);color:#111}.secondary{background:var(--secondary);color:var(--text);border:1px solid var(--secondary-border)}input,select,textarea{width:100%;background:var(--input);border:1px solid var(--secondary-border);border-radius:9px;color:var(--text);padding:13px;margin:6px 0 13px}select option{background:var(--panel);color:var(--text)}label{font-size:13px;color:var(--text)}.full{width:100%}.hidden{display:none!important}.muted{color:var(--muted);font-size:14px}.message{font-size:13px;margin-top:12px;overflow-wrap:anywhere}.error{color:#e65b5b}.success{color:#229447}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;transition:background .2s,color .2s}button,input,select{font:inherit}a{color:var(--gold)}button{border:0;border-radius:9px;padding:12px 16px;cursor:pointer;font-weight:750}button:disabled{opacity:.55;cursor:wait}.primary{background:var(--gold);color:#111}.secondary{background:var(--secondary);color:var(--text);border:1px solid var(--secondary-border)}input,select{width:100%;background:var(--input);border:1px solid var(--secondary-border);border-radius:9px;color:var(--text);padding:13px;margin:6px 0 13px}select option{background:var(--panel);color:var(--text)}label{font-size:13px;color:var(--text)}.full{width:100%}.hidden{display:none!important}.muted{color:var(--muted);font-size:14px}.message{font-size:13px;margin-top:12px;overflow-wrap:anywhere}.error{color:#e65b5b}.success{color:#229447}
 
 .topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 5%;border-bottom:1px solid var(--border);gap:12px;position:sticky;top:0;background:var(--bg);z-index:20}.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}.logo-mark{width:42px;height:42px;display:grid;place-items:center;background:var(--gold);color:#fff;border-radius:7px;font-size:29px;font-weight:950;line-height:1;flex-shrink:0}.brand-name{font-size:21px;font-weight:900;letter-spacing:.3px}.brand-name span{color:var(--gold)}.header-actions{display:flex;align-items:center;gap:9px}.status{font-size:12px;color:#55b96a}.menu-button{font-size:22px;min-width:46px;padding:8px 12px}.menu{position:fixed;z-index:30;right:16px;top:76px;width:min(290px,calc(100vw - 32px));background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:10px;box-shadow:0 12px 35px #0005}.menu button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;margin:3px 0;background:transparent;color:var(--text);border:0}.menu button:hover{background:var(--secondary)}.menu .logout-item{color:#e65b5b}
 
@@ -71,87 +71,17 @@ main{width:min(100% - 28px,850px);margin:auto}.hero{text-align:center;padding:32
 .activity-toast strong{color:var(--gold)}
 @keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
 
+.support-fab{position:fixed;bottom:24px;left:16px;z-index:900;width:56px;height:56px;border-radius:50%;background:var(--gold);color:#111;display:grid;place-items:center;font-size:24px;box-shadow:0 6px 20px #0005;border:0;cursor:pointer}
+.support-fab:hover{transform:scale(1.05)}
 .ticket-item{border:1px solid var(--border);border-radius:12px;padding:14px;margin:10px 0;background:var(--card);cursor:pointer}
 .ticket-item:hover{border-color:var(--gold)}
 .ticket-item .status-open{color:#229447;font-weight:700}
 .ticket-item .status-closed{color:var(--muted)}
-
-/* WhatsApp-style Ticket Chat */
-.wa-chat-box{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  max-height:55vh;
-  overflow-y:auto;
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:14px;
-  background:var(--card);
-  background-image:radial-gradient(rgba(245,197,66,.06) 1px,transparent 0);
-  background-size:18px 18px;
-  margin-bottom:14px;
-}
-.chat-msg{
-  position:relative;
-  margin:0;
-  padding:9px 13px;
-  border-radius:12px;
-  max-width:82%;
-  word-wrap:break-word;
-  box-shadow:0 2px 6px rgba(0,0,0,.18);
-}
-.chat-msg.user{
-  align-self:flex-end;
-  background:var(--wa-out);
-  border:1px solid var(--wa-out-border);
-  border-bottom-right-radius:3px;
-}
-.chat-msg.admin{
-  align-self:flex-start;
-  background:var(--wa-in);
-  border:1px solid var(--wa-in-border);
-  border-bottom-left-radius:3px;
-}
-.chat-msg .sender{
-  font-size:11px;
-  font-weight:700;
-  color:var(--gold-text);
-  margin-bottom:3px;
-}
-.chat-msg.admin .sender{
-  color:#55b96a;
-}
-.chat-msg .body-text{
-  font-size:14px;
-  line-height:1.45;
-  color:var(--text);
-}
-.chat-msg .meta{
-  font-size:10px;
-  color:var(--muted);
-  margin-top:5px;
-  text-align:right;
-}
-.chat-files{
-  margin-top:6px;
-  padding-top:6px;
-  border-top:1px solid rgba(255,255,255,.08);
-}
-.chat-files a{
-  display:inline-flex;
-  align-items:center;
-  gap:4px;
-  margin:3px 8px 0 0;
-  font-size:12px;
-  color:var(--gold-text);
-  text-decoration:underline;
-}
-.wa-reply-box{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:14px;
-}
+.chat-msg{margin:10px 0;padding:10px 12px;border-radius:12px;max-width:90%}
+.chat-msg.user{background:var(--secondary);margin-left:auto}
+.chat-msg.admin{background:var(--panel);border:1px solid var(--border)}
+.chat-msg .meta{font-size:11px;color:var(--muted);margin-bottom:4px}
+.chat-files a{display:inline-block;margin:4px 6px 0 0;font-size:13px;color:var(--gold)}
 #create-ticket-form{margin-top:16px}
 #create-ticket-form.hidden{display:none!important}
 
@@ -173,7 +103,7 @@ main{width:min(100% - 28px,850px);margin:auto}.hero{text-align:center;padding:32
 
 <button class="secondary menu-button hidden" id="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">&#x2630;</button>
 
-<button class="secondary hidden" id="top-support-btn" type="button">&#x1F4AC; Support</button>
+<a class="support-link" href="https://wa.me/2349121971385" target="_blank" rel="noopener noreferrer"><button class="secondary" type="button">&#x1F4AC; Support</button></a>
 
 </div>
 
@@ -351,6 +281,8 @@ main{width:min(100% - 28px,850px);margin:auto}.hero{text-align:center;padding:32
 
 <section class="panel page-panel hidden" id="services-page"><div class="section-heading"><h2>&#x1F4F1; Available Services</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Choose a country to view supported apps and prices.</p>
 
+<!-- Active purchase shown immediately after Available Services header so no scrolling is needed -->
+
 <div id="purchase-area" class="hidden" style="margin:16px 0 8px"></div>
 
 <div class="service-tools" style="margin-top:15px"><div><label for="country-filter">Choose country</label><select id="country-filter"><option value="">Loading countries...</option></select></div><div><label for="service-search">Search service</label><input id="service-search" type="search" placeholder="Search WhatsApp, Telegram..."></div></div><button class="secondary full" id="reload-services" type="button">&#x1F504; Refresh countries and prices</button><div id="services-message" class="message" aria-live="polite">Log in to load available countries.</div><div id="service-list" class="service-list"></div></section>
@@ -399,10 +331,10 @@ main{width:min(100% - 28px,850px);margin:auto}.hero{text-align:center;padding:32
 <section class="panel page-panel hidden" id="ticket-view-page">
   <div class="section-heading"><h2 id="ticket-view-title">Ticket</h2><button class="secondary small-button" type="button" id="ticket-back-btn">&#x2190; Back</button></div>
   <div id="ticket-meta" class="muted" style="margin-bottom:12px"></div>
-  <div id="ticket-chat" class="wa-chat-box"></div>
-  <div id="ticket-reply-area" class="wa-reply-box">
+  <div id="ticket-chat" style="max-height:50vh;overflow-y:auto;border:1px solid var(--border);border-radius:12px;padding:12px;background:var(--card);margin-bottom:14px"></div>
+  <div id="ticket-reply-area">
     <label for="ticket-reply-text">Your reply</label>
-    <textarea id="ticket-reply-text" rows="3" maxlength="5000" placeholder="Type a message..."></textarea>
+    <textarea id="ticket-reply-text" rows="3" maxlength="5000" placeholder="Type your message..."></textarea>
     <label for="ticket-reply-files">Attach files (optional, max 4, 5MB each, images/PDF)</label>
     <input id="ticket-reply-files" type="file" accept="image/*,application/pdf" multiple>
     <button class="primary full" id="ticket-reply-btn" type="button" style="margin-top:10px">Send Reply</button>
@@ -480,6 +412,7 @@ main{width:min(100% - 28px,850px);margin:auto}.hero{text-align:center;padding:32
 <footer>&#xA9; <span id="year"></span> <strong style="color:var(--gold)">SCOTAP OTP</strong>. All rights reserved.<div class="footer-links"><a href="https://wa.me/2349121971385" target="_blank" rel="noopener noreferrer">&#x1F4AC; WhatsApp Support</a><a href="#" data-legal="terms">Terms of Service</a><a href="#" data-legal="privacy">Privacy Policy</a></div></footer>
 
 <div id="activity-toasts"></div>
+<button class="support-fab hidden" id="support-fab" type="button" title="Support Tickets" aria-label="Support Tickets">&#x1F3AB;</button>
 
 <script>
 
@@ -518,29 +451,12 @@ function updateProfile(user){currentUser=user||{};$("profile-full-name").value=c
 
 async function loadProfile(){const result=await api("/api/me");updateProfile(result.user)}
 
-function shouldShowPublicToast(){
-  if (token) return false;
-  const landing = $("landing-page");
-  const terms = $("terms-page");
-  const privacy = $("privacy-page");
-  const isLegalOpen = (terms && !terms.classList.contains("hidden")) || (privacy && !privacy.classList.contains("hidden"));
-  return Boolean(landing && !landing.classList.contains("hidden") && !isLegalOpen);
-}
-
-function syncToastVisibility(){
-  const tc = $("activity-toasts");
-  if (!tc) return;
-  if (!shouldShowPublicToast()) {
-    tc.innerHTML = "";
-  }
-}
-
 function showPage(page){const pages={dashboard:"dashboard-page",settings:"settings-page",services:"services-page",transactions:"transactions-page",numbers:"numbers-page",notifications:"notifications-page",admin:"admin-page",tickets:"tickets-page","ticket-view":"ticket-view-page","admin-tickets":"admin-tickets-page","admin-orders":"admin-orders-page","admin-deposits":"admin-deposits-page",terms:"terms-page",privacy:"privacy-page"};Object.values(pages).forEach(id=>{const el=$(id);if(el)el.classList.add("hidden")});if(pages[page])$(pages[page]).classList.remove("hidden");$("main-menu").classList.add("hidden");$("menu-toggle").setAttribute("aria-expanded","false");if(page==="services"&&token&&countries.length===0)loadServices();if(page==="notifications"&&token){loadAnnouncements();markAnnouncementsRead();}if(page==="transactions"&&token)loadTransactions();if(page==="numbers"&&token)loadNumbers();if(page==="dashboard"&&token)loadRecentActivity();if(page==="tickets"&&token)loadTickets();if(page==="admin-tickets"&&token)loadAdminTickets("open");
-if(page==="admin"&&token)loadCurrentMarkupForAdmin();if(page==="admin-orders"&&token)loadAdminOrders();if(page==="admin-deposits"&&token)loadAdminDeposits();syncToastVisibility();window.scrollTo({top:0,behavior:"smooth"})}
+if(page==="admin"&&token)loadCurrentMarkupForAdmin();if(page==="admin-orders"&&token)loadAdminOrders();if(page==="admin-deposits"&&token)loadAdminDeposits();window.scrollTo({top:0,behavior:"smooth"})}
 
 function saveToken(t){token=t;try{if(t)localStorage.setItem("scotap_token",t);else localStorage.removeItem("scotap_token")}catch{}}
 
-function showLoggedIn(){$("auth-panel").classList.add("hidden");$("hero").classList.add("hidden");$("public-features").classList.add("hidden");$("landing-page").classList.add("hidden");$("customer-dashboard").classList.remove("hidden");$("menu-toggle").classList.remove("hidden");$("notifications-button").classList.remove("hidden");$("header-status").classList.remove("hidden");$("top-support-btn")?.classList.remove("hidden");checkAdminStatus();loadAnnouncements();syncToastVisibility();showPage("dashboard")}
+function showLoggedIn(){$("auth-panel").classList.add("hidden");$("hero").classList.add("hidden");$("public-features").classList.add("hidden");$("landing-page").classList.add("hidden");$("customer-dashboard").classList.remove("hidden");$("menu-toggle").classList.remove("hidden");$("notifications-button").classList.remove("hidden");$("header-status").classList.remove("hidden");checkAdminStatus();loadAnnouncements();$("support-fab")?.classList.remove("hidden");showPage("dashboard")}
 
 function maskPhone(num){
 
@@ -602,7 +518,7 @@ function setBalanceDisplay(amountText){
 
 }
 
-function showLoggedOut(){saveToken(null);currentUser=null;countries=[];services=[];servicesCountry="";stopPolling();$("landing-page")?.classList.remove("hidden");$("auth-panel").classList.add("hidden");$("hero").classList.add("hidden");$("public-features").classList.remove("hidden");$("customer-dashboard").classList.add("hidden");$("menu-toggle").classList.add("hidden");$("notifications-button").classList.add("hidden");$("header-status").classList.add("hidden");$("top-support-btn")?.classList.add("hidden");$("admin-menu-item").classList.add("hidden");$("admin-tickets-menu")?.classList.add("hidden");$("admin-orders-menu")?.classList.add("hidden");$("admin-deposits-menu")?.classList.add("hidden");$("main-menu").classList.add("hidden");const tp=$("terms-page"),pp=$("privacy-page");if(tp)tp.classList.add("hidden");if(pp)pp.classList.add("hidden");setBalanceDisplay("&#x20A6;&#x2014;");$("greeting").textContent="Welcome to SCOTAP!";$("country-filter").replaceChildren(new Option("Log in to load countries",""));$("service-list").replaceChildren();$("purchase-area").classList.add("hidden");showMessage("services-message","Log in to load available countries.");$("current-password").value="";$("new-password").value="";$("confirm-new-password").value="";syncToastVisibility()}
+function showLoggedOut(){saveToken(null);currentUser=null;countries=[];services=[];servicesCountry="";stopPolling();$("landing-page")?.classList.remove("hidden");$("auth-panel").classList.add("hidden");$("hero").classList.add("hidden");$("public-features").classList.remove("hidden");$("customer-dashboard").classList.add("hidden");$("menu-toggle").classList.add("hidden");$("notifications-button").classList.add("hidden");$("header-status").classList.add("hidden");$("support-fab")?.classList.add("hidden");$("admin-menu-item").classList.add("hidden");$("admin-tickets-menu")?.classList.add("hidden");$("admin-orders-menu")?.classList.add("hidden");$("admin-deposits-menu")?.classList.add("hidden");$("main-menu").classList.add("hidden");const tp=$("terms-page"),pp=$("privacy-page");if(tp)tp.classList.add("hidden");if(pp)pp.classList.add("hidden");setBalanceDisplay("&#x20A6;&#x2014;");$("greeting").textContent="Welcome to SCOTAP!";$("country-filter").replaceChildren(new Option("Log in to load countries",""));$("service-list").replaceChildren();$("purchase-area").classList.add("hidden");showMessage("services-message","Log in to load available countries.");$("current-password").value="";$("new-password").value="";$("confirm-new-password").value=""}
 
 async function refreshWallet(){if(!token)return;$("refresh-button").disabled=true;showMessage("wallet-message","Loading your wallet...");try{const d=await api("/api/wallet");setBalanceDisplay(money(d.balance_kobo));showMessage("wallet-message","Wallet updated.","success");loadRecentActivity()}catch(e){showMessage("wallet-message",e.message,"error")}finally{$("refresh-button").disabled=false}}
 
@@ -613,14 +529,6 @@ $("auth-form").addEventListener("submit",async e=>{e.preventDefault();const b=$(
 $("menu-toggle").addEventListener("click",()=>{const m=$("main-menu"),open=m.classList.contains("hidden");m.classList.toggle("hidden",!open);$("menu-toggle").setAttribute("aria-expanded",String(open))});
 
 document.querySelectorAll("[data-page]").forEach(button=>button.addEventListener("click",()=>{const p=button.dataset.page;if(p==="logout"){showLoggedOut();$("deposit-area").classList.add("hidden");setMode("login");showMessage("auth-message","You have logged out.","success");return}showPage(p)}));
-
-$("top-support-btn")?.addEventListener("click", () => {
-  if (!token) return;
-  showPage("tickets");
-  if (typeof showCreateTicketForm === "function") {
-    showCreateTicketForm();
-  }
-});
 
 $("refresh-button").addEventListener("click",refreshWallet);
 
@@ -676,7 +584,7 @@ function logoForService(name){
 
     [/tiktok/, "tiktok", "000000", "&#x1F3B5;"],
 
-    [/twitter|x\.com|x/, "x", "000000", "&#x1D54F;"],
+    [/twitter|x\.com|\bx\b/, "x", "000000", "&#x1D54F;"],
 
     [/discord/, "discord", "5865F2", "&#x1F3AE;"],
 
@@ -982,8 +890,7 @@ let scotapAnnouncements=[];
 
 function escapeAnnouncement(value){return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]))}
 
-function announcementCards(items){if(!Array.isArray(items)||!items.length)return '<p class="muted">No announcements yet.</p>';return items.map(a=>`<article class="announcement-card"><h3>${escapeAnnouncement(a.title||"Announcement")}</h3><div class="announcement-date">${escapeAnnouncement(a.created_at?new Date(a.created_at).toLocaleString():"")}</div><div>${escapeAnnouncement(a.message||"").replace(/
-/g,"<br>")}</div></article>`).join("")}
+function announcementCards(items){if(!Array.isArray(items)||!items.length)return '<p class="muted">No announcements yet.</p>';return items.map(a=>`<article class="announcement-card"><h3>${escapeAnnouncement(a.title||"Announcement")}</h3><div class="announcement-date">${escapeAnnouncement(a.created_at?new Date(a.created_at).toLocaleString():"")}</div><div>${escapeAnnouncement(a.message||"").replace(/\n/g,"<br>")}</div></article>`).join("")}
 
 function markAnnouncementsRead(){
 
@@ -1073,8 +980,6 @@ document.getElementById("go-register")?.addEventListener("click", () => {
 
   setMode("register");
 
-  syncToastVisibility();
-
 });
 
 document.getElementById("go-register-2")?.addEventListener("click", () => {
@@ -1086,8 +991,6 @@ document.getElementById("go-register-2")?.addEventListener("click", () => {
   document.getElementById("auth-panel").classList.remove("hidden");
 
   setMode("register");
-
-  syncToastVisibility();
 
 });
 
@@ -1101,8 +1004,6 @@ document.getElementById("go-login")?.addEventListener("click", () => {
 
   setMode("login");
 
-  syncToastVisibility();
-
 });
 
 function openLegalPage(which){
@@ -1114,7 +1015,6 @@ function openLegalPage(which){
   $("customer-dashboard")?.classList.add("hidden");
   $("terms-page")?.classList.toggle("hidden",!isTerms);
   $("privacy-page")?.classList.toggle("hidden",isTerms);
-  syncToastVisibility();
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
@@ -1128,7 +1028,6 @@ function closeLegalPage(){
     $("landing-page")?.classList.remove("hidden");
     $("public-features")?.classList.remove("hidden");
   }
-  syncToastVisibility();
 }
 
 document.querySelectorAll("[data-legal]").forEach(link=>{
@@ -1141,17 +1040,14 @@ document.querySelectorAll("[data-legal]").forEach(link=>{
 $("terms-back")?.addEventListener("click",closeLegalPage);
 $("privacy-back")?.addEventListener("click",closeLegalPage);
 
-// ===== FAKE ACTIVITY TOASTS (only on home landing page when logged out) =====
+// ===== FAKE ACTIVITY TOASTS (every 5 seconds) =====
 const toastContainer = document.getElementById("activity-toasts");
 const fakeNames = ["alex_ng","sammy_k","user4421","chuks_dev","mary_j","tony_pro","nkechi22","bola_otp","david_x","fatima_m","ken_ng","precious_1","yemi_otp","grace_b","uche_2026","amina_s","john_doe99","linda_k","peter_v","sarah_m"];
 const fakeServices = ["WhatsApp","Telegram","Instagram","Google","Facebook","TikTok","Signal","Twitter/X","Discord","Snapchat"];
 const fakeCountries = ["Nigeria","USA","UK","India","Ghana","Kenya","South Africa","Canada","Germany","Brazil"];
 
 function showFakeToast() {
-  if (!toastContainer || !shouldShowPublicToast()) {
-    if (toastContainer) toastContainer.innerHTML = "";
-    return;
-  }
+  if (!toastContainer) return;
   const name = fakeNames[Math.floor(Math.random() * fakeNames.length)] + Math.floor(Math.random()*900+100);
   const service = fakeServices[Math.floor(Math.random() * fakeServices.length)];
   const country = fakeCountries[Math.floor(Math.random() * fakeCountries.length)];
@@ -1169,8 +1065,9 @@ function showFakeToast() {
   }, 4200);
 }
 
+// Start fake activity toasts every 5 seconds (public social proof)
 setInterval(showFakeToast, 5000);
-setTimeout(showFakeToast, 1500);
+setTimeout(showFakeToast, 1500); // first one a bit sooner
 
 // ===== ADMIN USER MANAGEMENT =====
 
@@ -1190,6 +1087,7 @@ async function loadCurrentMarkupForAdmin() {
 }
 
 if (markupForm) {
+  // Load current when admin page shown - hook into showPage or call on load
   markupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const amount = Number(markupAmountInput.value);
@@ -1207,7 +1105,7 @@ if (markupForm) {
       });
       markupMsg.textContent = r.message || "Updated successfully";
       markupMsg.className = "message success";
-      MARKUP_NAIRA = amount;
+      MARKUP_NAIRA = amount; // update local immediately
     } catch (err) {
       markupMsg.textContent = err.message;
       markupMsg.className = "message error";
@@ -1337,6 +1235,8 @@ document.addEventListener("click", async (e) => {
 
 let currentTicketId = null;
 let currentTicketStatus = null;
+
+$("support-fab")?.addEventListener("click", () => showPage("tickets"));
 
 $("create-ticket-btn")?.addEventListener("click", () => {
   showCreateTicketForm();
@@ -1478,7 +1378,6 @@ async function openTicket(id) {
   $("ticket-chat").innerHTML = "";
   $("ticket-meta").textContent = "";
   $("ticket-reply-area").classList.remove("hidden");
-  showMessage("ticket-view-message", "");
   try {
     const r = await api("/api/tickets/" + encodeURIComponent(id));
     const t = r.ticket;
@@ -1502,17 +1401,12 @@ async function openTicket(id) {
     $("ticket-chat").innerHTML = msgs.map(m => {
       const cls = m.is_admin ? "admin" : "user";
       const who = m.is_admin ? "Support" : "You";
-      const timeStr = m.created_at ? new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "";
       const fs = (filesByMsg[m.id] || []).map(f =>
-        `<a href="#" class="ticket-file-link" data-id="${f.id}">&#x1F4CE; ${escapeHtml(f.filename)}</a>`
+        `<a href="#" class="ticket-file-link" data-id="${f.id}">${escapeHtml(f.filename)}</a>`
       ).join("");
-      return `<div class="chat-msg ${cls}">
-        <div class="sender">${who}</div>
-        <div class="body-text">${escapeHtml(m.message || "").replace(/
-/g, "<br>")}</div>
-        ${fs ? `<div class="chat-files">${fs}</div>` : ""}
-        <div class="meta">${timeStr}${!m.is_admin ? " · &#x2713;&#x2713;" : ""}</div>
-      </div>`;
+      return `<div class="chat-msg ${cls}"><div class="meta">${who} · ${m.created_at ? new Date(m.created_at).toLocaleString() : ""}</div>
+        <div>${escapeHtml(m.message || "").replace(/\n/g, "<br>")}</div>
+        ${fs ? `<div class="chat-files">${fs}</div>` : ""}</div>`;
     }).join("");
     $("ticket-chat").scrollTop = $("ticket-chat").scrollHeight;
     if (t.status === "closed") {
