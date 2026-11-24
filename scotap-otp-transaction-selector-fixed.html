@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+
+<html lang="en" data-theme="dark">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="theme-color" content="#090909" id="theme-color">
+
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SCOTAP OTP">
+<link rel="apple-touch-icon" href="logo.png">
+
+<title>SCOTAP OTP | Premium OTP Services</title>
+
+<style>
+
+html[data-theme="dark"] body {
+  background-color: var(--bg);
+  background-image: url("./IMG_0852.jpeg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+}
+
+html[data-theme="light"] body {
+  background-color: var(--bg);
+  background-image: url("./IMG_0851.jpeg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+}
+
+:root{color-scheme:dark;--gold:#f5c542;--bg:#090909;--panel:#151515;--muted:#aaa;--border:#303030;--text:#fff;--input:#090909;--card:#101010;--secondary:#292929;--secondary-border:#414141;--gold-text:#ffe28a}
+
+html[data-theme="light"]{color-scheme:light;--gold:#b8860b;--bg:#f5f6f8;--panel:#fff;--muted:#5f6368;--border:#d9dde3;--text:#171717;--input:#fff;--card:#f8f9fb;--secondary:#e9edf2;--secondary-border:#cbd1d9;--gold-text:#805b00}
+
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;transition:background .2s,color .2s}button,input,select{font:inherit}a{color:var(--gold)}button{border:0;border-radius:9px;padding:12px 16px;cursor:pointer;font-weight:750}button:disabled{opacity:.55;cursor:wait}.primary{background:var(--gold);color:#111}.secondary{background:var(--secondary);color:var(--text);border:1px solid var(--secondary-border)}input,select{width:100%;background:var(--input);border:1px solid var(--secondary-border);border-radius:9px;color:var(--text);padding:13px;margin:6px 0 13px}select option{background:var(--panel);color:var(--text)}label{font-size:13px;color:var(--text)}.full{width:100%}.hidden{display:none!important}.muted{color:var(--muted);font-size:14px}.message{font-size:13px;margin-top:12px;overflow-wrap:anywhere}.error{color:#e65b5b}.success{color:#229447}
+
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 5%;border-bottom:1px solid var(--border);gap:12px;position:sticky;top:0;background:var(--bg);z-index:20}.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}.logo-mark{width:42px;height:42px;display:grid;place-items:center;background:var(--gold);color:#fff;border-radius:7px;font-size:29px;font-weight:950;line-height:1;flex-shrink:0}.brand-name{font-size:21px;font-weight:900;letter-spacing:.3px}.brand-name span{color:var(--gold)}.header-actions{display:flex;align-items:center;gap:9px}.status{font-size:12px;color:#55b96a}.menu-button{font-size:22px;min-width:46px;padding:8px 12px}.menu{position:fixed;z-index:30;right:16px;top:76px;width:min(290px,calc(100vw - 32px));background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:10px;box-shadow:0 12px 35px #0005}.menu button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;margin:3px 0;background:transparent;color:var(--text);border:0}.menu button:hover{background:var(--secondary)}.menu .logout-item{color:#e65b5b}
+
+.notice-count{display:inline-grid;place-items:center;min-width:18px;height:18px;margin-left:5px;padding:0 4px;border-radius:99px;background:#d94841;color:#fff;font-size:11px}.announcement-card{border:1px solid var(--border);border-radius:12px;padding:15px;margin:12px 0;background:var(--panel)}.announcement-card h3{margin:0 0 8px}.announcement-date{font-size:12px;color:var(--muted);margin-bottom:9px}.admin-form{margin-top:14px}
+
+main{width:min(100% - 28px,850px);margin:auto}.hero{text-align:center;padding:32px 10px 22px}.eyebrow{color:var(--gold);font-size:12px;font-weight:800;letter-spacing:3px}h1{font-size:clamp(34px,8vw,54px);line-height:1.15;margin:12px 0}h1 span,.section-title span{color:var(--gold)}.panel{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:22px;margin:20px 0}.panel h2{font-size:21px;margin-bottom:10px}.tabs,.actions{display:flex;gap:10px;flex-wrap:wrap;margin:15px 0}.balance{color:var(--gold-text);font-size:clamp(32px,8vw,44px);font-weight:800;margin:8px 0;overflow-wrap:anywhere}.greeting{font-size:clamp(21px,5vw,28px);font-weight:850;margin-bottom:3px}.dashboard-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.settings-grid,.service-tools{display:grid;grid-template-columns:1fr 1fr;gap:12px}.service-list{display:grid;gap:12px;margin-top:18px}.service-card{display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px}.service-logo{width:48px;height:48px;object-fit:contain;flex-shrink:0;border-radius:12px;background:#fff;padding:5px}.service-info{flex:1;min-width:0}.service-card h3{font-size:16px;overflow-wrap:anywhere}.service-card .price{font-size:19px;color:var(--gold);font-weight:800;margin:3px 0}.service-meta{font-size:12px;color:var(--muted)}.service-card button{margin-top:7px}.features{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.feature{background:var(--panel);border:1px solid var(--border);border-radius:13px;padding:18px}.feature p{color:var(--muted);font-size:13px}.check-row{display:flex;align-items:flex-start;gap:9px;margin:5px 0 15px}.check-row input{width:auto;margin:4px 0 0;accent-color:var(--gold);flex-shrink:0}.check-row label{font-size:12px;color:var(--muted)}.support-link{text-decoration:none}footer{margin-top:35px;border-top:1px solid var(--border);padding:25px;text-align:center;color:var(--muted);font-size:12px}.footer-links{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:10px}.legal{margin:12px auto;max-width:850px;padding:0 16px;color:var(--muted);font-size:12px}.legal details{margin:8px 0}.section-heading{display:flex;justify-content:space-between;align-items:center;gap:12px}.section-heading h2{margin:0}.small-button{padding:9px 12px}
+
+.recent-activity{margin-top:20px}.activity-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}.activity-item:last-child{border-bottom:0}.activity-left{display:flex;gap:12px;align-items:center}.activity-icon{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--secondary)}.history-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}.history-table th,.history-table td{padding:10px 8px;text-align:left;border-bottom:1px solid var(--border)}.history-table th{color:var(--muted);font-weight:600}.countdown{font-size:28px;font-weight:800;color:var(--gold);text-align:center;margin:10px 0}.code-box{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;margin:10px 0;text-align:center}.code-box strong{font-size:24px;letter-spacing:2px}.copy-btn{margin-top:8px}
+
+@media(max-width:600px){.features,.service-tools,.settings-grid{grid-template-columns:1fr}.panel{padding:17px}.topbar{padding:11px 4%}.brand-name{font-size:18px}.logo-mark{width:38px;height:38px;font-size:26px}.status{display:none}.service-card{align-items:flex-start}.service-card button{width:100%}.dashboard-actions{grid-template-columns:1fr}.history-table{font-size:12px}.history-table th,.history-table td{padding:8px 4px}}
+
+.landing{padding:20px 0 40px}
+
+.landing-hero{text-align:center;padding:40px 10px}
+
+.landing-hero h1{font-size:clamp(36px,9vw,60px);margin:10px 0}
+
+.landing-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+
+.landing-features,.landing-steps,.landing-cta{margin:40px 0;text-align:center}
+
+.landing-cta{background:var(--panel);border-radius:16px;padding:30px}
+
+#activity-toasts{position:fixed;bottom:20px;right:20px;z-index:1000;display:flex;flex-direction:column;gap:10px;max-width:320px;pointer-events:none}
+#activity-toasts.hidden{display:none!important}
+.activity-toast{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px 14px;box-shadow:0 8px 24px #0004;font-size:13px;animation:toastIn .3s ease;pointer-events:auto}
+.activity-toast strong{color:var(--gold)}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+
+.ticket-item{border:1px solid var(--border);border-radius:12px;padding:14px;margin:10px 0;background:var(--card);cursor:pointer}
+.ticket-item:hover{border-color:var(--gold)}
+.ticket-item .status-open{color:#229447;font-weight:700}
+.ticket-item .status-closed{color:var(--muted)}
+.whatsapp-chat{height:min(52vh,520px);min-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:14px 14px 0 0;padding:16px 12px;background:#0b141a;margin:12px 0 0;scroll-behavior:smooth}
+.chat-msg{position:relative;width:fit-content;max-width:84%;margin:8px 0;padding:9px 12px 7px;border-radius:10px;font-size:15px;line-height:1.45;overflow-wrap:anywhere;box-shadow:0 1px 1px #0002}
+.chat-msg.user{background:#005c4b;color:#f1f5f4;margin-left:auto;border-top-right-radius:3px}
+.chat-msg.admin{background:#202c33;color:#f1f5f4;margin-right:auto;border-top-left-radius:3px}
+.chat-msg .meta{font-size:10px;color:rgba(255,255,255,.65);margin-bottom:4px}
+.chat-files a{display:inline-block;margin:5px 6px 0 0;font-size:13px;color:#8bd8c2}
+.whatsapp-composer{background:var(--panel);border:1px solid var(--border);border-top:0;border-radius:0 0 14px 14px;padding:10px;display:grid;gap:8px}
+.whatsapp-composer textarea{width:100%;resize:vertical;min-height:48px;max-height:140px;padding:12px 14px;border:1px solid var(--border);border-radius:22px;background:var(--input);color:var(--text);font:inherit;outline:none}
+.whatsapp-composer textarea:focus{border-color:var(--gold)}
+.composer-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.composer-actions input[type=file]{display:none}
+.attach-button{font-size:13px;color:var(--gold);cursor:pointer}
+.composer-hint{font-size:11px;flex:1}
+.composer-actions button{width:42px;height:42px;padding:0;border-radius:50%;font-size:20px;flex-shrink:0}
+html[data-theme="light"] .whatsapp-chat{background:#efeae2}
+html[data-theme="light"] .chat-msg.user{background:#d9fdd3;color:#111}
+html[data-theme="light"] .chat-msg.admin{background:#fff;color:#111}
+html[data-theme="light"] .chat-msg .meta{color:#667781}
+html[data-theme="light"] .chat-files a{color:#087e67}
+
+/* Ticket conversations use their own screen; only the messages area scrolls. */
+body.ticket-open{overflow:hidden}
+#ticket-view-page{position:fixed!important;top:var(--ticket-top,0px);left:0;right:0;bottom:0;z-index:19;margin:0!important;width:100%;max-width:none;min-height:0;height:auto;padding:14px clamp(14px,4vw,34px);border-radius:0;display:flex;flex-direction:column;overflow:hidden;gap:0}
+#ticket-view-page .section-heading{flex:0 0 auto;margin-bottom:8px}
+#ticket-view-page #ticket-meta{flex:0 0 auto;margin-bottom:8px!important}
+#ticket-view-page .whatsapp-chat{flex:1 1 auto;height:auto;min-height:0;max-height:none;margin:0;border-radius:14px 14px 0 0;overscroll-behavior:contain}
+#ticket-view-page .whatsapp-composer{flex:0 0 auto;border-radius:0 0 14px 14px}
+#ticket-view-page #ticket-view-message{flex:0 0 auto;margin-top:6px}
+.chat-msg{max-width:min(84%,560px)}
+.chat-msg.customer{background:#fff;color:#171717}
+.chat-msg.support{background:var(--gold);color:#fff}
+.chat-msg.customer.outgoing{margin-left:auto;margin-right:0;border-top-right-radius:3px}
+.chat-msg.customer.incoming{margin-left:0;margin-right:auto;border-top-left-radius:3px}
+.chat-msg.support.outgoing{margin-left:auto;margin-right:0;border-top-right-radius:3px}
+.chat-msg.support.incoming{margin-left:0;margin-right:auto;border-top-left-radius:3px}
+.chat-msg.customer .meta{color:#555}
+.chat-msg.support .meta{color:#fff!important}
+.chat-msg.support .chat-files a{color:#fff!important}
+.chat-files a{color:#765400}
+@media(max-width:600px){#ticket-view-page{padding:10px 12px}#ticket-view-page .panel{padding:12px}#ticket-view-page .whatsapp-chat{padding:12px 10px}}
+.ticket-waiting{display:inline-flex;align-items:center;margin-top:8px;padding:5px 11px;border-radius:20px;font-size:12px;font-weight:700}
+.ticket-waiting.waiting-support{background:#fff0e4;color:#b64a00}
+.ticket-waiting.waiting-user{background:#e6efff;color:#2057a6}
+.ticket-waiting.waiting-admin{background:#fff0e4;color:#b64a00}
+.ticket-waiting.waiting-closed{background:#e8e8e8;color:#555}
+#create-ticket-form{margin-top:16px}
+#create-ticket-form.hidden{display:none!important}
+
+</style>
+
+</head>
+
+<body>
+
+<header class="topbar">
+
+<a class="brand" href="#" aria-label="SCOTAP OTP home"><span class="logo-mark" aria-hidden="true">S</span><span class="brand-name">SCOTAP<span> OTP</span></span></a>
+
+<div class="header-actions">
+
+<span class="status hidden" id="header-status">&#x25CF; Customer Dashboard</span>
+
+<button class="secondary hidden" id="notifications-button" type="button" aria-label="Notifications">&#x1F514; <span id="notification-count" class="notice-count hidden">0</span></button>
+
+<button class="secondary menu-button hidden" id="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">&#x2630;</button>
+
+<button class="secondary hidden" id="header-support-button" type="button">&#x1F4AC; Support</button>
+
+</div>
+
+</header>
+
+<nav class="menu hidden" id="main-menu" aria-label="Customer menu">
+
+<button type="button" data-page="settings">&#x2699;&#xFE0F; <span>Account settings</span></button>
+
+<button type="button" data-page="services">&#x1F4F1; <span>Available Services</span></button>
+
+<button type="button" data-page="transactions">&#x1F4B3; <span>Transaction History</span></button>
+
+<button type="button" data-page="numbers">&#x1F4F2; <span>Number History</span></button>
+
+<button type="button" data-page="notifications">&#x1F514; <span>Announcements</span></button>
+
+<button type="button" data-page="tickets">&#x1F3AB; <span>Support Tickets</span></button>
+
+<button type="button" data-page="admin" id="admin-menu-item" class="hidden">&#x1F6E0;&#xFE0F; <span>Admin Dashboard</span></button>
+
+<button type="button" data-page="admin-tickets" id="admin-tickets-menu" class="hidden">&#x1F4CB; <span>Ticket Log (Admin)</span></button>
+
+<button type="button" data-page="admin-orders" id="admin-orders-menu" class="hidden">&#x1F4F1; <span>All Number Purchases</span></button>
+
+<button type="button" data-page="admin-deposits" id="admin-deposits-menu" class="hidden">&#x1F4B3; <span>All Wallet Funding</span></button>
+
+<button type="button" data-page="dashboard">&#x1F4B0; <span>Dashboard / Wallet</span></button>
+
+<button type="button" data-page="logout" class="logout-item">&#x1F6AA; <span>Log out</span></button>
+
+</nav>
+
+<main>
+
+<section id="landing-page" class="landing">
+
+  <div class="landing-hero">
+
+    <div class="eyebrow">PREMIUM OTP SERVICE</div>
+
+    <h1>Get Virtual Numbers<br><span>Instantly.</span></h1>
+
+    <p class="muted">Buy temporary numbers for WhatsApp, Telegram, Signal and more. Fast delivery, secure wallet, best prices.</p>
+
+    <div class="landing-actions">
+
+      <button class="primary" id="go-register" type="button">Create Account</button>
+
+      <button class="secondary" id="go-login" type="button">Log in</button>
+
+    </div>
+
+  </div>
+
+  <div class="landing-features">
+
+    <h2>What We Offer</h2>
+
+    <div class="features">
+
+      <article class="feature"><h3>Virtual Numbers</h3><p>Numbers from many countries for SMS verification.</p></article>
+
+      <article class="feature"><h3>Instant Delivery</h3><p>Get your number and OTP in seconds.</p></article>
+
+      <article class="feature"><h3>Secure Wallet</h3><p>Fund with Paystack and buy safely.</p></article>
+
+    </div>
+
+  </div>
+
+  <div class="landing-steps">
+
+    <h2>Get Started in 3 Steps</h2>
+
+    <div class="features">
+
+      <article class="feature"><h3>1. Create Account</h3><p>Sign up in less than a minute.</p></article>
+
+      <article class="feature"><h3>2. Fund Wallet</h3><p>Add money securely with Paystack.</p></article>
+
+      <article class="feature"><h3>3. Buy Number</h3><p>Choose a service and receive your OTP.</p></article>
+
+    </div>
+
+  </div>
+
+  <div class="landing-cta">
+
+    <h2>Ready to get started?</h2>
+
+    <button class="primary" id="go-register-2" type="button">Create Account Now</button>
+
+  </div>
+
+<div style="max-width: 600px; margin: 16px auto; padding: 0 12px;">
+  <img 
+    src="./scotap-promo.jpg.JPG" 
+    alt="SCOTAP OTP - Verify Anytime, Anywhere!" 
+    loading="lazy"
+    decoding="async"
+    style="display: block; width: 100%; height: auto; border-radius: 16px; border: 1px solid rgba(255, 193, 7, 0.25); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);"
+  />
+</div>
+
+</section>
+
+<section class="hero hidden" id="hero"><div class="eyebrow">WELCOME TO SCOTAP</div><h1>Your OTP.<br><span>Your Control.</span></h1><p class="muted">Explore available verification services and prices before funding your wallet.</p></section>
+
+<section class="panel hidden" id="auth-panel"><h2 id="auth-title">Create your SCOTAP account</h2><p class="muted" id="auth-description">Create your profile to get started.</p><div class="tabs"><button class="primary" id="register-tab" type="button">Register</button><button class="secondary" id="login-tab" type="button">Log in</button></div>
+
+<form id="auth-form"><div id="register-fields"><label for="full-name">Full name</label><input id="full-name" type="text" autocomplete="name" maxlength="100" placeholder="Your full name"><label for="username">Username</label><input id="username" type="text" autocomplete="username" minlength="3" maxlength="24" pattern="[A-Za-z0-9_]{3,24}" placeholder="Choose a username (letters, numbers, _) " autocapitalize="none"></div><label for="email" id="email-label">Email address</label><input id="email" type="email" autocomplete="email" maxlength="254" required placeholder="you@example.com"><label for="password">Password</label><input id="password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required placeholder="At least 8 characters"><div id="confirm-password-field"><label for="confirm-password">Confirm password</label><input id="confirm-password" type="password" autocomplete="new-password" minlength="8" maxlength="128" placeholder="Enter password again"></div><div class="check-row" id="terms-row"><input id="terms-accepted" type="checkbox"><label for="terms-accepted">I agree to the <a href="#" data-legal="terms">Terms of Service</a> and <a href="#" data-legal="privacy">Privacy Policy</a>, and I will not use this service for fraud.</label></div><button class="primary full" id="auth-submit" type="submit">Create account</button></form><div id="auth-message" class="message" aria-live="polite"></div></section>
+
+<section class="hidden" id="customer-dashboard">
+
+<section class="panel page-panel" id="dashboard-page">
+
+<div class="greeting" id="greeting">Welcome to SCOTAP!</div>
+
+<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+
+  <div class="balance" id="balance">****</div>
+
+  <button id="toggle-balance" class="secondary" type="button" style="padding:8px 12px;font-size:14px;min-width:auto" aria-label="Toggle balance visibility" title="Show or hide balance">&#x1F441;&#xFE0F; Hide</button>
+
+</div>
+
+<p class="muted">&#x1F4B0; Available wallet balance</p>
+
+<div class="dashboard-actions">
+
+<button class="primary" id="show-deposit" type="button">&#x2795; Add Money</button>
+
+<button class="secondary" id="refresh-button" type="button">&#x1F504; Refresh Balance</button>
+
+</div>
+
+<div id="wallet-message" class="message" aria-live="polite"></div>
+
+<div id="deposit-area" class="hidden">
+
+<hr style="border:0;border-top:1px solid var(--border);margin:20px 0">
+
+<h2>&#x1F4B3; Add money to your wallet</h2>
+
+<p class="muted">Choose how much to deposit. Paystack handles the payment securely.</p>
+
+<form id="deposit-form">
+
+<label for="amount">Amount (NGN)</label>
+
+<input id="amount" type="number" min="100" max="1000000" step="1" required placeholder="Example: 1000">
+
+<button class="primary full" id="deposit-button" type="submit">Continue to Paystack</button>
+
+</form>
+
+<button class="secondary full" id="hide-deposit" type="button">Cancel</button>
+
+</div>
+
+<div class="recent-activity">
+
+<h3 style="margin:18px 0 10px">Recent Activity</h3>
+
+<p class="muted" style="margin-bottom:10px">Latest number purchases</p>
+
+<div id="recent-activity-list"></div>
+
+</div>
+
+</section>
+
+<section class="panel page-panel hidden" id="settings-page"><div class="section-heading"><h2>&#x2699;&#xFE0F; Account settings</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Edit your account information, appearance, or password.</p><form id="profile-form" style="margin-top:16px"><h3 style="margin-bottom:10px">&#x1F464; Account Information</h3><label for="profile-full-name">Full name</label><input id="profile-full-name" type="text" maxlength="100" autocomplete="name" required placeholder="Your full name"><label for="profile-username">Username</label><input id="profile-username" type="text" minlength="3" maxlength="24" pattern="[A-Za-z0-9_]{3,24}" autocomplete="username" required placeholder="Your username"><label for="profile-email">Email address</label><input id="profile-email" type="email" maxlength="254" autocomplete="email" required placeholder="you@example.com"><button class="primary full" id="profile-submit" type="submit">Save account information</button><div id="profile-message" class="message" aria-live="polite"></div></form><hr style="border:0;border-top:1px solid var(--border);margin:20px 0"><div class="settings-grid" style="margin-top:15px"><div><label for="settings-theme">Appearance</label><select id="settings-theme"><option value="dark">&#x1F319; Dark mode</option><option value="light">&#x2600;&#xFE0F; Light mode</option></select></div><div><label>Support</label><button class="secondary full" type="button" data-page="tickets">&#x1F4AC; Support Tickets</button></div></div><hr style="border:0;border-top:1px solid var(--border);margin:20px 0"><h2>&#x1F510; Change password</h2><form id="password-form"><label for="current-password">Current password</label><input id="current-password" type="password" autocomplete="current-password" minlength="8" maxlength="128" required placeholder="Enter current password"><label for="new-password">New password</label><input id="new-password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required placeholder="At least 8 characters"><label for="confirm-new-password">Confirm new password</label><input id="confirm-new-password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required placeholder="Enter new password again"><button class="primary full" id="password-submit" type="submit">Update password</button></form><div id="settings-message" class="message" aria-live="polite"></div></section>
+
+<section class="panel page-panel hidden" id="services-page"><div class="section-heading"><h2>&#x1F4F1; Available Services</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Choose a country to view supported apps and prices.</p>
+
+<!-- Active purchase shown immediately after Available Services header so no scrolling is needed -->
+
+<div id="purchase-area" class="hidden" style="margin:16px 0 8px"></div>
+
+<div class="service-tools" style="margin-top:15px"><div><label for="country-filter">Choose country</label><select id="country-filter"><option value="">Loading countries...</option></select></div><div><label for="service-search">Search service</label><input id="service-search" type="search" placeholder="Search WhatsApp, Telegram..."></div></div><button class="secondary full" id="reload-services" type="button">&#x1F504; Refresh countries and prices</button><div id="services-message" class="message" aria-live="polite">Log in to load available countries.</div><div id="service-list" class="service-list"></div></section>
+
+<section class="panel page-panel hidden" id="transactions-page"><div class="section-heading"><h2>&#x1F4B3; Transaction History</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Your deposits and number purchases.</p><div id="transactions-message" class="message"></div><div id="transactions-list"></div></section>
+
+<section class="panel page-panel hidden" id="numbers-page"><div class="section-heading"><h2>&#x1F4F2; Number History</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Numbers you have purchased.</p><div id="numbers-message" class="message"></div><div id="numbers-list"></div></section>
+
+<section class="panel page-panel hidden" id="notifications-page"><div class="section-heading"><h2>&#x1F514; Announcements</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Official announcements posted by SCOTAP administration.</p><button class="secondary" id="refresh-announcements" type="button">&#x1F504; Refresh announcements</button><div id="announcements-message" class="message" aria-live="polite"></div><div id="announcements-list"></div></section>
+
+<section class="panel page-panel hidden" id="admin-page"><div class="section-heading"><h2>&#x1F6E0;&#xFE0F; Admin Dashboard</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Publish announcements for logged-in SCOTAP OTP users.</p><form id="announcement-form" class="admin-form"><label for="announcement-title">Announcement title</label><input id="announcement-title" maxlength="120" required placeholder="Example: Scheduled maintenance"><label for="announcement-message">Message</label><textarea id="announcement-message-input" maxlength="5000" rows="6" required placeholder="Write the announcement..."></textarea><button class="primary full" id="publish-announcement" type="submit">Publish announcement</button></form><div id="admin-message" class="message" aria-live="polite"></div>
+
+<hr style="border:0;border-top:1px solid var(--border);margin:28px 0">
+
+
+<hr style="border:0;border-top:1px solid var(--border);margin:28px 0">
+<h3>&#x1F4B0; Gain / Markup Amount</h3>
+<p class="muted">This is the extra Naira you earn on every number purchase. Changes apply immediately to new buys.</p>
+<form id="markup-form" class="admin-form">
+  <label for="markup-amount">Current gain amount (NGN)</label>
+  <input id="markup-amount" type="number" min="0" max="50000" step="1" required placeholder="e.g. 1000">
+  <button class="primary full" type="submit">Update Gain Amount</button>
+</form>
+<div id="markup-message" class="message"></div>
+
+<h3>User Management</h3>
+<p class="muted">Search by username or email to view details, ban/unban, or reset password.</p>
+
+<form id="admin-search-form" class="admin-form">
+  <label for="admin-search-query">Username or Email</label>
+  <input id="admin-search-query" type="text" required placeholder="Enter username or email" autocomplete="off">
+  <button class="primary full" type="submit">Search User</button>
+</form>
+<div id="admin-search-message" class="message"></div>
+<div id="admin-user-result" class="hidden" style="margin-top:16px"></div>
+</section>
+
+<section class="panel page-panel hidden" id="tickets-page">
+  <div class="section-heading"><h2>&#x1F3AB; Support Tickets</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div>
+  <p class="muted">Create and track support tickets. Max 5 open tickets at a time.</p>
+  <button class="primary" id="create-ticket-btn" type="button" style="margin:12px 0">+ Create New Ticket</button>
+  <div id="tickets-message" class="message" aria-live="polite"></div>
+  <div id="tickets-list"></div>
+</section>
+
+<section class="panel page-panel hidden" id="ticket-view-page">
+  <div class="section-heading"><h2 id="ticket-view-title">Ticket</h2><button class="secondary small-button" type="button" id="ticket-back-btn">&#x2190; Back</button></div>
+  <div id="ticket-meta" class="muted" style="margin-bottom:12px"></div>
+  <div id="ticket-chat" class="whatsapp-chat"></div>
+  <div id="ticket-reply-area" class="whatsapp-composer">
+    <textarea id="ticket-reply-text" rows="2" maxlength="5000" placeholder="Type a message..." aria-label="Type your message"></textarea>
+    <div class="composer-actions">
+      <label class="attach-button" for="ticket-reply-files">&#x1F4CE; Attach</label>
+      <input id="ticket-reply-files" type="file" accept="image/*,application/pdf" multiple>
+      <span class="muted composer-hint">Up to 4 files · 5MB each</span>
+      <button class="primary" id="ticket-reply-btn" type="button" aria-label="Send reply">&#10148;</button>
+    </div>
+  </div>
+  <div id="ticket-view-message" class="message" aria-live="polite"></div>
+</section>
+
+<section class="panel page-panel hidden" id="admin-tickets-page">
+  <div class="section-heading"><h2>&#x1F4CB; Ticket Log (Admin)</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div>
+  <div class="tabs" style="margin-bottom:12px">
+    <button class="primary" id="admin-tickets-open-tab" type="button">Open Tickets</button>
+    <button class="secondary" id="admin-tickets-closed-tab" type="button">Closed Tickets</button>
+  </div>
+  <input id="admin-tickets-search" type="search" placeholder="Search ticket number, username, email or subject..." style="margin-bottom:10px">
+  <button class="secondary" id="admin-tickets-refresh" type="button">&#x1F504; Refresh</button>
+  <div id="admin-tickets-message" class="message"></div>
+  <div id="admin-tickets-list"></div>
+</section>
+
+<section class="panel page-panel hidden" id="admin-orders-page">
+  <div class="section-heading"><h2>&#x1F4F1; All Number Purchases</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div>
+  <p class="muted">All users' virtual number purchases (any status).</p>
+  <input id="admin-orders-search" type="search" placeholder="Search username, number, service..." style="margin-bottom:10px">
+  <button class="secondary" id="admin-orders-refresh" type="button">&#x1F504; Refresh</button>
+  <div id="admin-orders-message" class="message"></div>
+  <div id="admin-orders-list" style="overflow-x:auto"></div>
+</section>
+
+<section class="panel page-panel hidden" id="admin-deposits-page">
+  <div class="section-heading"><h2>&#x1F4B3; All Wallet Funding</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div>
+  <p class="muted">All users' wallet deposits (any status).</p>
+  <input id="admin-deposits-search" type="search" placeholder="Search username or reference..." style="margin-bottom:10px">
+  <button class="secondary" id="admin-deposits-refresh" type="button">&#x1F504; Refresh</button>
+  <div id="admin-deposits-message" class="message"></div>
+  <div id="admin-deposits-list" style="overflow-x:auto"></div>
+</section>
+
+</section>
+
+<section id="public-features"><h2 class="section-title">Why <span>SCOTAP OTP?</span></h2><section class="features"><article class="feature"><h3>&#x1F510; Secure account</h3><p>Your own customer account.</p></article><article class="feature"><h3>&#x1F4B0; Personal wallet</h3><p>View your balance and add money when you're ready.</p></article><article class="feature"><h3>&#x26A1; OTP services</h3><p>Browse supported services before choosing to buy.</p></article></section></section>
+
+<section class="panel page-panel hidden" id="terms-page">
+<div class="section-heading"><h2>Terms of Service</h2><button class="secondary small-button" type="button" id="terms-back">&#x2190; Back</button></div>
+<p class="muted"><strong>Effective date:</strong> 25 November 2026</p>
+<p>Welcome to SCOTAP OTP. These Terms explain the rules for using our website, account services, wallet, temporary virtual numbers, OTP delivery features, and in-website customer support. By registering, logging in, or using the service, you agree to these Terms and our Privacy Policy.</p>
+
+<p><strong>1. Eligibility and Account Registration</strong><br>You must be at least 18 years old to use SCOTAP OTP. Provide accurate and current information when creating your account. You are responsible for keeping your password and login details private and for activity carried out through your account. Notify SCOTAP OTP through the website's Support Tickets feature if you believe your account has been accessed without permission.</p>
+
+<p><strong>2. Using the Service</strong><br>SCOTAP OTP provides access to temporary virtual phone numbers for supported SMS and OTP verification services. Availability, supported countries, supported apps, prices, and delivery times may change. A number is temporary and should be used only for the purpose and period shown on the website. We cannot guarantee that a third-party app or platform will accept a particular number or verification code.</p>
+
+<p><strong>3. Wallet, Deposits, and Payments</strong><br>Your wallet balance is prepaid credit for purchases within SCOTAP OTP. It is not a bank account, does not earn interest, and cannot be transferred to another user. Payments are processed through the payment provider displayed at checkout. Keep your payment receipt or transaction reference in case you need help with a deposit. Your wallet and transaction history should be checked from your account dashboard.</p>
+
+<p><strong>4. Orders, OTP Delivery, and Refunds</strong><br>Check the selected country, service, price, and order details before confirming a purchase. OTP delivery depends on the availability of the number and the third-party service sending the message. If a code does not arrive within the order's stated time window, use the cancellation option provided for that order where available. Eligible cancellations are returned to your SCOTAP OTP wallet according to the order flow. Once a code has been received or an order is completed, the purchase may no longer be refundable. Any refund or cancellation status shown in your account is the record to rely on.</p>
+
+<p><strong>5. Acceptable Use</strong><br>You must not use SCOTAP OTP for fraud, scams, harassment, spam, unlawful activity, impersonation, or to violate another service's rules or another person's rights. Do not attempt to interfere with the website, access another user's account or information, bypass security controls, or misuse the support system.</p>
+
+<p><strong>6. Service Availability and Changes</strong><br>We may update, suspend, or discontinue a feature when needed for maintenance, security, operational, or business reasons. We aim to keep account and order information available, but uninterrupted access cannot be guaranteed. We may restrict or suspend accounts where there is reasonable concern about misuse, security risks, or a breach of these Terms.</p>
+
+<p><strong>7. Support and Contact</strong><br>Customer support is provided through the Support Tickets section inside the SCOTAP OTP website. Log in, open Support Tickets from the menu, create a ticket, and describe the issue clearly. You can return to the ticket to read replies and send follow-up messages; the ticket status indicates when a response is expected. Please include the relevant order or transaction reference when asking about a purchase or deposit. Do not include your password in a support message.</p>
+
+<p><strong>8. Disclaimer and Limitation</strong><br>SCOTAP OTP is provided on an availability basis. To the extent permitted by applicable law, we are not responsible for decisions made by third-party apps, platforms, mobile networks, or payment providers, or for interruptions outside our reasonable control. Nothing in these Terms removes rights that cannot legally be excluded.</p>
+
+<p><strong>9. Updates to These Terms</strong><br>We may revise these Terms as the service changes. The effective date at the top shows when this page was most recently updated. Continued use of SCOTAP OTP after an update means you accept the revised Terms.</p>
+</section>
+
+<section class="panel page-panel hidden" id="privacy-page">
+<div class="section-heading"><h2>Privacy Policy</h2><button class="secondary small-button" type="button" id="privacy-back">&#x2190; Back</button></div>
+<p class="muted"><strong>Last updated:</strong> 25 November 2026</p>
+<p>This Privacy Policy describes the information SCOTAP OTP may collect when you use the website, why it is used, and the choices available to you. We use information to operate accounts, provide number and OTP services, process transactions, protect the platform, and respond to support requests.</p>
+
+<p><strong>1. Information We Collect</strong></p>
+<ul>
+<li><strong>Account details:</strong> name, username, email address, and password information stored in a protected form.</li>
+<li><strong>Wallet and order records:</strong> deposits, payment references, wallet activity, number purchases, order status, and related transaction history.</li>
+<li><strong>Service information:</strong> selected country and service, temporary number details, and OTP/SMS information made available for an order.</li>
+<li><strong>Technical and security information:</strong> information such as IP address, device/browser details, login activity, and security events where collected by the website or its service providers.</li>
+<li><strong>Support conversations:</strong> ticket subjects, messages, attachments you choose to send, ticket status, and related account or order references.</li>
+</ul>
+
+<p><strong>2. How We Use Information</strong><br>We use information to create and maintain your account, authenticate logins, show your wallet and order history, provide purchased services, process deposits and eligible refunds, respond to support tickets, prevent fraud and abuse, maintain security, troubleshoot problems, and improve the website.</p>
+
+<p><strong>3. Payments and Service Providers</strong><br>Payments are handled by the payment provider presented during checkout. Payment providers may process payment details under their own privacy terms. SCOTAP OTP receives the transaction information needed to confirm and reconcile payments; we do not ask you to send full card details or passwords through Support Tickets.</p>
+
+<p><strong>4. When Information May Be Shared</strong><br>We do not sell your personal information. Information may be processed by service providers that help operate the website, hosting, payment processing, security, and OTP delivery. Information may also be disclosed where required by law, to protect users or the service, or to investigate suspected fraud, abuse, or security incidents.</p>
+
+<p><strong>5. Data Retention</strong><br>We keep account, transaction, order, and support information for as long as reasonably needed to provide the service, maintain accurate records, resolve disputes, meet legal obligations, and protect the platform. Retention periods may differ depending on the type of information and applicable requirements.</p>
+
+<p><strong>6. Data Security</strong><br>We use reasonable measures intended to protect information, including protected password storage and access controls. No website, internet connection, or electronic storage system can be guaranteed to be completely secure. Keep your password private and sign out when using a shared device.</p>
+
+<p><strong>7. Your Choices and Requests</strong><br>Keep your account details accurate and protect your login credentials. If you want to ask about personal information associated with your account, or request correction or deletion where applicable, submit a Support Ticket from inside the website. We may need to verify your account before acting on a request. Some records may need to be retained for security, transaction, or legal reasons.</p>
+
+<p><strong>8. Children's Privacy</strong><br>SCOTAP OTP is intended for adults aged 18 and over. We do not knowingly offer accounts to anyone under 18. If you believe a person under 18 has provided account information, contact us through the website's Support Tickets section.</p>
+
+<p><strong>9. Changes to This Policy</strong><br>We may update this Privacy Policy when our services or practices change. The date at the top indicates the latest update. Please review this page periodically.</p>
+
+<p><strong>10. Contact and Privacy Support</strong><br>For privacy questions or requests, log in to SCOTAP OTP, open Support Tickets from the website menu, and create a ticket describing your request. This is the official support channel for account, order, and privacy enquiries.</p>
+</section>
+
+</main>
+
+<footer>&#xA9; <span id="year"></span> <strong style="color:var(--gold)">SCOTAP OTP</strong>. All rights reserved.<div class="footer-links"><a href="#" data-legal="terms">Terms of Service</a><a href="#" data-legal="privacy">Privacy Policy</a></div></footer>
+
+<div id="activity-toasts"></div>
+
+<script>
+
+"use strict";
+
+function repairEmojiText(value){if(typeof value!=="string"||!/[&#xC3;&#xB0;&#xC3;&#x83;&#xC3;&#x82;&#xC3;&#xA2;]/.test(value))return value;try{const bytes=Uint8Array.from(value,c=>c.charCodeAt(0)&255);const fixed=new TextDecoder("utf-8",{fatal:true}).decode(bytes);return /[&#xC3;&#xB0;&#xC3;&#x83;&#xC3;&#x82;&#xC3;&#xA2;]/.test(fixed)?value:fixed}catch{return value}}
+
+const API="https://scotap-otp-api.onaolapor39.workers.dev", $=id=>document.getElementById(id);
+let MARKUP_NAIRA = 1000;
+
+let mode="register",token=null,countries=[],services=[],servicesCountry="",currentUser=null,isAdminUser=false;
+
+let activePurchase=null,pollInterval=null,countdownInterval=null;
+let skipTicketListLoad=false;
+
+$("year").textContent=new Date().getFullYear();
+
+function showMessage(id,message,type=""){const el=$(id);if(!el)return;el.textContent=message;el.className="message "+type}
+
+function money(kobo){return new Intl.NumberFormat("en-NG",{style:"currency",currency:"NGN"}).format(Number(kobo||0)/100)}
+
+function naira(value){const n=Number(value);if(!Number.isFinite(n))return null;return new Intl.NumberFormat("en-NG",{style:"currency",currency:"NGN",maximumFractionDigits:2}).format(n)}
+
+function applyTheme(theme){const safe=theme==="light"?"light":"dark";document.documentElement.dataset.theme=safe;$("settings-theme").value=safe;$("theme-color").setAttribute("content",safe==="dark"?"#090909":"#f5f6f8");try{localStorage.setItem("scotap_theme",safe)}catch{}}
+
+try{applyTheme(localStorage.getItem("scotap_theme")||"dark")}catch{applyTheme("dark")}
+
+$("settings-theme").addEventListener("change",e=>applyTheme(e.target.value));
+
+async function api(path,options={}){const headers={"Accept":"application/json"};if(options.body)headers["Content-Type"]="application/json";if(token)headers["Authorization"]="Bearer "+token;const response=await fetch(API+path,{...options,headers:{...headers,...(options.headers||{})},cache:"no-store"});const data=await response.json().catch(()=>({}));if(!response.ok||data.success!==true)throw new Error(data.error||"Request failed. Please try again.");return data}
+
+function setMode(next){mode=next;const reg=mode==="register";$("auth-title").textContent=reg?"Create your SCOTAP account":"Welcome back";$("auth-description").textContent=reg?"Enter your details and accept the terms to create an account.":"Log in using your email address or username.";$("auth-submit").textContent=reg?"Create account":"Log in";$("password").autocomplete=reg?"new-password":"current-password";$("register-tab").className=reg?"primary":"secondary";$("login-tab").className=reg?"secondary":"primary";$("register-fields").classList.toggle("hidden",!reg);$("confirm-password-field").classList.toggle("hidden",!reg);$("terms-row").classList.toggle("hidden",!reg);$("full-name").required=reg;$("username").required=reg;$("confirm-password").required=reg;$("terms-accepted").required=reg;$("email-label").textContent=reg?"Email address":"Email address or username";$("email").type=reg?"email":"text";$("email").autocomplete=reg?"email":"username";$("email").placeholder=reg?"you@example.com":"Email address or username";showMessage("auth-message","")}
+
+function timeGreeting(username){const h=new Date().getHours(),g=h<12?"Good morning":h<17?"Good afternoon":"Good evening";return `${g}, ${username||"there"}!`}
+
+function updateProfile(user){currentUser=user||{};$("profile-full-name").value=currentUser.full_name||"";$("profile-username").value=currentUser.username||"";$("profile-email").value=currentUser.email||"";const username=currentUser.username||"";$("greeting").textContent=timeGreeting(username)}
+
+async function loadProfile(){const result=await api("/api/me");updateProfile(result.user)}
+
+function showPage(page){document.body.classList.toggle("ticket-open",page==="ticket-view");if(page==="ticket-view"){const topbar=document.querySelector(".topbar");document.documentElement.style.setProperty("--ticket-top",(topbar?.getBoundingClientRect().height||0)+"px")}const pages={dashboard:"dashboard-page",settings:"settings-page",services:"services-page",transactions:"transactions-page",numbers:"numbers-page",notifications:"notifications-page",admin:"admin-page",tickets:"tickets-page","ticket-view":"ticket-view-page","admin-tickets":"admin-tickets-page","admin-orders":"admin-orders-page","admin-deposits":"admin-deposits-page",terms:"terms-page",privacy:"privacy-page"};Object.values(pages).forEach(id=>{const el=$(id);if(el)el.classList.add("hidden")});if(pages[page])$(pages[page]).classList.remove("hidden");$("main-menu").classList.add("hidden");$("menu-toggle").setAttribute("aria-expanded","false");if(page==="services"&&token&&countries.length===0)loadServices();if(page==="notifications"&&token){loadAnnouncements();markAnnouncementsRead();}if(page==="transactions"&&token)loadTransactions();if(page==="numbers"&&token)loadNumbers();if(page==="dashboard"&&token)loadRecentActivity();if(page==="tickets"&&token&&!skipTicketListLoad)loadTickets();if(page==="admin-tickets"&&token)loadAdminTickets("open");
+if(page==="admin"&&token)loadCurrentMarkupForAdmin();if(page==="admin-orders"&&token)loadAdminOrders();if(page==="admin-deposits"&&token)loadAdminDeposits();window.scrollTo({top:0,behavior:"smooth"})}
+
+function saveToken(t){token=t;try{if(t)localStorage.setItem("scotap_token",t);else localStorage.removeItem("scotap_token")}catch{}}
+
+function showLoggedIn(){$("auth-panel").classList.add("hidden");$("hero").classList.add("hidden");$("public-features").classList.add("hidden");$("landing-page").classList.add("hidden");$("customer-dashboard").classList.remove("hidden");$("menu-toggle").classList.remove("hidden");$("notifications-button").classList.remove("hidden");$("header-status").classList.remove("hidden");$("header-support-button")?.classList.remove("hidden");$("activity-toasts")?.classList.add("hidden");checkAdminStatus();loadAnnouncements();showPage("dashboard")}
+
+function maskPhone(num){
+
+  if(!num)return "";
+
+  const s=String(num).replace(/\D/g,"");
+
+  if(s.length<=6)return s;
+
+  const keepStart=3, keepEnd=4;
+
+  if(s.length<=keepStart+keepEnd)return s[0]+"****"+s.slice(-2);
+
+  return s.slice(0,keepStart)+"*****"+s.slice(-keepEnd);
+
+}
+
+let balanceHidden = localStorage.getItem("scotap_balance_hidden")==="1";
+
+function applyBalanceVisibility(){
+
+  const el=$("balance");
+
+  if(!el)return;
+
+  if(balanceHidden){
+
+    el.dataset.real = el.dataset.real || el.textContent;
+
+    el.textContent = "****";
+
+    const btn=$("toggle-balance");
+
+    if(btn){btn.innerHTML="&#x1F441;&#xFE0F; Show";btn.title="Show balance";}
+
+  }else{
+
+    if(el.dataset.real)el.textContent=el.dataset.real;
+
+    const btn=$("toggle-balance");
+
+    if(btn){btn.innerHTML="&#x1F441;&#xFE0F; Hide";btn.title="Hide balance";}
+
+  }
+
+}
+
+function setBalanceDisplay(amountText){
+
+  const el=$("balance");
+
+  if(!el)return;
+
+  el.dataset.real = amountText;
+
+  if(balanceHidden)el.textContent="****";
+
+  else el.textContent=amountText;
+
+}
+
+function showLoggedOut(){saveToken(null);currentUser=null;countries=[];services=[];servicesCountry="";stopPolling();$("landing-page")?.classList.remove("hidden");$("auth-panel").classList.add("hidden");$("hero").classList.add("hidden");$("public-features").classList.remove("hidden");$("customer-dashboard").classList.add("hidden");$("menu-toggle").classList.add("hidden");$("notifications-button").classList.add("hidden");$("header-status").classList.add("hidden");$("header-support-button")?.classList.add("hidden");$("activity-toasts")?.classList.remove("hidden");$("admin-menu-item").classList.add("hidden");$("admin-tickets-menu")?.classList.add("hidden");$("admin-orders-menu")?.classList.add("hidden");$("admin-deposits-menu")?.classList.add("hidden");$("main-menu").classList.add("hidden");const tp=$("terms-page"),pp=$("privacy-page");if(tp)tp.classList.add("hidden");if(pp)pp.classList.add("hidden");setBalanceDisplay("&#x20A6;&#x2014;");$("greeting").textContent="Welcome to SCOTAP!";$("country-filter").replaceChildren(new Option("Log in to load countries",""));$("service-list").replaceChildren();$("purchase-area").classList.add("hidden");showMessage("services-message","Log in to load available countries.");$("current-password").value="";$("new-password").value="";$("confirm-new-password").value=""}
+
+async function refreshWallet(){if(!token)return;$("refresh-button").disabled=true;showMessage("wallet-message","Loading your wallet...");try{const d=await api("/api/wallet");setBalanceDisplay(money(d.balance_kobo));showMessage("wallet-message","Wallet updated.","success");loadRecentActivity()}catch(e){showMessage("wallet-message",e.message,"error")}finally{$("refresh-button").disabled=false}}
+
+$("register-tab").addEventListener("click",()=>setMode("register"));$("login-tab").addEventListener("click",()=>setMode("login"));
+
+$("auth-form").addEventListener("submit",async e=>{e.preventDefault();const b=$("auth-submit");b.disabled=true;showMessage("auth-message","Please wait...");try{let body;if(mode==="register"){if($("password").value!==$("confirm-password").value)throw new Error("Passwords do not match.");if(!$("terms-accepted").checked)throw new Error("You must accept the Terms of Service and Privacy Policy.");body={full_name:$("full-name").value.trim(),username:$("username").value.trim().toLowerCase(),email:$("email").value.trim(),password:$("password").value,confirm_password:$("confirm-password").value,terms_accepted:$("terms-accepted").checked}}else body={email:$("email").value.trim(),password:$("password").value};const result=await api(mode==="register"?"/api/register":"/api/login",{method:"POST",body:JSON.stringify(body)});if(!result.token)throw new Error("The server did not return a login token.");saveToken(result.token);$("password").value="";$("confirm-password").value="";showLoggedIn();if(result.user)updateProfile(result.user);try{await loadProfile()}catch(err){if(!currentUser)throw err}await Promise.allSettled([refreshWallet()]);await verifyReturnPayment()}catch(err){showMessage("auth-message",err.message,"error")}finally{b.disabled=false}});
+
+$("menu-toggle").addEventListener("click",()=>{const m=$("main-menu"),open=m.classList.contains("hidden");m.classList.toggle("hidden",!open);$("menu-toggle").setAttribute("aria-expanded",String(open))});
+
+document.querySelectorAll("[data-page]").forEach(button=>button.addEventListener("click",()=>{const p=button.dataset.page;if(p==="logout"){showLoggedOut();$("deposit-area").classList.add("hidden");setMode("login");showMessage("auth-message","You have logged out.","success");return}showPage(p)}));
+
+$("refresh-button").addEventListener("click",refreshWallet);
+
+$("toggle-balance").addEventListener("click",()=>{
+
+  balanceHidden=!balanceHidden;
+
+  localStorage.setItem("scotap_balance_hidden", balanceHidden?"1":"0");
+
+  applyBalanceVisibility();
+
+});
+
+// Apply on load if already hidden
+
+applyBalanceVisibility();
+
+$("show-deposit").addEventListener("click",()=>{$("deposit-area").classList.remove("hidden");$("amount").focus()});$("hide-deposit").addEventListener("click",()=>$("deposit-area").classList.add("hidden"));
+
+$("deposit-form").addEventListener("submit",async e=>{e.preventDefault();const b=$("deposit-button");b.disabled=true;showMessage("wallet-message","Preparing your Paystack payment...");try{const amount=Number($("amount").value);if(!Number.isSafeInteger(amount)||amount<100||amount>1000000)throw new Error("Enter an amount between &#x20A6;100 and &#x20A6;1,000,000.");const result=await api("/api/payments/initialize",{method:"POST",body:JSON.stringify({amount_naira:amount})});if(!result.authorization_url)throw new Error("Paystack did not return a payment link.");if(result.reference)sessionStorage.setItem("scotap_pending_payment",result.reference);window.location.assign(result.authorization_url)}catch(err){showMessage("wallet-message",err.message,"error");b.disabled=false}});
+
+$("profile-form").addEventListener("submit",async e=>{e.preventDefault();const b=$("profile-submit");b.disabled=true;showMessage("profile-message","Saving account information...");try{const full_name=$("profile-full-name").value.trim(),username=$("profile-username").value.trim(),email=$("profile-email").value.trim();if(!/^[A-Za-z0-9_]{3,24}$/.test(username))throw new Error("Username must be 3&#x2013;24 letters, numbers, or underscores.");const result=await api("/api/profile/update",{method:"POST",body:JSON.stringify({full_name,username,email})});if(result.user)updateProfile(result.user);else await loadProfile();showMessage("profile-message",result.message||"Account information updated successfully.","success")}catch(err){showMessage("profile-message",err.message,"error")}finally{b.disabled=false}});
+
+$("password-form").addEventListener("submit",async e=>{e.preventDefault();const b=$("password-submit");b.disabled=true;showMessage("settings-message","Updating your password...");try{const current=$("current-password").value,next=$("new-password").value,confirm=$("confirm-new-password").value;if(next!==confirm)throw new Error("Your new passwords do not match.");if(next.length<8||next.length>128)throw new Error("New password must be 8&#x2013;128 characters.");const result=await api("/api/password/change",{method:"POST",body:JSON.stringify({current_password:current,new_password:next,confirm_new_password:confirm})});$("password-form").reset();showMessage("settings-message",result.message||"Password changed successfully.","success")}catch(err){showMessage("settings-message",err.message,"error")}finally{b.disabled=false}});
+
+function getList(response,keys){let root=response;for(let i=0;i<5;i++){if(Array.isArray(root))return root;if(!root||typeof root!=="object")break;for(const key of keys)if(Array.isArray(root[key]))return root[key];if(root.data&&typeof root.data==="object")root=root.data;else break}return[]}
+
+function field(obj,names){for(const name of names){const v=obj?.[name];if(v!==undefined&&v!==null&&v!=="")return v}return null}
+
+function countryName(c){if(typeof c==="string")return repairEmojiText(c);return repairEmojiText(String(field(c,["country_name","name","country","title","english"])||"Unknown country"))}
+
+function countryCode(c){if(typeof c==="string")return c;return String(field(c,["country_code","code","iso","value"])||"")}
+
+function getServiceName(s){return repairEmojiText(String(field(s,["service_name","name","service","title","product","code"])||"Verification service"))}
+
+function getServicePrice(s){const raw=field(s,["your_price","price_naira","price_ngn","price","cost","amount","retail_price"]);if(raw===null)return null;const n=Number(raw);if(!Number.isFinite(n)||n<0)return null;const unit=String(field(s,["price_currency","unit"])||"").toLowerCase();return unit.includes("kobo")||unit.includes("kopeck")||unit.includes("cent")?n/100:n}
+
+function logoForService(name){
+
+  const n = name.toLowerCase();
+
+  const brands = [
+
+    [/whatsapp/, "whatsapp", "25D366", "&#x1F4AC;"],
+
+    [/telegram/, "telegram", "26A5E4", "&#x2708;&#xFE0F;"],
+
+    [/instagram/, "instagram", "E4405F", "&#x1F4F8;"],
+
+    [/facebook|meta/, "facebook", "0866FF", "&#x1F4D8;"],
+
+    [/google|gmail|youtube/, "google", "4285F4", "&#x1F310;"],
+
+    [/tiktok/, "tiktok", "000000", "&#x1F3B5;"],
+
+    [/twitter|x\.com|\bx\b/, "x", "000000", "&#x1D54F;"],
+
+    [/discord/, "discord", "5865F2", "&#x1F3AE;"],
+
+    [/snapchat/, "snapchat", "FFFC00", "&#x1F47B;"],
+
+    [/microsoft|outlook|hotmail/, "microsoft", "5E5E5E", "&#x1FA9F;"],
+
+    [/apple|icloud/, "apple", "000000", "&#x1F34E;"],
+
+    [/uber/, "uber", "000000", "&#x1F697;"],
+
+    [/amazon/, "amazon", "FF9900", "&#x1F4E6;"],
+
+    [/viber/, "viber", "7360F2", "&#x1F4DE;"],
+
+    [/signal/, "signal", "3A76F0", "&#x1F535;"],
+
+    [/reddit/, "reddit", "FF4500", "&#x1F47D;"],
+
+    [/line/, "line", "06C755", "&#x1F49A;"],
+
+    [/wechat/, "wechat", "07C160", "&#x1F4AC;"],
+
+    [/yahoo/, "yahoo", "6001D2", "&#x2709;&#xFE0F;"],
+
+    [/netflix/, "netflix", "E50914", "&#x1F3AC;"],
+
+    [/spotify/, "spotify", "1DB954", "&#x1F3A7;"],
+
+    [/paypal/, "paypal", "003087", "&#x1F4B3;"],
+
+    [/binance/, "binance", "F0B90B", "&#x1F7E1;"],
+
+    [/coinbase/, "coinbase", "0052FF", "&#x1F4B0;"],
+
+    [/steam/, "steam", "000000", "&#x1F3AE;"],
+
+    [/twitch/, "twitch", "9146FF", "&#x1F7E3;"],
+
+    [/linkedin/, "linkedin", "0A66C2", "&#x1F4BC;"],
+
+    [/pinterest/, "pinterest", "E60023", "&#x1F4CC;"],
+
+    [/skype/, "skype", "00AFF0", "&#x1F4AC;"],
+
+    [/zoom/, "zoom", "2D8CFF", "&#x1F4F9;"],
+
+    [/slack/, "slack", "4A154B", "&#x1F4AC;"],
+
+    [/dropbox/, "dropbox", "0061FF", "&#x1F4E6;"],
+
+    [/github/, "github", "181717", "&#x1F419;"],
+
+    [/adobe/, "adobe", "FF0000", "&#x1F3A8;"],
+
+    [/samsung/, "samsung", "1428A0", "&#x1F4F1;"],
+
+    [/huawei/, "huawei", "FF0000", "&#x1F4F1;"],
+
+    [/xiaomi/, "xiaomi", "FF6900", "&#x1F4F1;"],
+
+    [/revolut/, "revolut", "0075EB", "&#x1F4B3;"],
+
+    [/cashapp|cash app/, "cashapp", "00D632", "&#x1F4B5;"],
+
+    [/venmo/, "venmo", "3D95CE", "&#x1F4B8;"],
+
+    [/wise|transferwise/, "wise", "9FE870", "&#x1F4B8;"],
+
+    [/airbnb/, "airbnb", "FF5A5F", "&#x1F3E0;"],
+
+    [/uber eats|ubereats/, "ubereats", "06C167", "&#x1F354;"],
+
+    [/doordash/, "doordash", "FF3008", "&#x1F6F5;"],
+
+    [/bolt/, "bolt", "34D186", "&#x26A1;"],
+
+    [/glovo/, "glovo", "FFC244", "&#x1F6F5;"],
+
+    [/jumia/, "jumia", "F68B1E", "&#x1F6D2;"],
+
+    [/konga/, "konga", "EC1C24", "&#x1F6D2;"],
+
+    [/paystack/, "paystack", "00C3F7", "&#x1F4B3;"],
+
+    [/flutterwave/, "flutterwave", "F5A623", "&#x1F4B3;"],
+
+    [/opay/, "opay", "1B5E20", "&#x1F49A;"],
+
+    [/palmpay/, "palmpay", "00A86B", "&#x1F49A;"],
+
+    [/kuda/, "kuda", "40196D", "&#x1F49C;"],
+
+    [/moniepoint/, "moniepoint", "000000", "&#x1F3E6;"]
+
+  ];
+
+  const match = brands.find(x => x[0].test(n));
+
+  if (match) return { url: `https://cdn.simpleicons.org/${match[1]}/${match[2]}`, fallback: match[3] };
+
+  const clean = n.replace(/[^a-z0-9]/g, "");
+
+  return { url: `https://cdn.simpleicons.org/${clean}/555555`, fallback: "&#x1F4F1;" };
+
+}
+
+function renderCountries(){const s=$("country-filter"),prev=s.value;s.replaceChildren(new Option("Choose a country",""));countries.forEach(c=>{const name=countryName(c),code=countryCode(c);if(code)s.add(new Option(name,code))});if([...s.options].some(o=>o.value===prev))s.value=prev}
+
+function stopPolling(){if(pollInterval)clearInterval(pollInterval);if(countdownInterval)clearInterval(countdownInterval);pollInterval=null;countdownInterval=null}
+
+function renderPurchaseUI(order){
+
+  const area=$("purchase-area");
+
+  area.classList.remove("hidden");
+
+  const remaining=Math.max(0,Math.floor((order.expiresAt-Date.now())/1000));
+
+  const mins=Math.floor(remaining/60),secs=remaining%60;
+
+  area.innerHTML=`
+
+    <div class="panel" style="background:var(--card)">
+
+      <h3>Number Purchased</h3>
+
+      <p><strong>Service:</strong> ${order.service||""}</p>
+
+      <p><strong>Number:</strong> ${order.number||""}</p>
+
+      <p><strong>Amount:</strong> ${naira(order.amount_naira)||""}</p>
+
+      <div class="countdown" id="countdown">${mins}:${secs.toString().padStart(2,"0")}</div>
+
+      <div id="code-area"></div>
+
+      <div id="purchase-actions" style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap"></div>
+
+    </div>`;
+
+  updatePurchaseActions(order);
+
+  countdownInterval=setInterval(()=>{
+
+    const left=Math.max(0,Math.floor((order.expiresAt-Date.now())/1000));
+
+    const m=Math.floor(left/60),s=left%60;
+
+    const el=$("countdown");if(el)el.textContent=`${m}:${s.toString().padStart(2,"0")}`;
+
+    if(left<=0){stopPolling();showMessage("services-message","Time expired. You can cancel for a refund.","error")}
+
+  },1000);
+
+  pollInterval=setInterval(()=>pollSMS(order.id),4000);
+
+}
+
+function updatePurchaseActions(order){
+
+  const actions=$("purchase-actions");if(!actions)return;
+
+  if(order.code){
+
+    actions.innerHTML=`<button class="primary" id="done-btn" type="button">Done</button>`;
+
+    $("done-btn").onclick=()=>{stopPolling();$("purchase-area").classList.add("hidden");showPage("numbers");loadNumbers()};
+
+  }else{
+
+    actions.innerHTML=`<button class="secondary" id="cancel-btn" type="button">Cancel & Refund</button>`;
+
+    $("cancel-btn").onclick=async()=>{if(!confirm("Cancel this number and get a refund?"))return;$("cancel-btn").disabled=true;try{await api("/api/cancel-number",{method:"POST",body:JSON.stringify({order_id:order.id})});stopPolling();$("purchase-area").classList.add("hidden");showMessage("services-message","Number cancelled and refunded.","success");await refreshWallet()}catch(e){showMessage("services-message",e.message,"error");$("cancel-btn").disabled=false}};
+
+  }
+
+}
+
+async function pollSMS(orderId){
+
+  try{
+
+    const res=await api("/api/get-sms?order_id="+encodeURIComponent(orderId));
+
+    const d=res.data||{};
+
+    if(d.status==="received"&&d.sms){
+
+      activePurchase.code=d.sms;
+
+      const codeArea=$("code-area");
+
+      if(codeArea)codeArea.innerHTML=`<div class="code-box"><div>OTP Code</div><strong>${d.sms}</strong><br><button class="secondary copy-btn" type="button" onclick="navigator.clipboard.writeText('${d.sms}').then(()=>alert('Copied!'))">Copy Code</button></div>`;
+
+      updatePurchaseActions(activePurchase);
+
+      stopPolling();
+
+      showMessage("services-message","Code received!","success");
+
+    }
+
+  }catch(e){console.error(e)}
+
+}
+
+function renderServices(){
+
+  const list=$("service-list");list.replaceChildren();
+
+  const code=$("country-filter").value,search=$("service-search").value.trim().toLowerCase();
+
+  if(!code){showMessage("services-message","Choose a country to see its services and prices.");return}
+
+  if(servicesCountry!==code){showMessage("services-message","Loading services for the selected country...");return}
+
+  const c=countries.find(x=>countryCode(x)===code),filtered=services.filter(s=>!search||getServiceName(s).toLowerCase().includes(search));
+
+  if(!filtered.length){showMessage("services-message","No services found for this search or country. Try refreshing.","error");return}
+
+  showMessage("services-message",`${filtered.length} service(s) available.`,"success");
+
+  filtered.forEach(service=>{
+
+    const card=document.createElement("article");card.className="service-card";
+
+    const logo=document.createElement("img");logo.className="service-logo";logo.alt="";logo.loading="lazy";
+
+    const brand=logoForService(getServiceName(service));logo.src=brand.url||"";
+
+    logo.onerror=()=>{const fb=document.createElement("div");fb.className="service-logo";fb.style.display="grid";fb.style.placeItems="center";fb.style.fontSize="25px";fb.innerHTML=brand.fallback;logo.replaceWith(fb)};
+
+    if(!brand.url){const fb=document.createElement("div");fb.className="service-logo";fb.style.display="grid";fb.style.placeItems="center";fb.style.fontSize="25px";fb.innerHTML=brand.fallback;logo.replaceWith(fb)}
+
+    const info=document.createElement("div");info.className="service-info";
+
+    const name=document.createElement("h3");name.textContent=getServiceName(service);
+
+    const country=document.createElement("p");country.className="service-meta";country.innerHTML="&#x1F30D; "+(c?countryName(c):code);
+
+    const amount=getServicePrice(service),price=document.createElement("p");price.className="price";
+
+    const sell=amount===null?null:amount+MARKUP_NAIRA;price.textContent=sell===null?"Price unavailable":naira(sell);
+
+    const choose=document.createElement("button");choose.className="primary";choose.type="button";choose.textContent="Buy Number";
+
+    choose.addEventListener("click",async()=>{
+
+      if(!confirm(`Buy ${getServiceName(service)} for ${naira(sell)}?`))return;
+
+      choose.disabled=true;showMessage("services-message","Buying number...");
+
+      try{
+
+        const res=await api("/api/buy-number",{method:"POST",body:JSON.stringify({country:code,service:service.service_id||service.service_name})});
+
+        const o=res.order||{};
+
+        activePurchase={id:o.id,service:o.service,number:o.number,amount_naira:o.amount_naira,expiresAt:Date.now()+10*60*1000,code:null};
+
+        renderPurchaseUI(activePurchase);
+
+        showMessage("services-message","Number purchased. Waiting for OTP...","success");
+
+        await refreshWallet();
+
+      }catch(err){showMessage("services-message",err.message,"error");choose.disabled=false}
+
+    });
+
+    info.append(name,country,price,choose);card.append(logo,info);list.append(card)
+
+  })
+
+}
+
+
+async function loadMarkup() {
+  try {
+    const r = await api("/api/markup");
+    if (r.success && typeof r.markup_naira === "number") {
+      MARKUP_NAIRA = r.markup_naira;
+    }
+  } catch (e) {
+    console.warn("Could not load markup, using default", e);
+  }
+}
+
+async function loadServices(){if(!token)return; await loadMarkup();const b=$("reload-services");b.disabled=true;showMessage("services-message","Loading available countries...");$("service-list").replaceChildren();try{const cr=await api("/api/countries");countries=getList(cr,["countries","results","items"]);if(!countries.length)throw new Error("OTP Suite returned no countries.");renderCountries();const code=$("country-filter").value;if(!code){services=[];servicesCountry="";showMessage("services-message",`${countries.length} country/countries loaded. Choose a country to see services and prices.`,"success");return}showMessage("services-message","Loading services for "+code+"...");const query=new URLSearchParams({country:code}),sr=await api("/api/services?"+query.toString());services=getList(sr,["services","results","items"]);servicesCountry=code;renderServices();if(!services.length)showMessage("services-message","The API returned no services for "+code+". Check the provider's catalogue.","error")}catch(err){services=[];servicesCountry="";$("service-list").replaceChildren();showMessage("services-message","Could not load countries or services: "+err.message,"error")}finally{b.disabled=false}}
+
+$("reload-services").addEventListener("click",loadServices);$("country-filter").addEventListener("change",()=>{services=[];servicesCountry="";$("service-list").replaceChildren();if($("country-filter").value)loadServices();else showMessage("services-message","Choose a country to load its services.")});$("service-search").addEventListener("input",renderServices);
+
+async function loadTransactions(){if(!token)return;showMessage("transactions-message","Loading...");try{const r=await api("/api/transactions");const list=r.transactions||[];const box=$("transactions-list");if(!list.length){box.innerHTML='<p class="muted">No transactions yet.</p>';showMessage("transactions-message","");return}box.innerHTML=`<table class="history-table"><thead><tr><th>Type</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead><tbody>${list.map(t=>`<tr><td>${t.type==="deposit"?"Deposit":"Purchase"}</td><td>${money(t.amount_kobo)}</td><td>${t.status||""}</td><td>${t.created_at?new Date(t.created_at).toLocaleString():""}</td></tr>`).join("")}</tbody></table>`;showMessage("transactions-message","")}catch(e){showMessage("transactions-message",e.message,"error")}}
+
+async function loadNumbers(){if(!token)return;showMessage("numbers-message","Loading...");try{const r=await api("/api/orders");const list=r.orders||[];const box=$("numbers-list");if(!list.length){box.innerHTML='<p class="muted">No number purchases yet.</p>';showMessage("numbers-message","");return}box.innerHTML=`<table class="history-table"><thead><tr><th>ID</th><th>SERVICE</th><th>PHONE</th><th>CODE</th><th>AMOUNT</th><th>STATUS</th><th>DATE</th></tr></thead><tbody>${list.map(o=>`<tr><td>${(o.id||"").slice(0,8)}</td><td>${o.service||""}</td><td>${o.phone_number||""}</td><td>${o.sms_code||"&#x2014;"}</td><td>${money(o.amount_kobo)}</td><td>${o.status||""}</td><td>${o.created_at?new Date(o.created_at).toLocaleString():""}</td></tr>`).join("")}</tbody></table>`;showMessage("numbers-message","")}catch(e){showMessage("numbers-message",e.message,"error")}}
+
+async function loadRecentActivity(){if(!token)return;try{const r=await api("/api/transactions");const list=(r.transactions||[]).filter(t=>t.type==="purchase").slice(0,5);const box=$("recent-activity-list");if(!list.length){box.innerHTML='<p class="muted">No recent number purchases.</p>';return}box.innerHTML=list.map(t=>`<div class="activity-item"><div class="activity-left"><div class="activity-icon">&#x1F4F1;</div><div><strong>Number Purchase</strong><div class="muted" style="font-size:12px">${t.service||""} ${maskPhone(t.phone_number||"")}</div></div></div><div style="text-align:right"><div style="color:#e65b5b">-${money(t.amount_kobo)}</div><div class="muted" style="font-size:11px">${t.created_at?new Date(t.created_at).toLocaleString():""}</div></div></div>`).join("")}catch(e){}}
+
+async function verifyReturnPayment(){if(!token)return;const p=new URLSearchParams(window.location.search),ref=p.get("reference")||p.get("trxref")||sessionStorage.getItem("scotap_pending_payment");if(!ref)return;showMessage("wallet-message","Checking your payment with Paystack...");try{const r=await api("/api/payments/verify",{method:"POST",body:JSON.stringify({reference:ref})});sessionStorage.removeItem("scotap_pending_payment");await refreshWallet();showMessage("wallet-message",r.already_credited?"This payment was already credited.":"Payment verified. Your wallet has been updated.","success");history.replaceState({},"",window.location.pathname)}catch(err){showMessage("wallet-message","Payment verification could not be confirmed: "+err.message+". Check your payment status before paying again.","error")}}
+
+let scotapAnnouncements=[];
+
+function escapeAnnouncement(value){return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]))}
+
+function announcementCards(items){if(!Array.isArray(items)||!items.length)return '<p class="muted">No announcements yet.</p>';return items.map(a=>`<article class="announcement-card"><h3>${escapeAnnouncement(a.title||"Announcement")}</h3><div class="announcement-date">${escapeAnnouncement(a.created_at?new Date(a.created_at).toLocaleString():"")}</div><div>${escapeAnnouncement(a.message||"").replace(/\n/g,"<br>")}</div></article>`).join("")}
+
+function markAnnouncementsRead(){
+
+  try{
+
+    const ids=scotapAnnouncements.map(a=>a.id).filter(Boolean);
+
+    if(ids.length)localStorage.setItem("scotap_read_announcements",JSON.stringify(ids));
+
+    updateNotificationBadge();
+
+  }catch{}
+
+}
+
+function updateNotificationBadge(){
+
+  const countEl=$("notification-count");
+
+  if(!countEl)return;
+
+  let read=[];
+
+  try{read=JSON.parse(localStorage.getItem("scotap_read_announcements")||"[]")}catch{}
+
+  const unread=scotapAnnouncements.filter(a=>a.id&&!read.includes(a.id)).length;
+
+  countEl.textContent=String(unread);
+
+  countEl.classList.toggle("hidden",unread===0);
+
+}
+
+async function checkAdminStatus(){if(!token){isAdminUser=false;return}try{const r=await api("/api/admin/status");const isAdmin=r.is_admin===true;isAdminUser=isAdmin;$("admin-menu-item").classList.toggle("hidden",!isAdmin);$("admin-tickets-menu")?.classList.toggle("hidden",!isAdmin);$("admin-orders-menu")?.classList.toggle("hidden",!isAdmin);$("admin-deposits-menu")?.classList.toggle("hidden",!isAdmin);if(!isAdmin&&$("admin-page"))$("admin-page").classList.add("hidden")}catch(e){isAdminUser=false;$("admin-menu-item").classList.add("hidden");$("admin-tickets-menu")?.classList.add("hidden");$("admin-orders-menu")?.classList.add("hidden");$("admin-deposits-menu")?.classList.add("hidden")}}
+
+async function loadAnnouncements(){if(!token)return;const box=$("announcements-list"),msg=$("announcements-message");if(!box)return;msg.textContent="Loading announcements...";try{const r=await api("/api/announcements");scotapAnnouncements=Array.isArray(r.announcements)?r.announcements:(Array.isArray(r.items)?r.items:[]);box.innerHTML=announcementCards(scotapAnnouncements);msg.textContent=scotapAnnouncements.length?"Latest official announcements.":"No announcements have been published yet.";updateNotificationBadge()}catch(e){msg.textContent="Could not load announcements: "+e.message}}
+
+
+
+$("notifications-button").addEventListener("click",()=>showPage("notifications"));
+
+$("refresh-announcements").addEventListener("click",loadAnnouncements);
+
+$("announcement-form").addEventListener("submit",async e=>{e.preventDefault();const button=$("publish-announcement");button.disabled=true;showMessage("admin-message","Publishing announcement...");try{const result=await api("/api/admin/announcements",{method:"POST",body:JSON.stringify({title:$("announcement-title").value.trim(),message:$("announcement-message-input").value.trim()})});showMessage("admin-message",result.message||"Announcement published successfully.","success");$("announcement-title").value="";$("announcement-message-input").value="";await loadAnnouncements()}catch(err){showMessage("admin-message","Could not publish announcement: "+err.message,"error")}finally{button.disabled=false}});
+
+// Restore session on page load
+
+(async function restoreSession(){
+
+  try{
+
+    const saved=localStorage.getItem("scotap_token");
+
+    if(saved){
+
+      token=saved;
+
+      showLoggedIn();
+
+      try{await loadProfile()}catch{}
+
+      await refreshWallet();
+
+      await verifyReturnPayment();
+
+    }else{
+
+      setMode("register");showLoggedOut();
+
+    }
+
+  }catch{
+
+    setMode("register");showLoggedOut();
+
+  }
+
+})();
+
+document.getElementById("go-register")?.addEventListener("click", () => {
+
+  document.getElementById("landing-page").classList.add("hidden");
+
+  document.getElementById("hero").classList.remove("hidden");
+
+  document.getElementById("auth-panel").classList.remove("hidden");
+
+  setMode("register");
+
+});
+
+document.getElementById("go-register-2")?.addEventListener("click", () => {
+
+  document.getElementById("landing-page").classList.add("hidden");
+
+  document.getElementById("hero").classList.remove("hidden");
+
+  document.getElementById("auth-panel").classList.remove("hidden");
+
+  setMode("register");
+
+});
+
+document.getElementById("go-login")?.addEventListener("click", () => {
+
+  document.getElementById("landing-page").classList.add("hidden");
+
+  document.getElementById("hero").classList.remove("hidden");
+
+  document.getElementById("auth-panel").classList.remove("hidden");
+
+  setMode("login");
+
+});
+
+function openLegalPage(which){
+  const isTerms=which==="terms";
+  $("landing-page")?.classList.add("hidden");
+  $("hero")?.classList.add("hidden");
+  $("auth-panel")?.classList.add("hidden");
+  $("public-features")?.classList.add("hidden");
+  $("customer-dashboard")?.classList.add("hidden");
+  $("terms-page")?.classList.toggle("hidden",!isTerms);
+  $("privacy-page")?.classList.toggle("hidden",isTerms);
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function closeLegalPage(){
+  $("terms-page")?.classList.add("hidden");
+  $("privacy-page")?.classList.add("hidden");
+  if(token){
+    $("customer-dashboard")?.classList.remove("hidden");
+    showPage("dashboard");
+  }else{
+    $("landing-page")?.classList.remove("hidden");
+    $("public-features")?.classList.remove("hidden");
+  }
+}
+
+document.querySelectorAll("[data-legal]").forEach(link=>{
+  link.addEventListener("click",e=>{
+    e.preventDefault();
+    openLegalPage(link.getAttribute("data-legal"));
+  });
+});
+
+$("terms-back")?.addEventListener("click",closeLegalPage);
+$("privacy-back")?.addEventListener("click",closeLegalPage);
+
+// ===== FAKE ACTIVITY TOASTS (every 5 seconds) =====
+const toastContainer = document.getElementById("activity-toasts");
+const fakeNames = ["alex_ng","sammy_k","user4421","chuks_dev","mary_j","tony_pro","nkechi22","bola_otp","david_x","fatima_m","ken_ng","precious_1","yemi_otp","grace_b","uche_2026","amina_s","john_doe99","linda_k","peter_v","sarah_m"];
+const fakeServices = ["WhatsApp","Telegram","Instagram","Google","Facebook","TikTok","Signal","Twitter/X","Discord","Snapchat"];
+const fakeCountries = ["Nigeria","USA","UK","India","Ghana","Kenya","South Africa","Canada","Germany","Brazil"];
+
+function showFakeToast() {
+  if (!toastContainer || token || $("landing-page")?.classList.contains("hidden")) return;
+  const name = fakeNames[Math.floor(Math.random() * fakeNames.length)] + Math.floor(Math.random()*900+100);
+  const service = fakeServices[Math.floor(Math.random() * fakeServices.length)];
+  const country = fakeCountries[Math.floor(Math.random() * fakeCountries.length)];
+  const actions = ["bought a number for", "just verified with", "purchased OTP for"];
+  const action = actions[Math.floor(Math.random() * actions.length)];
+  const toast = document.createElement("div");
+  toast.className = "activity-toast";
+  toast.innerHTML = `<strong>${name}</strong> ${action} <strong>${service}</strong> (${country})`;
+  toastContainer.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    toast.style.transform = "translateX(20px)";
+    toast.style.transition = "all .3s";
+    setTimeout(() => toast.remove(), 300);
+  }, 4200);
+}
+
+// Show public activity only on the home page while the visitor is logged out.
+function showPublicActivity() {
+  if (token || $("landing-page")?.classList.contains("hidden")) return;
+  showFakeToast();
+}
+setInterval(showPublicActivity, 5000);
+setTimeout(showPublicActivity, 1500);
+
+// ===== ADMIN USER MANAGEMENT =====
+
+// Markup admin
+const markupForm = document.getElementById("markup-form");
+const markupAmountInput = document.getElementById("markup-amount");
+const markupMsg = document.getElementById("markup-message");
+
+async function loadCurrentMarkupForAdmin() {
+  if (!markupAmountInput) return;
+  try {
+    const r = await api("/api/markup");
+    if (r.success && typeof r.markup_naira === "number") {
+      markupAmountInput.value = r.markup_naira;
+    }
+  } catch (e) {}
+}
+
+if (markupForm) {
+  // Load current when admin page shown - hook into showPage or call on load
+  markupForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const amount = Number(markupAmountInput.value);
+    if (!Number.isFinite(amount) || amount < 0) {
+      markupMsg.textContent = "Enter a valid amount";
+      markupMsg.className = "message error";
+      return;
+    }
+    markupMsg.textContent = "Updating...";
+    markupMsg.className = "message";
+    try {
+      const r = await api("/api/admin/set-markup", {
+        method: "POST",
+        body: JSON.stringify({ amount })
+      });
+      markupMsg.textContent = r.message || "Updated successfully";
+      markupMsg.className = "message success";
+      MARKUP_NAIRA = amount; // update local immediately
+    } catch (err) {
+      markupMsg.textContent = err.message;
+      markupMsg.className = "message error";
+    }
+  });
+}
+
+
+const adminSearchForm = document.getElementById("admin-search-form");
+const adminSearchQuery = document.getElementById("admin-search-query");
+const adminSearchMsg = document.getElementById("admin-search-message");
+const adminUserResult = document.getElementById("admin-user-result");
+
+if (adminSearchForm) {
+  adminSearchForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const q = adminSearchQuery.value.trim();
+    if (!q) return;
+    adminSearchMsg.textContent = "Searching...";
+    adminSearchMsg.className = "message";
+    adminUserResult.classList.add("hidden");
+    adminUserResult.innerHTML = "";
+    try {
+      const res = await api("/api/admin/search-user", {
+        method: "POST",
+        body: JSON.stringify({ query: q })
+      });
+      const u = res.user;
+      adminSearchMsg.textContent = "";
+      adminUserResult.classList.remove("hidden");
+      adminUserResult.innerHTML = `
+        <div class="panel" style="background:var(--card)">
+          <h3 style="margin-bottom:8px">${u.full_name || "No name"}</h3>
+          <p><strong>Username:</strong> ${u.username}</p>
+          <p><strong>Email:</strong> ${u.email}</p>
+          <p><strong>Wallet Balance:</strong> ₦${Number(u.balance_naira).toLocaleString(undefined,{minimumFractionDigits:2})}</p>
+          <p><strong>Total Spent:</strong> ₦${Number(u.total_spent_naira).toLocaleString(undefined,{minimumFractionDigits:2})}</p>
+          <p><strong>Status:</strong> ${u.banned ? '<span style="color:#e65b5b">Banned</span>' : '<span style="color:#229447">Active</span>'}</p>
+          ${u.banned && u.ban_reason ? `<p><strong>Ban Reason:</strong> ${u.ban_reason}</p>` : ""}
+          <hr style="border:0;border-top:1px solid var(--border);margin:14px 0">
+          <label for="ban-reason">Ban Reason (required when banning)</label>
+          <input id="ban-reason" type="text" placeholder="Enter reason for ban" value="${u.ban_reason || ""}">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+            <button class="primary" id="ban-btn" type="button" ${u.banned ? "disabled" : ""}>Ban User</button>
+            <button class="secondary" id="unban-btn" type="button" ${!u.banned ? "disabled" : ""}>Unban User</button>
+          </div>
+          <hr style="border:0;border-top:1px solid var(--border);margin:18px 0">
+          <h4>Reset Password</h4>
+          <label for="new-admin-password">New Password</label>
+          <input id="new-admin-password" type="text" minlength="8" placeholder="At least 8 characters">
+          <button class="primary" id="reset-pw-btn" type="button" style="margin-top:8px">Set New Password</button>
+          <div id="admin-action-msg" class="message"></div>
+        </div>`;
+
+      document.getElementById("ban-btn")?.addEventListener("click", async () => {
+        const reason = document.getElementById("ban-reason").value.trim();
+        if (reason.length < 3) { alert("Please enter a ban reason (at least 3 characters)"); return; }
+        if (!confirm(`Ban ${u.username}?`)) return;
+        try {
+          await api("/api/admin/ban-user", { method: "POST", body: JSON.stringify({ username: u.username, reason }) });
+          document.getElementById("admin-action-msg").textContent = "User banned.";
+          document.getElementById("admin-action-msg").className = "message success";
+          adminSearchForm.dispatchEvent(new Event("submit"));
+        } catch (err) {
+          document.getElementById("admin-action-msg").textContent = err.message;
+          document.getElementById("admin-action-msg").className = "message error";
+        }
+      });
+
+      document.getElementById("unban-btn")?.addEventListener("click", async () => {
+        if (!confirm(`Unban ${u.username}?`)) return;
+        try {
+          await api("/api/admin/unban-user", { method: "POST", body: JSON.stringify({ username: u.username }) });
+          document.getElementById("admin-action-msg").textContent = "User unbanned.";
+          document.getElementById("admin-action-msg").className = "message success";
+          adminSearchForm.dispatchEvent(new Event("submit"));
+        } catch (err) {
+          document.getElementById("admin-action-msg").textContent = err.message;
+          document.getElementById("admin-action-msg").className = "message error";
+        }
+      });
+
+      document.getElementById("reset-pw-btn")?.addEventListener("click", async () => {
+        const np = document.getElementById("new-admin-password").value;
+        if (np.length < 8) { alert("Password must be at least 8 characters"); return; }
+        if (!confirm(`Reset password for ${u.username}?`)) return;
+        try {
+          const r = await api("/api/admin/reset-password", { method: "POST", body: JSON.stringify({ username: u.username, new_password: np }) });
+          document.getElementById("admin-action-msg").textContent = r.message + (r.new_password ? " New password: " + r.new_password : "");
+          document.getElementById("admin-action-msg").className = "message success";
+          document.getElementById("new-admin-password").value = "";
+        } catch (err) {
+          document.getElementById("admin-action-msg").textContent = err.message;
+          document.getElementById("admin-action-msg").className = "message error";
+        }
+      });
+    } catch (err) {
+      adminSearchMsg.textContent = err.message;
+      adminSearchMsg.className = "message error";
+    }
+  });
+}
+
+</script>
+
+<script>
+// ===== SUPPORT TICKETS JS =====
+
+document.addEventListener("click", async (e) => {
+  const a = e.target.closest(".ticket-file-link");
+  if (!a) return;
+  e.preventDefault();
+  const id = a.dataset.id;
+  try {
+    const headers = { "Accept": "*/*" };
+    if (token) headers["Authorization"] = "Bearer " + token;
+    const res = await fetch(API + "/api/tickets/files/" + id, { headers, cache: "no-store" });
+    if (!res.ok) throw new Error("Could not download file");
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    window.open(url, "_blank");
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+  } catch (err) {
+    alert(err.message);
+  }
+});
+
+let currentTicketId = null;
+let currentTicketStatus = null;
+
+$("header-support-button")?.addEventListener("click", () => {
+  if (!token) return;
+  skipTicketListLoad = true;
+  showPage("tickets");
+  skipTicketListLoad = false;
+  showCreateTicketForm();
+});
+
+$("create-ticket-btn")?.addEventListener("click", () => {
+  showCreateTicketForm();
+});
+
+function showCreateTicketForm() {
+  const list = $("tickets-list");
+  list.innerHTML = `
+    <div id="create-ticket-form">
+      <h3>Create Support Ticket</h3>
+      <label for="ticket-category">What is this about?</label>
+      <select id="ticket-category" required>
+        <option value="">Select a category</option>
+        <option value="virtual_numbers">Virtual Numbers</option>
+        <option value="wallet_funding">Wallet Funding</option>
+      </select>
+      <div id="related-tx-area" class="hidden">
+        <label for="ticket-related">Which transaction? (optional)</label>
+        <select id="ticket-related"><option value="">None / Not related to a specific transaction</option></select>
+      </div>
+      <label for="ticket-subject">Subject</label>
+      <input id="ticket-subject" type="text" maxlength="200" required placeholder="e.g. Did not receive OTP code">
+      <label for="ticket-description">Describe the issue</label>
+      <textarea id="ticket-description" rows="5" maxlength="5000" required placeholder="Explain what happened..."></textarea>
+      <label for="ticket-files">Attach screenshots (optional, up to 4 files, 5MB each, images or PDF)</label>
+      <input id="ticket-files" type="file" accept="image/*,application/pdf" multiple>
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+        <button class="primary" id="submit-ticket-btn" type="button">Submit Ticket</button>
+        <button class="secondary" id="cancel-create-ticket" type="button">Cancel</button>
+      </div>
+      <div id="create-ticket-msg" class="message"></div>
+    </div>`;
+  async function loadRelatedTransactions() {
+    const cat = $("ticket-category").value;
+    const area = $("related-tx-area");
+    const sel = $("ticket-related");
+    sel.replaceChildren(new Option("None / Not related to a specific transaction", ""));
+    if (!cat) { area.classList.add("hidden"); return; }
+    area.classList.remove("hidden");
+    sel.disabled = true;
+    sel.add(new Option("Loading your transactions...", "__loading__"));
+    try {
+      // Use the same existing customer-history endpoints already used by
+      // Transaction History and Number History. The old /api/tickets/related
+      // route is not part of this site's API and caused the dropdown error.
+      let items = [];
+      if (cat === "virtual_numbers") {
+        const r = await api("/api/orders");
+        items = Array.isArray(r.orders) ? r.orders : [];
+      } else if (cat === "wallet_funding") {
+        const r = await api("/api/transactions");
+        const allTransactions = Array.isArray(r.transactions) ? r.transactions : [];
+        items = allTransactions.filter(item =>
+          String(item.type || "").toLowerCase() === "deposit" ||
+          String(item.type || "").toLowerCase() === "wallet_funding"
+        );
+      }
+
+      sel.replaceChildren(new Option("None / Not related to a specific transaction", ""));
+      items.forEach(item => {
+        const opt = document.createElement("option");
+        const id = item.id ?? item.order_id ?? item.deposit_id ?? item.reference ?? "";
+        opt.value = String(id);
+        const date = item.created_at || item.createdAt || item.date || item.created;
+        const dateText = date ? new Date(date).toLocaleString() : "Date unavailable";
+        const amount = item.amount_kobo != null ? money(item.amount_kobo) :
+          item.amount != null ? String(item.amount) : "Amount unavailable";
+        const status = item.status || "Status unavailable";
+        if (cat === "virtual_numbers") {
+          const service = item.service || item.service_name || "Number purchase";
+          const phone = item.phone_number || item.number || "Number unavailable";
+          const reference = item.reference || item.order_reference || item.id || "";
+          opt.textContent = `${service} | ${phone} | ${amount} | ${status} | ${dateText}${reference ? " | Ref: " + reference : ""}`;
+        } else {
+          const reference = item.reference || item.payment_reference || item.id || "";
+          opt.textContent = `Wallet funding | ${amount} | ${status} | ${dateText}${reference ? " | Ref: " + reference : ""}`;
+        }
+        if (opt.value) sel.appendChild(opt);
+      });
+
+      if (!items.length || sel.options.length === 1) {
+        sel.add(new Option(
+          cat === "virtual_numbers" ? "No number purchases found" : "No wallet funding records found",
+          "__empty__"
+        ));
+      }
+    } catch (e) {
+      sel.replaceChildren(new Option("Could not load transactions — tap to retry", "__error__"));
+      console.error("Could not load related ticket transactions:", e);
+    } finally {
+      sel.disabled = false;
+    }
+  }
+  $("ticket-category").addEventListener("change", loadRelatedTransactions);
+  $("ticket-related").addEventListener("change", () => {
+    if ($("ticket-related").value === "__error__") loadRelatedTransactions();
+  });
+  $("cancel-create-ticket").onclick = () => loadTickets();
+  $("submit-ticket-btn").onclick = submitTicket;
+}
+
+async function submitTicket() {
+  const category = $("ticket-category").value;
+  const subject = $("ticket-subject").value.trim();
+  const description = $("ticket-description").value.trim();
+  const relatedSelect = $("ticket-related");
+  const related = relatedSelect?.value || "";
+  const selectedTransactionLabel = related && relatedSelect?.selectedOptions?.[0]
+    ? relatedSelect.selectedOptions[0].textContent.trim() : "";
+  const fileInput = $("ticket-files");
+  if (!category || !subject || !description) {
+    showMessage("create-ticket-msg", "Please fill category, subject and description.", "error");
+    return;
+  }
+  const files = fileInput?.files ? Array.from(fileInput.files).slice(0, 4) : [];
+  for (const f of files) {
+    if (f.size > 5 * 1024 * 1024) {
+      showMessage("create-ticket-msg", `File ${f.name} is over 5MB.`, "error");
+      return;
+    }
+  }
+  const btn = $("submit-ticket-btn");
+  btn.disabled = true;
+  showMessage("create-ticket-msg", "Submitting ticket...");
+  try {
+    const form = new FormData();
+    form.append("category", category);
+    form.append("subject", subject);
+    const fullDescription = selectedTransactionLabel
+      ? `${description}\n\nSelected transaction for support:\n${selectedTransactionLabel}`
+      : description;
+    form.append("description", fullDescription);
+    if (related) {
+      form.append("related_id", related);
+      form.append("related_type", category);
+      form.append("related_label", selectedTransactionLabel);
+    }
+    files.forEach((f, i) => form.append("file" + i, f));
+    const headers = { "Accept": "application/json" };
+    if (token) headers["Authorization"] = "Bearer " + token;
+    const response = await fetch(API + "/api/tickets", { method: "POST", headers, body: form, cache: "no-store" });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || data.success !== true) throw new Error(data.error || "Failed to create ticket");
+    showMessage("create-ticket-msg", "Ticket created!", "success");
+    openTicket(data.ticket.id);
+  } catch (e) {
+    showMessage("create-ticket-msg", e.message, "error");
+    btn.disabled = false;
+  }
+}
+
+async function loadTickets() {
+  if (!token) return;
+  showMessage("tickets-message", "Loading your tickets...");
+  try {
+    const r = await api("/api/tickets");
+    const list = r.tickets || [];
+    const box = $("tickets-list");
+    if (!list.length) {
+      box.innerHTML = '<p class="muted">No tickets yet. Click "Create New Ticket" to start.</p>';
+      showMessage("tickets-message", "");
+      return;
+    }
+    const rows = await Promise.all(list.map(async t => ({
+      ticket: t,
+      waiting: await ticketWaitingLabel(t, false)
+    })));
+    box.innerHTML = rows.map(({ticket:t, waiting}) => `
+      <div class="ticket-item" data-id="${t.id}">
+        <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
+          <strong>${escapeHtml(t.subject)}</strong>
+          <span class="${t.status === "open" ? "status-open" : "status-closed"}">${t.status.toUpperCase()}</span>
+        </div>
+        <div class="muted" style="font-size:12px;margin-top:4px">${escapeHtml(formatTicketNumber(t.ticket_number || t.id))} · ${t.category === "virtual_numbers" ? "Virtual Numbers" : "Wallet Funding"} · ${t.created_at ? new Date(t.created_at).toLocaleString() : ""}</div>
+        <div class="ticket-waiting ${waiting === "Awaiting your reply" ? "waiting-user" : waiting === "Awaiting support" ? "waiting-support" : waiting === "Closed" ? "waiting-closed" : "waiting-admin"}">${escapeHtml(waiting)}</div>
+      </div>`).join("");
+    box.querySelectorAll(".ticket-item").forEach(el => {
+      el.addEventListener("click", () => openTicket(el.dataset.id));
+    });
+    showMessage("tickets-message", `${list.length} ticket(s)`);
+  } catch (e) {
+    showMessage("tickets-message", e.message, "error");
+  }
+}
+
+function escapeHtml(s) {
+  return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+function formatTicketNumber(value) {
+  const raw = String(value ?? "").trim();
+  if (/^\d+$/.test(raw)) return `Ticket ${raw.slice(-4).padStart(4, "0")}`;
+  // Stable four-digit reference from the ticket ID, so customer and admin see the same code.
+  let hash = 2166136261;
+  for (let i = 0; i < raw.length; i++) {
+    hash ^= raw.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return `Ticket ${1000 + ((hash >>> 0) % 9000)}`;
+}
+
+async function ticketWaitingLabel(ticket, adminView = false) {
+  if (ticket.status === "closed") return "Closed";
+  try {
+    const result = await api("/api/tickets/" + encodeURIComponent(ticket.id));
+    const messages = Array.isArray(result.messages) ? result.messages : [];
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage) {
+      if (adminView) return lastMessage.is_admin ? "Awaiting customer reply" : "Awaiting your reply";
+      return lastMessage.is_admin ? "Awaiting your reply" : "Awaiting support";
+    }
+  } catch (e) {}
+  return adminView ? "Awaiting your reply" : "Awaiting support";
+}
+
+let ticketRefreshInFlight = false;
+async function openTicket(id, silentRefresh = false) {
+  currentTicketId = id;
+  if (!silentRefresh) {
+    showPage("ticket-view");
+    $("ticket-view-title").textContent = "Loading...";
+    $("ticket-chat").innerHTML = "";
+    $("ticket-meta").textContent = "";
+    $("ticket-reply-area").classList.remove("hidden");
+  }
+  const chatBox = $("ticket-chat");
+  const wasNearBottom = chatBox.scrollHeight - chatBox.scrollTop - chatBox.clientHeight < 90;
+  try {
+    const r = await api("/api/tickets/" + encodeURIComponent(id));
+    const t = r.ticket;
+    currentTicketStatus = t.status;
+    $("ticket-view-title").textContent = t.subject || "Support Ticket";
+    const ticketNumber = formatTicketNumber(t.ticket_number || t.id);
+    $("ticket-meta").innerHTML = `
+      <strong>${escapeHtml(ticketNumber)}</strong> · <span class="${t.status === "open" ? "status-open" : "status-closed"}">${t.status.toUpperCase()}</span>
+      · ${t.category === "virtual_numbers" ? "Virtual Numbers" : "Wallet Funding"}
+      · Created ${t.created_at ? new Date(t.created_at).toLocaleString() : ""}
+      ${t.close_reason ? `<br><strong>Close reason:</strong> ${escapeHtml(t.close_reason)}` : ""}
+      ${isAdminUser && t.username ? `<br>Customer: ${escapeHtml(t.username)} (${escapeHtml(t.email || "")})` : ""}
+    `;
+    const msgs = r.messages || [];
+    const files = r.files || [];
+    const filesByMsg = {};
+    files.forEach(f => {
+      const k = f.message_id || "none";
+      if (!filesByMsg[k]) filesByMsg[k] = [];
+      filesByMsg[k].push(f);
+    });
+    const customerName = t.username || currentUser?.username || "Customer";
+    $("ticket-chat").innerHTML = msgs.map(m => {
+      const isSupport = !!m.is_admin;
+      const role = isSupport ? "support" : "customer";
+      const outgoing = isAdminUser ? isSupport : !isSupport;
+      const who = isSupport ? "SCOTAPOTP Support" : customerName;
+      const fs = (filesByMsg[m.id] || []).map(f =>
+        `<a href="#" class="ticket-file-link" data-id="${f.id}">${escapeHtml(f.filename)}</a>`
+      ).join("");
+      return `<div class="chat-msg ${role} ${outgoing ? "outgoing" : "incoming"}"><div class="meta">${escapeHtml(who)} · ${m.created_at ? new Date(m.created_at).toLocaleString() : ""}</div>
+        <div>${escapeHtml(m.message || "").replace(/\n/g, "<br>")}</div>
+        ${fs ? `<div class="chat-files">${fs}</div>` : ""}</div>`;
+    }).join("");
+    // Keep the conversation position steady while polling; only auto-follow new messages
+    // when the user was already viewing the latest message.
+    if (!silentRefresh || wasNearBottom) chatBox.scrollTop = chatBox.scrollHeight;
+    if (t.status === "closed") {
+      $("ticket-reply-area").classList.add("hidden");
+    }
+  } catch (e) {
+    if (!silentRefresh) showMessage("ticket-view-message", e.message, "error");
+  }
+}
+
+// Refresh the open conversation in the background so customer and support see
+// new messages automatically without reloading the website.
+async function pollOpenTicket() {
+  if (!currentTicketId || document.visibilityState === "hidden" || ticketRefreshInFlight) return;
+  const page = $("ticket-view-page");
+  if (!page || page.classList.contains("hidden")) return;
+  ticketRefreshInFlight = true;
+  try {
+    await openTicket(currentTicketId, true);
+  } finally {
+    ticketRefreshInFlight = false;
+  }
+}
+setInterval(pollOpenTicket, 3000);
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") pollOpenTicket();
+});
+
+$("ticket-back-btn")?.addEventListener("click", () => {
+  currentTicketId = null;
+  showPage(isAdminUser ? "admin-tickets" : "tickets");
+});
+
+$("ticket-reply-btn")?.addEventListener("click", async () => {
+  if (!currentTicketId || currentTicketStatus === "closed") return;
+  const text = $("ticket-reply-text").value.trim();
+  const fileInput = $("ticket-reply-files");
+  const files = fileInput?.files ? Array.from(fileInput.files).slice(0, 4) : [];
+  if (!text && !files.length) {
+    showMessage("ticket-view-message", "Enter a message or attach a file.", "error");
+    return;
+  }
+  const btn = $("ticket-reply-btn");
+  btn.disabled = true;
+  try {
+    const form = new FormData();
+    if (text) form.append("message", text);
+    files.forEach((f, i) => form.append("file" + i, f));
+    const headers = { "Accept": "application/json" };
+    if (token) headers["Authorization"] = "Bearer " + token;
+    const response = await fetch(API + "/api/tickets/" + encodeURIComponent(currentTicketId) + "/messages", {
+      method: "POST", headers, body: form, cache: "no-store"
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || data.success !== true) throw new Error(data.error || "Failed to send");
+    $("ticket-reply-text").value = "";
+    if (fileInput) fileInput.value = "";
+    showMessage("ticket-view-message", "Reply sent.", "success");
+    openTicket(currentTicketId);
+  } catch (e) {
+    showMessage("ticket-view-message", e.message, "error");
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+// Admin tickets
+let adminTicketsStatus = "open";
+async function loadAdminTickets(status) {
+  adminTicketsStatus = status || "open";
+  const openTab = $("admin-tickets-open-tab");
+  const closedTab = $("admin-tickets-closed-tab");
+  if (openTab && closedTab) {
+    openTab.className = adminTicketsStatus === "open" ? "primary" : "secondary";
+    closedTab.className = adminTicketsStatus === "closed" ? "primary" : "secondary";
+  }
+  showMessage("admin-tickets-message", "Loading...");
+  try {
+    const search = ($("admin-tickets-search")?.value || "").trim().toLowerCase();
+    // Fetch the selected status list, then match ticket number and customer details locally.
+    // This also supports searches such as "Ticket 001" even if the API only searches text fields.
+    const url = "/api/admin/tickets?status=" + encodeURIComponent(adminTicketsStatus);
+    const r = await api(url);
+    let list = r.tickets || [];
+    if (search) {
+      const normalizedSearch = search.replace(/^ticket\s*#?\s*/i, "").trim();
+      list = list.filter(t => {
+        const ticketLabel = formatTicketNumber(t.ticket_number || t.id).toLowerCase();
+        const rawTicketNumber = String(t.ticket_number || t.id || "").toLowerCase();
+        const paddedNumber = normalizedSearch && /^\d+$/.test(normalizedSearch)
+          ? normalizedSearch.padStart(4, "0") : normalizedSearch;
+        return ticketLabel.includes(search) || ticketLabel.includes("ticket " + paddedNumber) ||
+          rawTicketNumber.includes(normalizedSearch) ||
+          [t.username, t.email, t.subject].some(value => String(value || "").toLowerCase().includes(search));
+      });
+    }
+    const rows = await Promise.all(list.map(async t => ({
+      ticket: t,
+      waiting: await ticketWaitingLabel(t, true)
+    })));
+    const box = $("admin-tickets-list");
+    if (!list.length) {
+      box.innerHTML = '<p class="muted">No tickets found.</p>';
+      showMessage("admin-tickets-message", "");
+      return;
+    }
+    box.innerHTML = rows.map(({ticket:t, waiting}) => `
+      <div class="ticket-item" data-id="${t.id}">
+        <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
+          <strong>${escapeHtml(t.subject)}</strong>
+          <span class="${t.status === "open" ? "status-open" : "status-closed"}">${t.status.toUpperCase()}</span>
+        </div>
+        <div class="muted" style="font-size:12px;margin-top:4px">${escapeHtml(formatTicketNumber(t.ticket_number || t.id))} · ${escapeHtml(t.username || "")} · ${t.category === "virtual_numbers" ? "Virtual Numbers" : "Wallet Funding"} · ${t.created_at ? new Date(t.created_at).toLocaleString() : ""}</div>
+        <div class="ticket-waiting ${waiting === "Awaiting your reply" ? "waiting-user" : waiting === "Awaiting customer reply" ? "waiting-support" : waiting === "Closed" ? "waiting-closed" : "waiting-admin"}">${escapeHtml(waiting)}</div>
+        ${t.status === "open" ? `<button class="secondary small-button close-ticket-btn" data-id="${t.id}" style="margin-top:8px">Close Ticket</button>` : (t.close_reason ? `<div class="muted" style="font-size:12px">Reason: ${escapeHtml(t.close_reason)}</div>` : "")}
+      </div>`).join("");
+    box.querySelectorAll(".ticket-item").forEach(el => {
+      el.addEventListener("click", (e) => {
+        if (e.target.classList.contains("close-ticket-btn")) return;
+        openTicket(el.dataset.id);
+      });
+    });
+    box.querySelectorAll(".close-ticket-btn").forEach(btn => {
+      btn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        const reason = prompt("Reason for closing this ticket (required):");
+        if (!reason || reason.trim().length < 3) { alert("Reason required (min 3 chars)"); return; }
+        if (!confirm("Close ticket and delete all attached files from storage?")) return;
+        try {
+          await api("/api/admin/tickets/" + btn.dataset.id + "/close", {
+            method: "POST",
+            body: JSON.stringify({ reason: reason.trim() })
+          });
+          loadAdminTickets(adminTicketsStatus);
+        } catch (err) {
+          alert(err.message);
+        }
+      });
+    });
+    showMessage("admin-tickets-message", `${list.length} ticket(s)`);
+  } catch (e) {
+    showMessage("admin-tickets-message", e.message, "error");
+  }
+}
+
+$("admin-tickets-open-tab")?.addEventListener("click", () => loadAdminTickets("open"));
+$("admin-tickets-closed-tab")?.addEventListener("click", () => loadAdminTickets("closed"));
+$("admin-tickets-refresh")?.addEventListener("click", () => loadAdminTickets(adminTicketsStatus));
+$("admin-tickets-search")?.addEventListener("keydown", e => { if (e.key === "Enter") loadAdminTickets(adminTicketsStatus); });
+
+// Admin all orders
+async function loadAdminOrders() {
+  showMessage("admin-orders-message", "Loading...");
+  try {
+    const search = ($("admin-orders-search")?.value || "").trim();
+    let url = "/api/admin/all-orders";
+    if (search) url += "?search=" + encodeURIComponent(search);
+    const r = await api(url);
+    const list = r.orders || [];
+    const box = $("admin-orders-list");
+    if (!list.length) {
+      box.innerHTML = '<p class="muted">No purchases found.</p>';
+      showMessage("admin-orders-message", "");
+      return;
+    }
+    box.innerHTML = `<table class="history-table"><thead><tr>
+      <th>User</th><th>Service</th><th>Phone</th><th>Amount</th><th>Status</th><th>Code</th><th>Date</th>
+    </tr></thead><tbody>${list.map(o => `<tr>
+      <td>${escapeHtml(o.username || "")}<br><span class="muted" style="font-size:11px">${escapeHtml(o.email || "")}</span></td>
+      <td>${escapeHtml(o.service || "")}</td>
+      <td>${escapeHtml(o.phone_number || "")}</td>
+      <td>${money(o.amount_kobo)}</td>
+      <td>${escapeHtml(o.status || "")}</td>
+      <td>${escapeHtml(o.sms_code || "—")}</td>
+      <td>${o.created_at ? new Date(o.created_at).toLocaleString() : ""}</td>
+    </tr>`).join("")}</tbody></table>`;
+    showMessage("admin-orders-message", `${list.length} record(s)`);
+  } catch (e) {
+    showMessage("admin-orders-message", e.message, "error");
+  }
+}
+$("admin-orders-refresh")?.addEventListener("click", loadAdminOrders);
+$("admin-orders-search")?.addEventListener("keydown", e => { if (e.key === "Enter") loadAdminOrders(); });
+
+// Admin all deposits
+async function loadAdminDeposits() {
+  showMessage("admin-deposits-message", "Loading...");
+  try {
+    const search = ($("admin-deposits-search")?.value || "").trim();
+    let url = "/api/admin/all-deposits";
+    if (search) url += "?search=" + encodeURIComponent(search);
+    const r = await api(url);
+    const list = r.deposits || [];
+    const box = $("admin-deposits-list");
+    if (!list.length) {
+      box.innerHTML = '<p class="muted">No deposits found.</p>';
+      showMessage("admin-deposits-message", "");
+      return;
+    }
+    box.innerHTML = `<table class="history-table"><thead><tr>
+      <th>User</th><th>Amount</th><th>Status</th><th>Reference</th><th>Date</th>
+    </tr></thead><tbody>${list.map(d => `<tr>
+      <td>${escapeHtml(d.username || "")}<br><span class="muted" style="font-size:11px">${escapeHtml(d.email || "")}</span></td>
+      <td>${money(d.amount_kobo)}</td>
+      <td>${escapeHtml(d.status || "")}</td>
+      <td style="font-size:11px;word-break:break-all">${escapeHtml(d.id || "")}</td>
+      <td>${d.created_at ? new Date(d.created_at).toLocaleString() : ""}</td>
+    </tr>`).join("")}</tbody></table>`;
+    showMessage("admin-deposits-message", `${list.length} record(s)`);
+  } catch (e) {
+    showMessage("admin-deposits-message", e.message, "error");
+  }
+}
+$("admin-deposits-refresh")?.addEventListener("click", loadAdminDeposits);
+$("admin-deposits-search")?.addEventListener("keydown", e => { if (e.key === "Enter") loadAdminDeposits(); });
+
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+
+  window.addEventListener('load', () => {
+
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+
+  });
+
+}
+
+</script>
+
+</body>
+
+</html>
