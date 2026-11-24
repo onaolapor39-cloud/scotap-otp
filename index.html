@@ -67,21 +67,34 @@ main{width:min(100% - 28px,850px);margin:auto}.hero{text-align:center;padding:32
 .landing-cta{background:var(--panel);border-radius:16px;padding:30px}
 
 #activity-toasts{position:fixed;bottom:20px;right:20px;z-index:1000;display:flex;flex-direction:column;gap:10px;max-width:320px;pointer-events:none}
+#activity-toasts.hidden{display:none!important}
 .activity-toast{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px 14px;box-shadow:0 8px 24px #0004;font-size:13px;animation:toastIn .3s ease;pointer-events:auto}
 .activity-toast strong{color:var(--gold)}
 @keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
 
-.support-fab{position:fixed;bottom:24px;left:16px;z-index:900;width:56px;height:56px;border-radius:50%;background:var(--gold);color:#111;display:grid;place-items:center;font-size:24px;box-shadow:0 6px 20px #0005;border:0;cursor:pointer}
-.support-fab:hover{transform:scale(1.05)}
 .ticket-item{border:1px solid var(--border);border-radius:12px;padding:14px;margin:10px 0;background:var(--card);cursor:pointer}
 .ticket-item:hover{border-color:var(--gold)}
 .ticket-item .status-open{color:#229447;font-weight:700}
 .ticket-item .status-closed{color:var(--muted)}
-.chat-msg{margin:10px 0;padding:10px 12px;border-radius:12px;max-width:90%}
-.chat-msg.user{background:var(--secondary);margin-left:auto}
-.chat-msg.admin{background:var(--panel);border:1px solid var(--border)}
-.chat-msg .meta{font-size:11px;color:var(--muted);margin-bottom:4px}
-.chat-files a{display:inline-block;margin:4px 6px 0 0;font-size:13px;color:var(--gold)}
+.whatsapp-chat{height:min(52vh,520px);min-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:14px 14px 0 0;padding:16px 12px;background:#0b141a;margin:12px 0 0;scroll-behavior:smooth}
+.chat-msg{position:relative;width:fit-content;max-width:84%;margin:8px 0;padding:9px 12px 7px;border-radius:10px;font-size:15px;line-height:1.45;overflow-wrap:anywhere;box-shadow:0 1px 1px #0002}
+.chat-msg.user{background:#005c4b;color:#f1f5f4;margin-left:auto;border-top-right-radius:3px}
+.chat-msg.admin{background:#202c33;color:#f1f5f4;margin-right:auto;border-top-left-radius:3px}
+.chat-msg .meta{font-size:10px;color:rgba(255,255,255,.65);margin-bottom:4px}
+.chat-files a{display:inline-block;margin:5px 6px 0 0;font-size:13px;color:#8bd8c2}
+.whatsapp-composer{background:var(--panel);border:1px solid var(--border);border-top:0;border-radius:0 0 14px 14px;padding:10px;display:grid;gap:8px}
+.whatsapp-composer textarea{width:100%;resize:vertical;min-height:48px;max-height:140px;padding:12px 14px;border:1px solid var(--border);border-radius:22px;background:var(--input);color:var(--text);font:inherit;outline:none}
+.whatsapp-composer textarea:focus{border-color:var(--gold)}
+.composer-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.composer-actions input[type=file]{display:none}
+.attach-button{font-size:13px;color:var(--gold);cursor:pointer}
+.composer-hint{font-size:11px;flex:1}
+.composer-actions button{width:42px;height:42px;padding:0;border-radius:50%;font-size:20px;flex-shrink:0}
+html[data-theme="light"] .whatsapp-chat{background:#efeae2}
+html[data-theme="light"] .chat-msg.user{background:#d9fdd3;color:#111}
+html[data-theme="light"] .chat-msg.admin{background:#fff;color:#111}
+html[data-theme="light"] .chat-msg .meta{color:#667781}
+html[data-theme="light"] .chat-files a{color:#087e67}
 #create-ticket-form{margin-top:16px}
 #create-ticket-form.hidden{display:none!important}
 
@@ -103,7 +116,7 @@ main{width:min(100% - 28px,850px);margin:auto}.hero{text-align:center;padding:32
 
 <button class="secondary menu-button hidden" id="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">&#x2630;</button>
 
-<a class="support-link" href="https://wa.me/2349121971385" target="_blank" rel="noopener noreferrer"><button class="secondary" type="button">&#x1F4AC; Support</button></a>
+<button class="secondary hidden" id="header-support-button" type="button">&#x1F4AC; Support</button>
 
 </div>
 
@@ -277,7 +290,7 @@ main{width:min(100% - 28px,850px);margin:auto}.hero{text-align:center;padding:32
 
 </section>
 
-<section class="panel page-panel hidden" id="settings-page"><div class="section-heading"><h2>&#x2699;&#xFE0F; Account settings</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Edit your account information, appearance, or password.</p><form id="profile-form" style="margin-top:16px"><h3 style="margin-bottom:10px">&#x1F464; Account Information</h3><label for="profile-full-name">Full name</label><input id="profile-full-name" type="text" maxlength="100" autocomplete="name" required placeholder="Your full name"><label for="profile-username">Username</label><input id="profile-username" type="text" minlength="3" maxlength="24" pattern="[A-Za-z0-9_]{3,24}" autocomplete="username" required placeholder="Your username"><label for="profile-email">Email address</label><input id="profile-email" type="email" maxlength="254" autocomplete="email" required placeholder="you@example.com"><button class="primary full" id="profile-submit" type="submit">Save account information</button><div id="profile-message" class="message" aria-live="polite"></div></form><hr style="border:0;border-top:1px solid var(--border);margin:20px 0"><div class="settings-grid" style="margin-top:15px"><div><label for="settings-theme">Appearance</label><select id="settings-theme"><option value="dark">&#x1F319; Dark mode</option><option value="light">&#x2600;&#xFE0F; Light mode</option></select></div><div><label>Support</label><a class="support-link" href="https://wa.me/2349121971385" target="_blank" rel="noopener noreferrer"><button class="secondary full" type="button">&#x1F4AC; Chat with support</button></a></div></div><hr style="border:0;border-top:1px solid var(--border);margin:20px 0"><h2>&#x1F510; Change password</h2><form id="password-form"><label for="current-password">Current password</label><input id="current-password" type="password" autocomplete="current-password" minlength="8" maxlength="128" required placeholder="Enter current password"><label for="new-password">New password</label><input id="new-password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required placeholder="At least 8 characters"><label for="confirm-new-password">Confirm new password</label><input id="confirm-new-password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required placeholder="Enter new password again"><button class="primary full" id="password-submit" type="submit">Update password</button></form><div id="settings-message" class="message" aria-live="polite"></div></section>
+<section class="panel page-panel hidden" id="settings-page"><div class="section-heading"><h2>&#x2699;&#xFE0F; Account settings</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Edit your account information, appearance, or password.</p><form id="profile-form" style="margin-top:16px"><h3 style="margin-bottom:10px">&#x1F464; Account Information</h3><label for="profile-full-name">Full name</label><input id="profile-full-name" type="text" maxlength="100" autocomplete="name" required placeholder="Your full name"><label for="profile-username">Username</label><input id="profile-username" type="text" minlength="3" maxlength="24" pattern="[A-Za-z0-9_]{3,24}" autocomplete="username" required placeholder="Your username"><label for="profile-email">Email address</label><input id="profile-email" type="email" maxlength="254" autocomplete="email" required placeholder="you@example.com"><button class="primary full" id="profile-submit" type="submit">Save account information</button><div id="profile-message" class="message" aria-live="polite"></div></form><hr style="border:0;border-top:1px solid var(--border);margin:20px 0"><div class="settings-grid" style="margin-top:15px"><div><label for="settings-theme">Appearance</label><select id="settings-theme"><option value="dark">&#x1F319; Dark mode</option><option value="light">&#x2600;&#xFE0F; Light mode</option></select></div><div><label>Support</label><button class="secondary full" type="button" data-page="tickets">&#x1F4AC; Support Tickets</button></div></div><hr style="border:0;border-top:1px solid var(--border);margin:20px 0"><h2>&#x1F510; Change password</h2><form id="password-form"><label for="current-password">Current password</label><input id="current-password" type="password" autocomplete="current-password" minlength="8" maxlength="128" required placeholder="Enter current password"><label for="new-password">New password</label><input id="new-password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required placeholder="At least 8 characters"><label for="confirm-new-password">Confirm new password</label><input id="confirm-new-password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required placeholder="Enter new password again"><button class="primary full" id="password-submit" type="submit">Update password</button></form><div id="settings-message" class="message" aria-live="polite"></div></section>
 
 <section class="panel page-panel hidden" id="services-page"><div class="section-heading"><h2>&#x1F4F1; Available Services</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Choose a country to view supported apps and prices.</p>
 
@@ -331,13 +344,15 @@ main{width:min(100% - 28px,850px);margin:auto}.hero{text-align:center;padding:32
 <section class="panel page-panel hidden" id="ticket-view-page">
   <div class="section-heading"><h2 id="ticket-view-title">Ticket</h2><button class="secondary small-button" type="button" id="ticket-back-btn">&#x2190; Back</button></div>
   <div id="ticket-meta" class="muted" style="margin-bottom:12px"></div>
-  <div id="ticket-chat" style="max-height:50vh;overflow-y:auto;border:1px solid var(--border);border-radius:12px;padding:12px;background:var(--card);margin-bottom:14px"></div>
-  <div id="ticket-reply-area">
-    <label for="ticket-reply-text">Your reply</label>
-    <textarea id="ticket-reply-text" rows="3" maxlength="5000" placeholder="Type your message..."></textarea>
-    <label for="ticket-reply-files">Attach files (optional, max 4, 5MB each, images/PDF)</label>
-    <input id="ticket-reply-files" type="file" accept="image/*,application/pdf" multiple>
-    <button class="primary full" id="ticket-reply-btn" type="button" style="margin-top:10px">Send Reply</button>
+  <div id="ticket-chat" class="whatsapp-chat"></div>
+  <div id="ticket-reply-area" class="whatsapp-composer">
+    <textarea id="ticket-reply-text" rows="2" maxlength="5000" placeholder="Type a message..." aria-label="Type your message"></textarea>
+    <div class="composer-actions">
+      <label class="attach-button" for="ticket-reply-files">&#x1F4CE; Attach</label>
+      <input id="ticket-reply-files" type="file" accept="image/*,application/pdf" multiple>
+      <span class="muted composer-hint">Up to 4 files · 5MB each</span>
+      <button class="primary" id="ticket-reply-btn" type="button" aria-label="Send reply">&#10148;</button>
+    </div>
   </div>
   <div id="ticket-view-message" class="message" aria-live="polite"></div>
 </section>
@@ -412,7 +427,6 @@ main{width:min(100% - 28px,850px);margin:auto}.hero{text-align:center;padding:32
 <footer>&#xA9; <span id="year"></span> <strong style="color:var(--gold)">SCOTAP OTP</strong>. All rights reserved.<div class="footer-links"><a href="https://wa.me/2349121971385" target="_blank" rel="noopener noreferrer">&#x1F4AC; WhatsApp Support</a><a href="#" data-legal="terms">Terms of Service</a><a href="#" data-legal="privacy">Privacy Policy</a></div></footer>
 
 <div id="activity-toasts"></div>
-<button class="support-fab hidden" id="support-fab" type="button" title="Support Tickets" aria-label="Support Tickets">&#x1F3AB;</button>
 
 <script>
 
@@ -426,6 +440,7 @@ let MARKUP_NAIRA = 1000;
 let mode="register",token=null,countries=[],services=[],servicesCountry="",currentUser=null;
 
 let activePurchase=null,pollInterval=null,countdownInterval=null;
+let skipTicketListLoad=false;
 
 $("year").textContent=new Date().getFullYear();
 
@@ -451,12 +466,12 @@ function updateProfile(user){currentUser=user||{};$("profile-full-name").value=c
 
 async function loadProfile(){const result=await api("/api/me");updateProfile(result.user)}
 
-function showPage(page){const pages={dashboard:"dashboard-page",settings:"settings-page",services:"services-page",transactions:"transactions-page",numbers:"numbers-page",notifications:"notifications-page",admin:"admin-page",tickets:"tickets-page","ticket-view":"ticket-view-page","admin-tickets":"admin-tickets-page","admin-orders":"admin-orders-page","admin-deposits":"admin-deposits-page",terms:"terms-page",privacy:"privacy-page"};Object.values(pages).forEach(id=>{const el=$(id);if(el)el.classList.add("hidden")});if(pages[page])$(pages[page]).classList.remove("hidden");$("main-menu").classList.add("hidden");$("menu-toggle").setAttribute("aria-expanded","false");if(page==="services"&&token&&countries.length===0)loadServices();if(page==="notifications"&&token){loadAnnouncements();markAnnouncementsRead();}if(page==="transactions"&&token)loadTransactions();if(page==="numbers"&&token)loadNumbers();if(page==="dashboard"&&token)loadRecentActivity();if(page==="tickets"&&token)loadTickets();if(page==="admin-tickets"&&token)loadAdminTickets("open");
+function showPage(page){const pages={dashboard:"dashboard-page",settings:"settings-page",services:"services-page",transactions:"transactions-page",numbers:"numbers-page",notifications:"notifications-page",admin:"admin-page",tickets:"tickets-page","ticket-view":"ticket-view-page","admin-tickets":"admin-tickets-page","admin-orders":"admin-orders-page","admin-deposits":"admin-deposits-page",terms:"terms-page",privacy:"privacy-page"};Object.values(pages).forEach(id=>{const el=$(id);if(el)el.classList.add("hidden")});if(pages[page])$(pages[page]).classList.remove("hidden");$("main-menu").classList.add("hidden");$("menu-toggle").setAttribute("aria-expanded","false");if(page==="services"&&token&&countries.length===0)loadServices();if(page==="notifications"&&token){loadAnnouncements();markAnnouncementsRead();}if(page==="transactions"&&token)loadTransactions();if(page==="numbers"&&token)loadNumbers();if(page==="dashboard"&&token)loadRecentActivity();if(page==="tickets"&&token&&!skipTicketListLoad)loadTickets();if(page==="admin-tickets"&&token)loadAdminTickets("open");
 if(page==="admin"&&token)loadCurrentMarkupForAdmin();if(page==="admin-orders"&&token)loadAdminOrders();if(page==="admin-deposits"&&token)loadAdminDeposits();window.scrollTo({top:0,behavior:"smooth"})}
 
 function saveToken(t){token=t;try{if(t)localStorage.setItem("scotap_token",t);else localStorage.removeItem("scotap_token")}catch{}}
 
-function showLoggedIn(){$("auth-panel").classList.add("hidden");$("hero").classList.add("hidden");$("public-features").classList.add("hidden");$("landing-page").classList.add("hidden");$("customer-dashboard").classList.remove("hidden");$("menu-toggle").classList.remove("hidden");$("notifications-button").classList.remove("hidden");$("header-status").classList.remove("hidden");checkAdminStatus();loadAnnouncements();$("support-fab")?.classList.remove("hidden");showPage("dashboard")}
+function showLoggedIn(){$("auth-panel").classList.add("hidden");$("hero").classList.add("hidden");$("public-features").classList.add("hidden");$("landing-page").classList.add("hidden");$("customer-dashboard").classList.remove("hidden");$("menu-toggle").classList.remove("hidden");$("notifications-button").classList.remove("hidden");$("header-status").classList.remove("hidden");$("header-support-button")?.classList.remove("hidden");$("activity-toasts")?.classList.add("hidden");checkAdminStatus();loadAnnouncements();showPage("dashboard")}
 
 function maskPhone(num){
 
@@ -518,7 +533,7 @@ function setBalanceDisplay(amountText){
 
 }
 
-function showLoggedOut(){saveToken(null);currentUser=null;countries=[];services=[];servicesCountry="";stopPolling();$("landing-page")?.classList.remove("hidden");$("auth-panel").classList.add("hidden");$("hero").classList.add("hidden");$("public-features").classList.remove("hidden");$("customer-dashboard").classList.add("hidden");$("menu-toggle").classList.add("hidden");$("notifications-button").classList.add("hidden");$("header-status").classList.add("hidden");$("support-fab")?.classList.add("hidden");$("admin-menu-item").classList.add("hidden");$("admin-tickets-menu")?.classList.add("hidden");$("admin-orders-menu")?.classList.add("hidden");$("admin-deposits-menu")?.classList.add("hidden");$("main-menu").classList.add("hidden");const tp=$("terms-page"),pp=$("privacy-page");if(tp)tp.classList.add("hidden");if(pp)pp.classList.add("hidden");setBalanceDisplay("&#x20A6;&#x2014;");$("greeting").textContent="Welcome to SCOTAP!";$("country-filter").replaceChildren(new Option("Log in to load countries",""));$("service-list").replaceChildren();$("purchase-area").classList.add("hidden");showMessage("services-message","Log in to load available countries.");$("current-password").value="";$("new-password").value="";$("confirm-new-password").value=""}
+function showLoggedOut(){saveToken(null);currentUser=null;countries=[];services=[];servicesCountry="";stopPolling();$("landing-page")?.classList.remove("hidden");$("auth-panel").classList.add("hidden");$("hero").classList.add("hidden");$("public-features").classList.remove("hidden");$("customer-dashboard").classList.add("hidden");$("menu-toggle").classList.add("hidden");$("notifications-button").classList.add("hidden");$("header-status").classList.add("hidden");$("header-support-button")?.classList.add("hidden");$("activity-toasts")?.classList.remove("hidden");$("admin-menu-item").classList.add("hidden");$("admin-tickets-menu")?.classList.add("hidden");$("admin-orders-menu")?.classList.add("hidden");$("admin-deposits-menu")?.classList.add("hidden");$("main-menu").classList.add("hidden");const tp=$("terms-page"),pp=$("privacy-page");if(tp)tp.classList.add("hidden");if(pp)pp.classList.add("hidden");setBalanceDisplay("&#x20A6;&#x2014;");$("greeting").textContent="Welcome to SCOTAP!";$("country-filter").replaceChildren(new Option("Log in to load countries",""));$("service-list").replaceChildren();$("purchase-area").classList.add("hidden");showMessage("services-message","Log in to load available countries.");$("current-password").value="";$("new-password").value="";$("confirm-new-password").value=""}
 
 async function refreshWallet(){if(!token)return;$("refresh-button").disabled=true;showMessage("wallet-message","Loading your wallet...");try{const d=await api("/api/wallet");setBalanceDisplay(money(d.balance_kobo));showMessage("wallet-message","Wallet updated.","success");loadRecentActivity()}catch(e){showMessage("wallet-message",e.message,"error")}finally{$("refresh-button").disabled=false}}
 
@@ -1047,7 +1062,7 @@ const fakeServices = ["WhatsApp","Telegram","Instagram","Google","Facebook","Tik
 const fakeCountries = ["Nigeria","USA","UK","India","Ghana","Kenya","South Africa","Canada","Germany","Brazil"];
 
 function showFakeToast() {
-  if (!toastContainer) return;
+  if (!toastContainer || token || $("landing-page")?.classList.contains("hidden")) return;
   const name = fakeNames[Math.floor(Math.random() * fakeNames.length)] + Math.floor(Math.random()*900+100);
   const service = fakeServices[Math.floor(Math.random() * fakeServices.length)];
   const country = fakeCountries[Math.floor(Math.random() * fakeCountries.length)];
@@ -1065,9 +1080,13 @@ function showFakeToast() {
   }, 4200);
 }
 
-// Start fake activity toasts every 5 seconds (public social proof)
-setInterval(showFakeToast, 5000);
-setTimeout(showFakeToast, 1500); // first one a bit sooner
+// Show public activity only on the home page while the visitor is logged out.
+function showPublicActivity() {
+  if (token || $("landing-page")?.classList.contains("hidden")) return;
+  showFakeToast();
+}
+setInterval(showPublicActivity, 5000);
+setTimeout(showPublicActivity, 1500);
 
 // ===== ADMIN USER MANAGEMENT =====
 
@@ -1236,7 +1255,13 @@ document.addEventListener("click", async (e) => {
 let currentTicketId = null;
 let currentTicketStatus = null;
 
-$("support-fab")?.addEventListener("click", () => showPage("tickets"));
+$("header-support-button")?.addEventListener("click", () => {
+  if (!token) return;
+  skipTicketListLoad = true;
+  showPage("tickets");
+  skipTicketListLoad = false;
+  showCreateTicketForm();
+});
 
 $("create-ticket-btn")?.addEventListener("click", () => {
   showCreateTicketForm();
