@@ -116,6 +116,11 @@ body.ticket-open{overflow:hidden}
 .chat-msg.support .chat-files a{color:#fff!important}
 .chat-files a{color:#765400}
 @media(max-width:600px){#ticket-view-page{padding:10px 12px}#ticket-view-page .panel{padding:12px}#ticket-view-page .whatsapp-chat{padding:12px 10px}}
+.ticket-waiting{display:inline-flex;align-items:center;margin-top:8px;padding:5px 11px;border-radius:20px;font-size:12px;font-weight:700}
+.ticket-waiting.waiting-support{background:#fff0e4;color:#b64a00}
+.ticket-waiting.waiting-user{background:#e6efff;color:#2057a6}
+.ticket-waiting.waiting-admin{background:#fff0e4;color:#b64a00}
+.ticket-waiting.waiting-closed{background:#e8e8e8;color:#555}
 #create-ticket-form{margin-top:16px}
 #create-ticket-form.hidden{display:none!important}
 
@@ -1394,14 +1399,18 @@ async function loadTickets() {
       showMessage("tickets-message", "");
       return;
     }
-    box.innerHTML = list.map(t => `
+    const rows = await Promise.all(list.map(async t => ({
+      ticket: t,
+      waiting: await ticketWaitingLabel(t, false)
+    })));
+    box.innerHTML = rows.map(({ticket:t, waiting}) => `
       <div class="ticket-item" data-id="${t.id}">
         <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
           <strong>${escapeHtml(t.subject)}</strong>
           <span class="${t.status === "open" ? "status-open" : "status-closed"}">${t.status.toUpperCase()}</span>
         </div>
-        <div class="muted" style="font-size:12px;margin-top:4px">${escapeHtml(formatTicketNumber(t.ticket_number || t.id))} · ${t.category === "virtual_numbers" ? "Virtual Numbers" : "Wallet Funding"} · ${t.created_at ? new Date(t.created_at).toLocaleString() : ""}
-        </div>
+        <div class="muted" style="font-size:12px;margin-top:4px">${escapeHtml(formatTicketNumber(t.ticket_number || t.id))} · ${t.category === "virtual_numbers" ? "Virtual Numbers" : "Wallet Funding"} · ${t.created_at ? new Date(t.created_at).toLocaleString() : ""}</div>
+        <div class="ticket-waiting ${waiting === "Awaiting your reply" ? "waiting-user" : waiting === "Awaiting support" ? "waiting-support" : waiting === "Closed" ? "waiting-closed" : "waiting-admin"}">${escapeHtml(waiting)}</div>
       </div>`).join("");
     box.querySelectorAll(".ticket-item").forEach(el => {
       el.addEventListener("click", () => openTicket(el.dataset.id));
@@ -1417,27 +1426,51 @@ function escapeHtml(s) {
 }
 
 function formatTicketNumber(value) {
-  const raw = String(value ?? "");
-  const match = raw.match(/(\d+)$/);
-  const number = match ? match[1] : raw;
-  return `Ticket ${/^\d+$/.test(number) ? number.padStart(3, "0") : number}`;
+  const raw = String(value ?? "").trim();
+  if (/^\d+$/.test(raw)) return `Ticket ${raw.slice(-4).padStart(4, "0")}`;
+  // Stable four-digit reference from the ticket ID, so customer and admin see the same code.
+  let hash = 2166136261;
+  for (let i = 0; i < raw.length; i++) {
+    hash ^= raw.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return `Ticket ${1000 + ((hash >>> 0) % 9000)}`;
 }
 
-async function openTicket(id) {
+async function ticketWaitingLabel(ticket, adminView = false) {
+  if (ticket.status === "closed") return "Closed";
+  try {
+    const result = await api("/api/tickets/" + encodeURIComponent(ticket.id));
+    const messages = Array.isArray(result.messages) ? result.messages : [];
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage) {
+      if (adminView) return lastMessage.is_admin ? "Awaiting customer reply" : "Awaiting your reply";
+      return lastMessage.is_admin ? "Awaiting your reply" : "Awaiting support";
+    }
+  } catch (e) {}
+  return adminView ? "Awaiting your reply" : "Awaiting support";
+}
+
+let ticketRefreshInFlight = false;
+async function openTicket(id, silentRefresh = false) {
   currentTicketId = id;
-  showPage("ticket-view");
-  $("ticket-view-title").textContent = "Loading...";
-  $("ticket-chat").innerHTML = "";
-  $("ticket-meta").textContent = "";
-  $("ticket-reply-area").classList.remove("hidden");
+  if (!silentRefresh) {
+    showPage("ticket-view");
+    $("ticket-view-title").textContent = "Loading...";
+    $("ticket-chat").innerHTML = "";
+    $("ticket-meta").textContent = "";
+    $("ticket-reply-area").classList.remove("hidden");
+  }
+  const chatBox = $("ticket-chat");
+  const wasNearBottom = chatBox.scrollHeight - chatBox.scrollTop - chatBox.clientHeight < 90;
   try {
     const r = await api("/api/tickets/" + encodeURIComponent(id));
     const t = r.ticket;
     currentTicketStatus = t.status;
     $("ticket-view-title").textContent = t.subject || "Support Ticket";
-    const ticketNumber = t.ticket_number || t.id;
+    const ticketNumber = formatTicketNumber(t.ticket_number || t.id);
     $("ticket-meta").innerHTML = `
-      <strong>Ticket #${escapeHtml(ticketNumber)}</strong> · <span class="${t.status === "open" ? "status-open" : "status-closed"}">${t.status.toUpperCase()}</span>
+      <strong>${escapeHtml(ticketNumber)}</strong> · <span class="${t.status === "open" ? "status-open" : "status-closed"}">${t.status.toUpperCase()}</span>
       · ${t.category === "virtual_numbers" ? "Virtual Numbers" : "Wallet Funding"}
       · Created ${t.created_at ? new Date(t.created_at).toLocaleString() : ""}
       ${t.close_reason ? `<br><strong>Close reason:</strong> ${escapeHtml(t.close_reason)}` : ""}
@@ -1464,17 +1497,38 @@ async function openTicket(id) {
         <div>${escapeHtml(m.message || "").replace(/\n/g, "<br>")}</div>
         ${fs ? `<div class="chat-files">${fs}</div>` : ""}</div>`;
     }).join("");
-    $("ticket-chat").scrollTop = $("ticket-chat").scrollHeight;
+    // Keep the conversation position steady while polling; only auto-follow new messages
+    // when the user was already viewing the latest message.
+    if (!silentRefresh || wasNearBottom) chatBox.scrollTop = chatBox.scrollHeight;
     if (t.status === "closed") {
       $("ticket-reply-area").classList.add("hidden");
     }
   } catch (e) {
-    showMessage("ticket-view-message", e.message, "error");
+    if (!silentRefresh) showMessage("ticket-view-message", e.message, "error");
   }
 }
 
+// Refresh the open conversation in the background so customer and support see
+// new messages automatically without reloading the website.
+async function pollOpenTicket() {
+  if (!currentTicketId || document.visibilityState === "hidden" || ticketRefreshInFlight) return;
+  const page = $("ticket-view-page");
+  if (!page || page.classList.contains("hidden")) return;
+  ticketRefreshInFlight = true;
+  try {
+    await openTicket(currentTicketId, true);
+  } finally {
+    ticketRefreshInFlight = false;
+  }
+}
+setInterval(pollOpenTicket, 3000);
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") pollOpenTicket();
+});
+
 $("ticket-back-btn")?.addEventListener("click", () => {
-  showPage("tickets");
+  currentTicketId = null;
+  showPage(isAdminUser ? "admin-tickets" : "tickets");
 });
 
 $("ticket-reply-btn")?.addEventListener("click", async () => {
@@ -1534,26 +1588,30 @@ async function loadAdminTickets(status) {
         const ticketLabel = formatTicketNumber(t.ticket_number || t.id).toLowerCase();
         const rawTicketNumber = String(t.ticket_number || t.id || "").toLowerCase();
         const paddedNumber = normalizedSearch && /^\d+$/.test(normalizedSearch)
-          ? normalizedSearch.padStart(3, "0") : normalizedSearch;
+          ? normalizedSearch.padStart(4, "0") : normalizedSearch;
         return ticketLabel.includes(search) || ticketLabel.includes("ticket " + paddedNumber) ||
           rawTicketNumber.includes(normalizedSearch) ||
           [t.username, t.email, t.subject].some(value => String(value || "").toLowerCase().includes(search));
       });
     }
+    const rows = await Promise.all(list.map(async t => ({
+      ticket: t,
+      waiting: await ticketWaitingLabel(t, true)
+    })));
     const box = $("admin-tickets-list");
     if (!list.length) {
       box.innerHTML = '<p class="muted">No tickets found.</p>';
       showMessage("admin-tickets-message", "");
       return;
     }
-    box.innerHTML = list.map(t => `
+    box.innerHTML = rows.map(({ticket:t, waiting}) => `
       <div class="ticket-item" data-id="${t.id}">
         <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
           <strong>${escapeHtml(t.subject)}</strong>
           <span class="${t.status === "open" ? "status-open" : "status-closed"}">${t.status.toUpperCase()}</span>
         </div>
-        <div class="muted" style="font-size:12px;margin-top:4px">${escapeHtml(formatTicketNumber(t.ticket_number || t.id))} · ${escapeHtml(t.username || "")} · ${t.category === "virtual_numbers" ? "Virtual Numbers" : "Wallet Funding"} · ${t.created_at ? new Date(t.created_at).toLocaleString() : ""}
-        </div>
+        <div class="muted" style="font-size:12px;margin-top:4px">${escapeHtml(formatTicketNumber(t.ticket_number || t.id))} · ${escapeHtml(t.username || "")} · ${t.category === "virtual_numbers" ? "Virtual Numbers" : "Wallet Funding"} · ${t.created_at ? new Date(t.created_at).toLocaleString() : ""}</div>
+        <div class="ticket-waiting ${waiting === "Awaiting your reply" ? "waiting-user" : waiting === "Awaiting customer reply" ? "waiting-support" : waiting === "Closed" ? "waiting-closed" : "waiting-admin"}">${escapeHtml(waiting)}</div>
         ${t.status === "open" ? `<button class="secondary small-button close-ticket-btn" data-id="${t.id}" style="margin-top:8px">Close Ticket</button>` : (t.close_reason ? `<div class="muted" style="font-size:12px">Reason: ${escapeHtml(t.close_reason)}</div>` : "")}
       </div>`).join("");
     box.querySelectorAll(".ticket-item").forEach(el => {
