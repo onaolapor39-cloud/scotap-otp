@@ -1350,23 +1350,45 @@ function showCreateTicketForm() {
     const cat = $("ticket-category").value;
     const area = $("related-tx-area");
     const sel = $("ticket-related");
-    sel.innerHTML = '<option value="">None / Not related to a specific transaction</option>';
+    sel.replaceChildren(new Option("None / Not related to a specific transaction", ""));
     if (!cat) { area.classList.add("hidden"); return; }
     area.classList.remove("hidden");
+    sel.disabled = true;
+    sel.add(new Option("Loading your transactions...", "__loading__"));
     try {
       const r = await api("/api/tickets/related?type=" + encodeURIComponent(cat));
-      (r.items || []).forEach(item => {
+      sel.replaceChildren(new Option("None / Not related to a specific transaction", ""));
+      const items = Array.isArray(r.items) ? r.items :
+        Array.isArray(r.transactions) ? r.transactions :
+        Array.isArray(r.orders) ? r.orders :
+        Array.isArray(r.deposits) ? r.deposits : [];
+      items.forEach(item => {
         const opt = document.createElement("option");
-        opt.value = item.id;
+        opt.value = item.id ?? item.order_id ?? item.deposit_id ?? "";
+        const date = item.created_at || item.createdAt || item.date || item.created;
+        const dateText = date ? new Date(date).toLocaleString() : "Date unavailable";
+        const amount = item.amount_kobo != null ? money(item.amount_kobo) :
+          item.amount != null ? (typeof item.amount === "number" ? money(item.amount) : String(item.amount)) : "Amount unavailable";
+        const status = item.status || "Status unavailable";
         if (cat === "virtual_numbers") {
-          opt.textContent = `${item.service || ""} | ${item.phone_number || ""} | ${money(item.amount_kobo)} | ${item.status} | ${item.created_at ? new Date(item.created_at).toLocaleString() : ""}`;
+          const service = item.service || item.service_name || "Number purchase";
+          const phone = item.phone_number || item.number || "Number unavailable";
+          const reference = item.reference || item.order_reference || item.id || "";
+          opt.textContent = `${service} | ${phone} | ${amount} | ${status} | ${dateText}${reference ? " | Ref: " + reference : ""}`;
         } else {
-          opt.textContent = `${money(item.amount_kobo)} | ${item.status} | ${item.created_at ? new Date(item.created_at).toLocaleString() : ""} | ${item.id}`;
+          const reference = item.reference || item.payment_reference || item.id || "";
+          opt.textContent = `Wallet funding | ${amount} | ${status} | ${dateText}${reference ? " | Ref: " + reference : ""}`;
         }
-        sel.appendChild(opt);
+        if (opt.value) sel.appendChild(opt);
       });
+      if (!items.length || sel.options.length === 1) {
+        sel.add(new Option("No matching transactions found", "__empty__"));
+      }
     } catch (e) {
-      console.error(e);
+      sel.replaceChildren(new Option("Could not load transactions — try again", "__error__"));
+      console.error("Could not load related ticket transactions:", e);
+    } finally {
+      sel.disabled = false;
     }
   });
   $("cancel-create-ticket").onclick = () => loadTickets();
@@ -1377,7 +1399,10 @@ async function submitTicket() {
   const category = $("ticket-category").value;
   const subject = $("ticket-subject").value.trim();
   const description = $("ticket-description").value.trim();
-  const related = $("ticket-related")?.value || "";
+  const relatedSelect = $("ticket-related");
+  const related = relatedSelect?.value || "";
+  const selectedTransactionLabel = related && relatedSelect?.selectedOptions?.[0]
+    ? relatedSelect.selectedOptions[0].textContent.trim() : "";
   const fileInput = $("ticket-files");
   if (!category || !subject || !description) {
     showMessage("create-ticket-msg", "Please fill category, subject and description.", "error");
@@ -1397,8 +1422,15 @@ async function submitTicket() {
     const form = new FormData();
     form.append("category", category);
     form.append("subject", subject);
-    form.append("description", description);
-    if (related) form.append("related_id", related);
+    const fullDescription = selectedTransactionLabel
+      ? `${description}\n\nSelected transaction for support:\n${selectedTransactionLabel}`
+      : description;
+    form.append("description", fullDescription);
+    if (related) {
+      form.append("related_id", related);
+      form.append("related_type", category);
+      form.append("related_label", selectedTransactionLabel);
+    }
     files.forEach((f, i) => form.append("file" + i, f));
     const headers = { "Accept": "application/json" };
     if (token) headers["Authorization"] = "Bearer " + token;
