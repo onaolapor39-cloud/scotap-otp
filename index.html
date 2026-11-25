@@ -513,7 +513,7 @@ document.addEventListener("visibilitychange",()=>{
 // A real page unload (such as closing the tab) must not preserve the last page.
 window.addEventListener("pagehide",event=>{if(!event.persisted)clearPageSnapshot()});
 
-let activePurchase=null,pollInterval=null,countdownInterval=null;
+let activePurchase=null,pollInterval=null,countdownInterval=null,activePurchaseSyncInterval=null;
 let skipTicketListLoad=false;
 
 $("year").textContent=new Date().getFullYear();
@@ -545,7 +545,7 @@ if(page==="admin"&&token)loadCurrentMarkupForAdmin();if(page==="admin-orders"&&t
 
 function saveToken(t){token=t;try{if(t)localStorage.setItem("scotap_token",t);else localStorage.removeItem("scotap_token")}catch{}}
 
-function showLoggedIn(initialPage="dashboard"){$("auth-panel").classList.add("hidden");$("hero").classList.add("hidden");$("public-features").classList.add("hidden");$("landing-page").classList.add("hidden");$("customer-dashboard").classList.remove("hidden");$("menu-toggle").classList.remove("hidden");$("notifications-button").classList.remove("hidden");$("header-status").classList.remove("hidden");$("header-support-button")?.classList.remove("hidden");$("activity-toasts")?.classList.add("hidden");checkAdminStatus();loadAnnouncements();if(initialPage)showPage(initialPage)}
+function showLoggedIn(initialPage="dashboard",deferBackground=false){$("auth-panel").classList.add("hidden");$("hero").classList.add("hidden");$("public-features").classList.add("hidden");$("landing-page").classList.add("hidden");$("customer-dashboard").classList.remove("hidden");$("menu-toggle").classList.remove("hidden");$("notifications-button").classList.remove("hidden");$("header-status").classList.remove("hidden");$("header-support-button")?.classList.remove("hidden");$("activity-toasts")?.classList.add("hidden");if(!deferBackground){checkAdminStatus();loadAnnouncements()}if(initialPage)showPage(initialPage)}
 
 function maskPhone(num){
 
@@ -798,6 +798,33 @@ function clearActivePurchase(){
   const key=purchaseStorageKey();
   if(key)try{localStorage.removeItem(key)}catch{}
   activePurchase=null;stopPolling();
+  if(activePurchaseSyncInterval){clearInterval(activePurchaseSyncInterval);activePurchaseSyncInterval=null;}
+}
+async function syncActivePurchaseAcrossDevices(){
+  if(!token||!activePurchase?.id||document.visibilityState==="hidden")return;
+  try{
+    const response=await api("/api/orders");
+    const orders=Array.isArray(response.orders)?response.orders:[];
+    const matching=orders.find(item=>String(item.id)===String(activePurchase.id));
+    if(!matching)return;
+    const status=String(matching.status||"").toLowerCase().trim();
+    const terminal=["cancelled","canceled","expired","completed","complete","refunded","failed","rejected"];
+    if(terminal.includes(status)){
+      clearActivePurchase();
+      $("purchase-area")?.classList.add("hidden");
+      showMessage("services-message",status.includes("cancel")||status==="refunded"?"This number has already been cancelled or refunded.":"This number order is no longer active.","info");
+      refreshWallet().catch(()=>{});
+      if($("numbers-page")&&!$("numbers-page").classList.contains("hidden"))loadNumbers();
+      return;
+    }
+    // Keep the visible order details in sync if the server has updated them.
+    if(matching.sms_code&&!activePurchase.code){
+      activePurchase.code=matching.sms_code;
+      activePurchase.codeReceivedAt=Date.now();
+      saveActivePurchase();
+      renderPurchaseUI(activePurchase);
+    }
+  }catch(e){console.warn("Could not sync purchase status",e)}
 }
 async function restoreActivePurchase(){
   const key=purchaseStorageKey();if(!key||!token)return;
@@ -901,6 +928,8 @@ function renderPurchaseUI(order){
     }
   },1000);
   if(!order.codeReceivedAt)pollInterval=setInterval(()=>pollSMS(order.id),4000);
+  if(activePurchaseSyncInterval)clearInterval(activePurchaseSyncInterval);
+  activePurchaseSyncInterval=setInterval(syncActivePurchaseAcrossDevices,15000);
 }
 function updatePurchaseActions(order){
   const actions=$("purchase-actions");if(!actions)return;
@@ -1108,24 +1137,25 @@ $("announcement-form").addEventListener("submit",async e=>{e.preventDefault();co
 
       token=saved;
 
-      // Keep the dashboard hidden while the saved destination is being restored.
-      $("dashboard-page")?.classList.add("hidden");
-      showLoggedIn(null);
+      // Display the dashboard immediately; fetch account data in the background.
+      showLoggedIn(null,true);
+      showPage("dashboard");
 
       try{await loadProfile()}catch{}
 
-      await checkAdminStatus();
-
-      await restoreActivePurchase();
-
-      await refreshWallet();
-
-      await verifyReturnPayment();
+      // These requests are independent, so do not make the customer wait for them one by one.
+      await Promise.allSettled([
+        checkAdminStatus(),
+        restoreActivePurchase(),
+        refreshWallet(),
+        loadAnnouncements(),
+        verifyReturnPayment()
+      ]);
 
       const snapshotIsFresh=pageSnapshot&&Number.isFinite(Number(pageSnapshot.hiddenAt))&&Date.now()-Number(pageSnapshot.hiddenAt)<=60000;
       let destination=snapshotIsFresh&&allowedPages.includes(pageSnapshot.page)?pageSnapshot.page:"dashboard";
       if(["admin","admin-tickets","admin-orders","admin-deposits"].includes(destination)&&!isAdminUser){destination="dashboard"}
-      if(destination==="ticket-view"&&pageSnapshot.ticketId){await openTicket(pageSnapshot.ticketId)}
+      if(destination==="ticket-view"&&pageSnapshot.ticketId){openTicket(pageSnapshot.ticketId)}
       else if(destination==="ticket-view"){showPage(isAdminUser?"admin-tickets":"tickets")}
       else{showPage(destination)}
 
@@ -1708,7 +1738,10 @@ async function pollOpenTicket() {
 }
 setInterval(pollOpenTicket, 3000);
 document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState === "visible") pollOpenTicket();
+  if (document.visibilityState === "visible") {
+    pollOpenTicket();
+    syncActivePurchaseAcrossDevices();
+  }
 });
 
 $("ticket-back-btn")?.addEventListener("click", () => {
