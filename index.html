@@ -496,6 +496,9 @@ const PAGE_SNAPSHOT_KEY="scotap_temporary_page_snapshot";
 function readPageSnapshot(){try{const raw=sessionStorage.getItem(PAGE_SNAPSHOT_KEY);return raw?JSON.parse(raw):null}catch{return null}}
 function clearPageSnapshot(){try{sessionStorage.removeItem(PAGE_SNAPSHOT_KEY)}catch{}}
 function saveTemporaryPageSnapshot(){if(!token)return;try{sessionStorage.setItem(PAGE_SNAPSHOT_KEY,JSON.stringify({page:currentPage,ticketId:currentPage==="ticket-view"?(currentTicketId||null):null,hiddenAt:Date.now()}))}catch{}}
+// pagehide fires on reload/navigation more reliably than visibilitychange on mobile browsers.
+window.addEventListener("pagehide",saveTemporaryPageSnapshot);
+window.addEventListener("beforeunload",saveTemporaryPageSnapshot);
 
 document.addEventListener("visibilitychange",()=>{
   if(document.visibilityState==="hidden"){saveTemporaryPageSnapshot();return}
@@ -793,6 +796,18 @@ function saveActivePurchase(){
   if(!key||!activePurchase)return;
   try{const saved={...activePurchase};delete saved.code;localStorage.setItem(key,JSON.stringify(saved))}catch(e){console.warn("Could not save active purchase",e)}
 }
+function cancelledOrdersKey(){
+  const account=currentUser?.id||currentUser?.email||currentUser?.username;
+  return account ? "scotap_cancelled_orders_"+String(account).toLowerCase() : null;
+}
+function readCancelledOrderIds(){
+  const key=cancelledOrdersKey();if(!key)return [];
+  try{const value=JSON.parse(localStorage.getItem(key)||"[]");return Array.isArray(value)?value.map(String):[]}catch{return []}
+}
+function rememberCancelledOrder(id){
+  const key=cancelledOrdersKey();if(!key||!id)return;
+  try{const ids=new Set(readCancelledOrderIds());ids.add(String(id));localStorage.setItem(key,JSON.stringify([...ids].slice(-100)))}catch{}
+}
 function clearActivePurchase(){
   const key=purchaseStorageKey();
   if(key)try{localStorage.removeItem(key)}catch{}
@@ -809,6 +824,7 @@ async function syncActivePurchaseAcrossDevices(){
     const response=await api("/api/orders");
     const orders=Array.isArray(response.orders)?response.orders:[];
     const matching=orders.find(item=>String(item.id)===String(activePurchase.id));
+    if(readCancelledOrderIds().includes(String(activePurchase.id))){clearActivePurchase();$("purchase-area")?.classList.add("hidden");return;}
     // The server is the shared source of truth. If this order is absent or terminal,
     // do not keep showing a stale copy from this browser/Home Screen app.
     if(!matching||isTerminalPurchaseStatus(matching.status)){
@@ -835,7 +851,8 @@ async function restoreActivePurchase(){
     // Use it as the source of truth instead of relying only on browser localStorage.
     const response=await api("/api/orders");
     const orders=Array.isArray(response.orders)?response.orders:[];
-    const pending=orders.filter(order=>order.id&&!isTerminalPurchaseStatus(order.status)).sort((a,b)=>{
+    const cancelledIds=new Set(readCancelledOrderIds());
+    const pending=orders.filter(order=>order.id&&!cancelledIds.has(String(order.id))&&!isTerminalPurchaseStatus(order.status)).sort((a,b)=>{
       const dateA=Date.parse(a.created_at||a.createdAt||0)||0;
       const dateB=Date.parse(b.created_at||b.createdAt||0)||0;
       return dateB-dateA;
@@ -935,7 +952,7 @@ function updatePurchaseActions(order){
       if(Date.now()<Number(order.cancelAvailableAt||0))return;
       if(!confirm("Cancel this number and get a refund?"))return;
       $("cancel-btn").disabled=true;
-      try{await api("/api/cancel-number",{method:"POST",body:JSON.stringify({order_id:order.id})});clearActivePurchase();$("purchase-area").classList.add("hidden");showMessage("services-message","Number cancelled and refunded.","success");await refreshWallet();if($("numbers-page")&&!$("numbers-page").classList.contains("hidden"))await loadNumbers()}
+      try{const cancelResult=await api("/api/cancel-number",{method:"POST",body:JSON.stringify({order_id:order.id})});rememberCancelledOrder(order.id);clearActivePurchase();$("purchase-area").classList.add("hidden");showMessage("services-message",cancelResult.message||"Number cancelled. Your wallet is being updated.","success");await refreshWallet();if($("numbers-page")&&!$("numbers-page").classList.contains("hidden"))await loadNumbers()}
       catch(e){
         const raw=String(e?.message||"").toLowerCase();
         const customerMessage=raw.includes("otp suite")||raw.includes("invalid data")||raw.includes("cannot be cancelled")
@@ -1161,10 +1178,11 @@ $("announcement-form").addEventListener("submit",async e=>{e.preventDefault();co
 
     }
 
-  }catch{
-
-    setMode("register");showLoggedOut();
-
+  }catch(error){
+    console.error("Session restoration error",error);
+    const saved=(()=>{try{return localStorage.getItem("scotap_token")}catch{return null}})();
+    if(saved){token=saved;showLoggedIn(currentPage||"dashboard",true);}
+    else{setMode("register");showLoggedOut();}
   }
 
 })();
