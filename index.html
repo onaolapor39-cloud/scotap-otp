@@ -510,8 +510,7 @@ document.addEventListener("visibilitychange",()=>{
   }else showPage("dashboard");
 });
 
-// A real page unload (such as closing the tab) must not preserve the last page.
-window.addEventListener("pagehide",event=>{if(!event.persisted)clearPageSnapshot()});
+// Keep the short-lived session snapshot through reloads so the current page can be restored.
 
 let activePurchase=null,pollInterval=null,countdownInterval=null,activePurchaseSyncInterval=null;
 let skipTicketListLoad=false;
@@ -800,19 +799,22 @@ function clearActivePurchase(){
   activePurchase=null;stopPolling();
   if(activePurchaseSyncInterval){clearInterval(activePurchaseSyncInterval);activePurchaseSyncInterval=null;}
 }
+function isTerminalPurchaseStatus(value){
+  const status=String(value||"").toLowerCase().trim().replace(/[ _-]+/g," ");
+  return ["cancel","refund","expire","complete","failed","reject","void"].some(word=>status.includes(word));
+}
 async function syncActivePurchaseAcrossDevices(){
   if(!token||!activePurchase?.id||document.visibilityState==="hidden")return;
   try{
     const response=await api("/api/orders");
     const orders=Array.isArray(response.orders)?response.orders:[];
     const matching=orders.find(item=>String(item.id)===String(activePurchase.id));
-    if(!matching)return;
-    const status=String(matching.status||"").toLowerCase().trim();
-    const terminal=["cancelled","canceled","expired","completed","complete","refunded","failed","rejected"];
-    if(terminal.includes(status)){
+    // The server is the shared source of truth. If this order is absent or terminal,
+    // do not keep showing a stale copy from this browser/Home Screen app.
+    if(!matching||isTerminalPurchaseStatus(matching.status)){
       clearActivePurchase();
       $("purchase-area")?.classList.add("hidden");
-      showMessage("services-message",status.includes("cancel")||status==="refunded"?"This number has already been cancelled or refunded.":"This number order is no longer active.","info");
+      if(matching)showMessage("services-message","This number has already been cancelled or refunded.","info");
       refreshWallet().catch(()=>{});
       if($("numbers-page")&&!$("numbers-page").classList.contains("hidden"))loadNumbers();
       return;
@@ -833,11 +835,7 @@ async function restoreActivePurchase(){
     // Use it as the source of truth instead of relying only on browser localStorage.
     const response=await api("/api/orders");
     const orders=Array.isArray(response.orders)?response.orders:[];
-    const terminalStatuses=["cancelled","canceled","expired","completed","complete","refunded","failed","rejected"];
-    const pending=orders.filter(order=>{
-      const status=String(order.status||"").toLowerCase().trim();
-      return order.id&&!terminalStatuses.includes(status);
-    }).sort((a,b)=>{
+    const pending=orders.filter(order=>order.id&&!isTerminalPurchaseStatus(order.status)).sort((a,b)=>{
       const dateA=Date.parse(a.created_at||a.createdAt||0)||0;
       const dateB=Date.parse(b.created_at||b.createdAt||0)||0;
       return dateB-dateA;
@@ -873,17 +871,11 @@ async function restoreActivePurchase(){
       await pollSMS(activePurchase.id);
     }
   }catch(e){
-    // Keep the local copy as a fallback if the order-history API is temporarily unavailable.
-    try{
-      const raw=localStorage.getItem(key);
-      if(!raw)return;
-      const saved=JSON.parse(raw);
-      if(!saved||!saved.id||!saved.expiresAt)return;
-      activePurchase={...saved,code:null};
-      renderPurchaseUI(activePurchase);
-      await pollSMS(activePurchase.id);
-    }catch(localError){console.warn("Could not restore active purchase",localError)}
-    console.warn("Could not sync active purchase from server",e);
+    // Do not revive an old browser-local purchase when the server cannot confirm
+    // that it is still active. This prevents cancelled numbers reappearing on return.
+    clearActivePurchase();
+    $("purchase-area")?.classList.add("hidden");
+    console.warn("Could not confirm an active purchase from the server",e);
   }
 }
 function renderPurchaseUI(order){
@@ -943,7 +935,7 @@ function updatePurchaseActions(order){
       if(Date.now()<Number(order.cancelAvailableAt||0))return;
       if(!confirm("Cancel this number and get a refund?"))return;
       $("cancel-btn").disabled=true;
-      try{await api("/api/cancel-number",{method:"POST",body:JSON.stringify({order_id:order.id})});clearActivePurchase();$("purchase-area").classList.add("hidden");showMessage("services-message","Number cancelled and refunded.","success");await refreshWallet()}
+      try{await api("/api/cancel-number",{method:"POST",body:JSON.stringify({order_id:order.id})});clearActivePurchase();$("purchase-area").classList.add("hidden");showMessage("services-message","Number cancelled and refunded.","success");await refreshWallet();if($("numbers-page")&&!$("numbers-page").classList.contains("hidden"))await loadNumbers()}
       catch(e){
         const raw=String(e?.message||"").toLowerCase();
         const customerMessage=raw.includes("otp suite")||raw.includes("invalid data")||raw.includes("cannot be cancelled")
@@ -1137,9 +1129,13 @@ $("announcement-form").addEventListener("submit",async e=>{e.preventDefault();co
 
       token=saved;
 
-      // Display the dashboard immediately; fetch account data in the background.
+      // Restore the last page immediately; do not flash the dashboard first.
+      const snapshotIsFresh=pageSnapshot&&Number.isFinite(Number(pageSnapshot.hiddenAt))&&Date.now()-Number(pageSnapshot.hiddenAt)<=60000;
+      let destination=snapshotIsFresh&&allowedPages.includes(pageSnapshot.page)?pageSnapshot.page:"dashboard";
       showLoggedIn(null,true);
-      showPage("dashboard");
+      if(destination==="ticket-view"&&pageSnapshot.ticketId){openTicket(pageSnapshot.ticketId)}
+      else if(destination==="ticket-view"){showPage("tickets")}
+      else{showPage(destination)}
 
       try{await loadProfile()}catch{}
 
@@ -1152,12 +1148,11 @@ $("announcement-form").addEventListener("submit",async e=>{e.preventDefault();co
         verifyReturnPayment()
       ]);
 
-      const snapshotIsFresh=pageSnapshot&&Number.isFinite(Number(pageSnapshot.hiddenAt))&&Date.now()-Number(pageSnapshot.hiddenAt)<=60000;
-      let destination=snapshotIsFresh&&allowedPages.includes(pageSnapshot.page)?pageSnapshot.page:"dashboard";
-      if(["admin","admin-tickets","admin-orders","admin-deposits"].includes(destination)&&!isAdminUser){destination="dashboard"}
-      if(destination==="ticket-view"&&pageSnapshot.ticketId){openTicket(pageSnapshot.ticketId)}
-      else if(destination==="ticket-view"){showPage(isAdminUser?"admin-tickets":"tickets")}
-      else{showPage(destination)}
+      if(["admin","admin-tickets","admin-orders","admin-deposits"].includes(destination)&&!isAdminUser){
+        destination="dashboard";
+        showPage(destination);
+      }
+      if(destination==="ticket-view"&&!pageSnapshot.ticketId){showPage(isAdminUser?"admin-tickets":"tickets")}
 
     }else{
 
