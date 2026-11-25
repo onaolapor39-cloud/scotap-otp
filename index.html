@@ -789,6 +789,33 @@ function purchaseStorageKey(){
   const account=currentUser?.id||currentUser?.email||currentUser?.username;
   return account ? "scotap_active_purchase_"+String(account).toLowerCase() : null;
 }
+function cancelledOrdersKey(){
+  const account=currentUser?.id||currentUser?.email||currentUser?.username;
+  return account ? "scotap_cancelled_orders_"+String(account).toLowerCase() : null;
+}
+function getCancelledOrderIds(){
+  const key=cancelledOrdersKey();
+  if(!key)return new Set();
+  try{
+    const raw=localStorage.getItem(key);
+    const list=raw?JSON.parse(raw):[];
+    // Keep only last 40 ids so storage stays small
+    return new Set((Array.isArray(list)?list:[]).map(String).slice(-40));
+  }catch{return new Set()}
+}
+function markOrderCancelledLocally(orderId){
+  if(!orderId)return;
+  const key=cancelledOrdersKey();
+  if(!key)return;
+  try{
+    const ids=getCancelledOrderIds();
+    ids.add(String(orderId));
+    localStorage.setItem(key,JSON.stringify([...ids].slice(-40)));
+  }catch(e){console.warn("Could not mark order cancelled locally",e)}
+}
+function isOrderCancelledLocally(orderId){
+  return getCancelledOrderIds().has(String(orderId));
+}
 function saveActivePurchase(){
   const key=purchaseStorageKey();
   if(!key||!activePurchase)return;
@@ -806,10 +833,16 @@ async function syncActivePurchaseAcrossDevices(){
     const response=await api("/api/orders");
     const orders=Array.isArray(response.orders)?response.orders:[];
     const matching=orders.find(item=>String(item.id)===String(activePurchase.id));
-    if(!matching)return;
+    // If the order is gone from the server list, or we already cancelled it locally, clear UI.
+    if(!matching || isOrderCancelledLocally(activePurchase.id)){
+      clearActivePurchase();
+      $("purchase-area")?.classList.add("hidden");
+      return;
+    }
     const status=String(matching.status||"").toLowerCase().trim();
     const terminal=["cancelled","canceled","expired","completed","complete","refunded","failed","rejected"];
     if(terminal.includes(status)){
+      markOrderCancelledLocally(activePurchase.id);
       clearActivePurchase();
       $("purchase-area")?.classList.add("hidden");
       showMessage("services-message",status.includes("cancel")||status==="refunded"?"This number has already been cancelled or refunded.":"This number order is no longer active.","info");
@@ -834,9 +867,18 @@ async function restoreActivePurchase(){
     const response=await api("/api/orders");
     const orders=Array.isArray(response.orders)?response.orders:[];
     const terminalStatuses=["cancelled","canceled","expired","completed","complete","refunded","failed","rejected"];
+    const now=Date.now();
     const pending=orders.filter(order=>{
+      if(!order.id)return false;
+      if(isOrderCancelledLocally(order.id))return false;
       const status=String(order.status||"").toLowerCase().trim();
-      return order.id&&!terminalStatuses.includes(status);
+      if(terminalStatuses.includes(status))return false;
+      // Don't resurrect very old orders that have already passed the normal 10-minute window
+      // and never received a code. This protects against slow/missing status updates on the server.
+      const createdAt=Date.parse(order.created_at||order.createdAt||"")||0;
+      const hasCode=!!(order.sms_code||order.code);
+      if(createdAt && !hasCode && (now - createdAt) > 12*60*1000)return false;
+      return true;
     }).sort((a,b)=>{
       const dateA=Date.parse(a.created_at||a.createdAt||0)||0;
       const dateB=Date.parse(b.created_at||b.createdAt||0)||0;
@@ -879,6 +921,15 @@ async function restoreActivePurchase(){
       if(!raw)return;
       const saved=JSON.parse(raw);
       if(!saved||!saved.id||!saved.expiresAt)return;
+      // Never restore a locally-cancelled order or one that already expired long ago
+      if(isOrderCancelledLocally(saved.id)){
+        localStorage.removeItem(key);
+        return;
+      }
+      if(Number(saved.expiresAt) < Date.now() - 2*60*1000){
+        localStorage.removeItem(key);
+        return;
+      }
       activePurchase={...saved,code:null};
       renderPurchaseUI(activePurchase);
       await pollSMS(activePurchase.id);
@@ -943,10 +994,37 @@ function updatePurchaseActions(order){
       if(Date.now()<Number(order.cancelAvailableAt||0))return;
       if(!confirm("Cancel this number and get a refund?"))return;
       $("cancel-btn").disabled=true;
-      try{await api("/api/cancel-number",{method:"POST",body:JSON.stringify({order_id:order.id})});clearActivePurchase();$("purchase-area").classList.add("hidden");showMessage("services-message","Number cancelled and refunded.","success");await refreshWallet()}
-      catch(e){
+      try{
+        await api("/api/cancel-number",{method:"POST",body:JSON.stringify({order_id:order.id})});
+        markOrderCancelledLocally(order.id);
+        clearActivePurchase();
+        $("purchase-area").classList.add("hidden");
+        showMessage("services-message","Number cancelled and refunded.","success");
+        await refreshWallet();
+      }catch(e){
         const raw=String(e?.message||"").toLowerCase();
-        const customerMessage=raw.includes("otp suite")||raw.includes("invalid data")||raw.includes("cannot be cancelled")
+        // Backend sometimes already cancelled the number but still returns an error.
+        // Treat those as success so the card never comes back after refresh.
+        const alreadyGone =
+          raw.includes("already") ||
+          raw.includes("cannot be cancelled") ||
+          raw.includes("can not be cancelled") ||
+          raw.includes("not available") ||
+          raw.includes("invalid data") ||
+          raw.includes("otp suite") ||
+          raw.includes("refunded") ||
+          raw.includes("cancelled") ||
+          raw.includes("canceled");
+        if(alreadyGone){
+          markOrderCancelledLocally(order.id);
+          clearActivePurchase();
+          $("purchase-area").classList.add("hidden");
+          showMessage("services-message","Number cancelled and refunded.","success");
+          refreshWallet().catch(()=>{});
+          return;
+        }
+        const customerMessage =
+          raw.includes("otp suite")||raw.includes("invalid data")||raw.includes("cannot be cancelled")
           ?"Cancellation is not available yet. Please wait a little longer and try again."
           :"We couldn't cancel this number right now. Please try again shortly.";
         showMessage("services-message",customerMessage,"error");
@@ -1143,13 +1221,13 @@ $("announcement-form").addEventListener("submit",async e=>{e.preventDefault();co
 
       try{await loadProfile()}catch{}
 
-      await checkAdminStatus();
-
-      await restoreActivePurchase();
-
-      await refreshWallet();
-
-      await verifyReturnPayment();
+      // Run independent calls in parallel so dashboard opens faster on mobile
+      await Promise.all([
+        checkAdminStatus().catch(()=>{}),
+        restoreActivePurchase().catch(()=>{}),
+        refreshWallet().catch(()=>{}),
+        verifyReturnPayment().catch(()=>{})
+      ]);
 
       const snapshotIsFresh=pageSnapshot&&Number.isFinite(Number(pageSnapshot.hiddenAt))&&Date.now()-Number(pageSnapshot.hiddenAt)<=60000;
       let destination=snapshotIsFresh&&allowedPages.includes(pageSnapshot.page)?pageSnapshot.page:"dashboard";
