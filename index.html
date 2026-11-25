@@ -591,7 +591,7 @@ async function refreshWallet(){if(!token)return;$("refresh-button").disabled=tru
 
 $("register-tab").addEventListener("click",()=>setMode("register"));$("login-tab").addEventListener("click",()=>setMode("login"));
 
-$("auth-form").addEventListener("submit",async e=>{e.preventDefault();const b=$("auth-submit");b.disabled=true;showMessage("auth-message","Please wait...");try{let body;if(mode==="register"){if($("password").value!==$("confirm-password").value)throw new Error("Passwords do not match.");if(!$("terms-accepted").checked)throw new Error("You must accept the Terms of Service and Privacy Policy.");body={full_name:$("full-name").value.trim(),username:$("username").value.trim().toLowerCase(),email:$("email").value.trim(),password:$("password").value,confirm_password:$("confirm-password").value,terms_accepted:$("terms-accepted").checked}}else body={email:$("email").value.trim(),password:$("password").value};const result=await api(mode==="register"?"/api/register":"/api/login",{method:"POST",body:JSON.stringify(body)});if(!result.token)throw new Error("The server did not return a login token.");saveToken(result.token);$("password").value="";$("confirm-password").value="";showLoggedIn();if(result.user)updateProfile(result.user);try{await loadProfile()}catch(err){if(!currentUser)throw err}await Promise.allSettled([refreshWallet()]);await verifyReturnPayment()}catch(err){showMessage("auth-message",err.message,"error")}finally{b.disabled=false}});
+$("auth-form").addEventListener("submit",async e=>{e.preventDefault();const b=$("auth-submit");b.disabled=true;showMessage("auth-message","Please wait...");try{let body;if(mode==="register"){if($("password").value!==$("confirm-password").value)throw new Error("Passwords do not match.");if(!$("terms-accepted").checked)throw new Error("You must accept the Terms of Service and Privacy Policy.");body={full_name:$("full-name").value.trim(),username:$("username").value.trim().toLowerCase(),email:$("email").value.trim(),password:$("password").value,confirm_password:$("confirm-password").value,terms_accepted:$("terms-accepted").checked}}else body={email:$("email").value.trim(),password:$("password").value};const result=await api(mode==="register"?"/api/register":"/api/login",{method:"POST",body:JSON.stringify(body)});if(!result.token)throw new Error("The server did not return a login token.");saveToken(result.token);$("password").value="";$("confirm-password").value="";showLoggedIn();if(result.user)updateProfile(result.user);try{await loadProfile()}catch(err){if(!currentUser)throw err}await restoreActivePurchase();await Promise.allSettled([refreshWallet()]);await verifyReturnPayment()}catch(err){showMessage("auth-message",err.message,"error")}finally{b.disabled=false}});
 
 $("menu-toggle").addEventListener("click",()=>{const m=$("main-menu"),open=m.classList.contains("hidden");m.classList.toggle("hidden",!open);$("menu-toggle").setAttribute("aria-expanded",String(open))});
 
@@ -763,100 +763,92 @@ function renderCountries(){const s=$("country-filter"),prev=s.value;s.replaceChi
 
 function stopPolling(){if(pollInterval)clearInterval(pollInterval);if(countdownInterval)clearInterval(countdownInterval);pollInterval=null;countdownInterval=null}
 
-function renderPurchaseUI(order){
-
-  const area=$("purchase-area");
-
-  area.classList.remove("hidden");
-
-  const remaining=Math.max(0,Math.floor((order.expiresAt-Date.now())/1000));
-
-  const mins=Math.floor(remaining/60),secs=remaining%60;
-
-  area.innerHTML=`
-
-    <div class="panel" style="background:var(--card)">
-
-      <h3>Number Purchased</h3>
-
-      <p><strong>Service:</strong> ${order.service||""}</p>
-
-      <p><strong>Number:</strong> ${order.number||""}</p>
-
-      <p><strong>Amount:</strong> ${naira(order.amount_naira)||""}</p>
-
-      <div class="countdown" id="countdown">${mins}:${secs.toString().padStart(2,"0")}</div>
-
-      <div id="code-area"></div>
-
-      <div id="purchase-actions" style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap"></div>
-
-    </div>`;
-
-  updatePurchaseActions(order);
-
-  countdownInterval=setInterval(()=>{
-
-    const left=Math.max(0,Math.floor((order.expiresAt-Date.now())/1000));
-
-    const m=Math.floor(left/60),s=left%60;
-
-    const el=$("countdown");if(el)el.textContent=`${m}:${s.toString().padStart(2,"0")}`;
-
-    if(left<=0){stopPolling();showMessage("services-message","Time expired. You can cancel for a refund.","error")}
-
-  },1000);
-
-  pollInterval=setInterval(()=>pollSMS(order.id),4000);
-
+function purchaseStorageKey(){
+  const account=currentUser?.id||currentUser?.email||currentUser?.username;
+  return account ? "scotap_active_purchase_"+String(account).toLowerCase() : null;
 }
-
-function updatePurchaseActions(order){
-
-  const actions=$("purchase-actions");if(!actions)return;
-
-  if(order.code){
-
-    actions.innerHTML=`<button class="primary" id="done-btn" type="button">Done</button>`;
-
-    $("done-btn").onclick=()=>{stopPolling();$("purchase-area").classList.add("hidden");showPage("numbers");loadNumbers()};
-
-  }else{
-
-    actions.innerHTML=`<button class="secondary" id="cancel-btn" type="button">Cancel & Refund</button>`;
-
-    $("cancel-btn").onclick=async()=>{if(!confirm("Cancel this number and get a refund?"))return;$("cancel-btn").disabled=true;try{await api("/api/cancel-number",{method:"POST",body:JSON.stringify({order_id:order.id})});stopPolling();$("purchase-area").classList.add("hidden");showMessage("services-message","Number cancelled and refunded.","success");await refreshWallet()}catch(e){showMessage("services-message",e.message,"error");$("cancel-btn").disabled=false}};
-
-  }
-
+function saveActivePurchase(){
+  const key=purchaseStorageKey();
+  if(!key||!activePurchase)return;
+  try{const saved={...activePurchase};delete saved.code;localStorage.setItem(key,JSON.stringify(saved))}catch(e){console.warn("Could not save active purchase",e)}
 }
-
-async function pollSMS(orderId){
-
+function clearActivePurchase(){
+  const key=purchaseStorageKey();
+  if(key)try{localStorage.removeItem(key)}catch{}
+  activePurchase=null;stopPolling();
+}
+async function restoreActivePurchase(){
+  const key=purchaseStorageKey();if(!key)return;
   try{
-
-    const res=await api("/api/get-sms?order_id="+encodeURIComponent(orderId));
-
-    const d=res.data||{};
-
-    if(d.status==="received"&&d.sms){
-
-      activePurchase.code=d.sms;
-
-      const codeArea=$("code-area");
-
-      if(codeArea)codeArea.innerHTML=`<div class="code-box"><div>OTP Code</div><strong>${d.sms}</strong><br><button class="secondary copy-btn" type="button" onclick="navigator.clipboard.writeText('${d.sms}').then(()=>alert('Copied!'))">Copy Code</button></div>`;
-
-      updatePurchaseActions(activePurchase);
-
-      stopPolling();
-
-      showMessage("services-message","Code received!","success");
-
+    const raw=localStorage.getItem(key);if(!raw)return;
+    const saved=JSON.parse(raw);if(!saved||!saved.id||!saved.expiresAt)return;
+    activePurchase={...saved,code:null};
+    if(activePurchase.codeReceivedAt&&Date.now()>=Number(activePurchase.codeReceivedAt)+600000){
+      clearActivePurchase();$("purchase-area").classList.add("hidden");return;
     }
-
+    renderPurchaseUI(activePurchase);
+    await pollSMS(activePurchase.id);
+  }catch(e){console.warn("Could not restore active purchase",e)}
+}
+function renderPurchaseUI(order){
+  stopPolling();
+  const area=$("purchase-area");area.classList.remove("hidden");
+  const endAt=order.codeReceivedAt?Number(order.codeReceivedAt)+600000:Number(order.expiresAt);
+  const remaining=Math.max(0,Math.floor((endAt-Date.now())/1000));
+  const mins=Math.floor(remaining/60),secs=remaining%60;
+  area.innerHTML=`
+    <div class="panel" style="background:var(--card)">
+      <h3>Number Purchased</h3>
+      <p><strong>Service:</strong> ${order.service||""}</p>
+      <p><strong>Number:</strong> ${order.number||""}</p>
+      <p><strong>Amount:</strong> ${naira(order.amount_naira)||""}</p>
+      <div class="countdown" id="countdown">${mins}:${secs.toString().padStart(2,"0")}</div>
+      <div id="code-area"></div>
+      <div id="purchase-actions" style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap"></div>
+    </div>`;
+  updatePurchaseActions(order);
+  countdownInterval=setInterval(()=>{
+    const finalAt=order.codeReceivedAt?Number(order.codeReceivedAt)+600000:Number(order.expiresAt);
+    const left=Math.max(0,Math.floor((finalAt-Date.now())/1000));
+    const el=$("countdown");if(el)el.textContent=`${Math.floor(left/60)}:${(left%60).toString().padStart(2,"0")}`;
+    if(left<=0){
+      stopPolling();
+      if(order.codeReceivedAt){clearActivePurchase();area.classList.add("hidden")}
+      else showMessage("services-message","Time expired. You can cancel for a refund.","error");
+    }
+  },1000);
+  if(!order.codeReceivedAt)pollInterval=setInterval(()=>pollSMS(order.id),4000);
+}
+function updatePurchaseActions(order){
+  const actions=$("purchase-actions");if(!actions)return;
+  if(order.code){
+    actions.innerHTML=`<button class="primary" id="done-btn" type="button">Done</button>`;
+    $("done-btn").onclick=()=>{clearActivePurchase();$("purchase-area").classList.add("hidden");showPage("numbers");loadNumbers()};
+  }else{
+    actions.innerHTML=`<button class="secondary" id="cancel-btn" type="button">Cancel & Refund</button>`;
+    $("cancel-btn").onclick=async()=>{
+      if(!confirm("Cancel this number and get a refund?"))return;
+      $("cancel-btn").disabled=true;
+      try{await api("/api/cancel-number",{method:"POST",body:JSON.stringify({order_id:order.id})});clearActivePurchase();$("purchase-area").classList.add("hidden");showMessage("services-message","Number cancelled and refunded.","success");await refreshWallet()}
+      catch(e){showMessage("services-message",e.message,"error");$("cancel-btn").disabled=false}
+    };
+  }
+}
+async function pollSMS(orderId){
+  try{
+    const res=await api("/api/get-sms?order_id="+encodeURIComponent(orderId));const d=res.data||{};
+    if(d.status==="received"&&d.sms&&activePurchase&&String(activePurchase.id)===String(orderId)){
+      activePurchase.code=d.sms;
+      if(!activePurchase.codeReceivedAt)activePurchase.codeReceivedAt=Date.now();
+      saveActivePurchase();
+      renderPurchaseUI(activePurchase);
+      const codeArea=$("code-area");
+      if(codeArea)codeArea.innerHTML=`<div class="code-box"><div>OTP Code</div><strong>${d.sms}</strong><br><button class="secondary copy-btn" type="button" onclick="navigator.clipboard.writeText('${d.sms}').then(()=>alert('Copied!'))">Copy Code</button></div>`;
+      updatePurchaseActions(activePurchase);
+      if(pollInterval){clearInterval(pollInterval);pollInterval=null}
+      showMessage("services-message","Code received!","success");
+    }
   }catch(e){console.error(e)}
-
 }
 
 function renderServices(){
@@ -911,7 +903,9 @@ function renderServices(){
 
         const o=res.order||{};
 
-        activePurchase={id:o.id,service:o.service,number:o.number,amount_naira:o.amount_naira,expiresAt:Date.now()+10*60*1000,code:null};
+        activePurchase={id:o.id,service:o.service,number:o.number,amount_naira:o.amount_naira,expiresAt:Date.now()+10*60*1000,code:null,codeReceivedAt:null};
+
+        saveActivePurchase();
 
         renderPurchaseUI(activePurchase);
 
@@ -1018,6 +1012,8 @@ $("announcement-form").addEventListener("submit",async e=>{e.preventDefault();co
       showLoggedIn();
 
       try{await loadProfile()}catch{}
+
+      await restoreActivePurchase();
 
       await refreshWallet();
 
