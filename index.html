@@ -1346,7 +1346,7 @@ function showCreateTicketForm() {
       </div>
       <div id="create-ticket-msg" class="message"></div>
     </div>`;
-  $("ticket-category").addEventListener("change", async () => {
+  async function loadRelatedTransactions() {
     const cat = $("ticket-category").value;
     const area = $("related-tx-area");
     const sel = $("ticket-related");
@@ -1356,19 +1356,31 @@ function showCreateTicketForm() {
     sel.disabled = true;
     sel.add(new Option("Loading your transactions...", "__loading__"));
     try {
-      const r = await api("/api/tickets/related?type=" + encodeURIComponent(cat));
+      // Use the same existing customer-history endpoints already used by
+      // Transaction History and Number History. The old /api/tickets/related
+      // route is not part of this site's API and caused the dropdown error.
+      let items = [];
+      if (cat === "virtual_numbers") {
+        const r = await api("/api/orders");
+        items = Array.isArray(r.orders) ? r.orders : [];
+      } else if (cat === "wallet_funding") {
+        const r = await api("/api/transactions");
+        const allTransactions = Array.isArray(r.transactions) ? r.transactions : [];
+        items = allTransactions.filter(item =>
+          String(item.type || "").toLowerCase() === "deposit" ||
+          String(item.type || "").toLowerCase() === "wallet_funding"
+        );
+      }
+
       sel.replaceChildren(new Option("None / Not related to a specific transaction", ""));
-      const items = Array.isArray(r.items) ? r.items :
-        Array.isArray(r.transactions) ? r.transactions :
-        Array.isArray(r.orders) ? r.orders :
-        Array.isArray(r.deposits) ? r.deposits : [];
       items.forEach(item => {
         const opt = document.createElement("option");
-        opt.value = item.id ?? item.order_id ?? item.deposit_id ?? "";
+        const id = item.id ?? item.order_id ?? item.deposit_id ?? item.reference ?? "";
+        opt.value = String(id);
         const date = item.created_at || item.createdAt || item.date || item.created;
         const dateText = date ? new Date(date).toLocaleString() : "Date unavailable";
         const amount = item.amount_kobo != null ? money(item.amount_kobo) :
-          item.amount != null ? (typeof item.amount === "number" ? money(item.amount) : String(item.amount)) : "Amount unavailable";
+          item.amount != null ? String(item.amount) : "Amount unavailable";
         const status = item.status || "Status unavailable";
         if (cat === "virtual_numbers") {
           const service = item.service || item.service_name || "Number purchase";
@@ -1381,15 +1393,23 @@ function showCreateTicketForm() {
         }
         if (opt.value) sel.appendChild(opt);
       });
+
       if (!items.length || sel.options.length === 1) {
-        sel.add(new Option("No matching transactions found", "__empty__"));
+        sel.add(new Option(
+          cat === "virtual_numbers" ? "No number purchases found" : "No wallet funding records found",
+          "__empty__"
+        ));
       }
     } catch (e) {
-      sel.replaceChildren(new Option("Could not load transactions — try again", "__error__"));
+      sel.replaceChildren(new Option("Could not load transactions — tap to retry", "__error__"));
       console.error("Could not load related ticket transactions:", e);
     } finally {
       sel.disabled = false;
     }
+  }
+  $("ticket-category").addEventListener("change", loadRelatedTransactions);
+  $("ticket-related").addEventListener("change", () => {
+    if ($("ticket-related").value === "__error__") loadRelatedTransactions();
   });
   $("cancel-create-ticket").onclick = () => loadTickets();
   $("submit-ticket-btn").onclick = submitTicket;
