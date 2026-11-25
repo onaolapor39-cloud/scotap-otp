@@ -800,17 +800,64 @@ function clearActivePurchase(){
   activePurchase=null;stopPolling();
 }
 async function restoreActivePurchase(){
-  const key=purchaseStorageKey();if(!key)return;
+  const key=purchaseStorageKey();if(!key||!token)return;
   try{
-    const raw=localStorage.getItem(key);if(!raw)return;
-    const saved=JSON.parse(raw);if(!saved||!saved.id||!saved.expiresAt)return;
-    activePurchase={...saved,code:null};
-    if(activePurchase.codeReceivedAt&&Date.now()>=Number(activePurchase.codeReceivedAt)+600000){
-      clearActivePurchase();$("purchase-area").classList.add("hidden");return;
+    // The server order list is shared across browsers and Home Screen installs.
+    // Use it as the source of truth instead of relying only on browser localStorage.
+    const response=await api("/api/orders");
+    const orders=Array.isArray(response.orders)?response.orders:[];
+    const terminalStatuses=["cancelled","canceled","expired","completed","complete","refunded","failed","rejected"];
+    const pending=orders.filter(order=>{
+      const status=String(order.status||"").toLowerCase().trim();
+      return order.id&&!terminalStatuses.includes(status);
+    }).sort((a,b)=>{
+      const dateA=Date.parse(a.created_at||a.createdAt||0)||0;
+      const dateB=Date.parse(b.created_at||b.createdAt||0)||0;
+      return dateB-dateA;
+    });
+    const latest=pending[0];
+    if(!latest){
+      if(key)try{localStorage.removeItem(key)}catch{}
+      activePurchase=null;
+      $("purchase-area")?.classList.add("hidden");
+      stopPolling();
+      return;
     }
+    const createdAt=Date.parse(latest.created_at||latest.createdAt||"")||Date.now();
+    const receivedCode=latest.sms_code||latest.code||null;
+    const receivedAt=receivedCode?createdAt: null;
+    activePurchase={
+      id:latest.id,
+      service:latest.service||latest.service_name||"Service",
+      number:latest.phone_number||latest.number||"",
+      amount_naira:latest.amount_naira??(Number(latest.amount_kobo||0)/100),
+      purchasedAt:createdAt,
+      cancelAvailableAt:createdAt+5*60*1000,
+      expiresAt:createdAt+10*60*1000,
+      code:receivedCode,
+      codeReceivedAt:receivedAt
+    };
+    saveActivePurchase();
     renderPurchaseUI(activePurchase);
-    await pollSMS(activePurchase.id);
-  }catch(e){console.warn("Could not restore active purchase",e)}
+    if(receivedCode){
+      const codeArea=$("code-area");
+      if(codeArea)codeArea.innerHTML=`<div class="code-box"><div>OTP Code</div><strong>${receivedCode}</strong></div>`;
+    }else{
+      await pollSMS(activePurchase.id);
+    }
+  }catch(e){
+    // Keep the local copy as a fallback if the order-history API is temporarily unavailable.
+    try{
+      const raw=localStorage.getItem(key);
+      if(!raw)return;
+      const saved=JSON.parse(raw);
+      if(!saved||!saved.id||!saved.expiresAt)return;
+      activePurchase={...saved,code:null};
+      renderPurchaseUI(activePurchase);
+      await pollSMS(activePurchase.id);
+    }catch(localError){console.warn("Could not restore active purchase",localError)}
+    console.warn("Could not sync active purchase from server",e);
+  }
 }
 function renderPurchaseUI(order){
   stopPolling();
@@ -829,10 +876,24 @@ function renderPurchaseUI(order){
       <div id="purchase-actions" style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap"></div>
     </div>`;
   updatePurchaseActions(order);
+  if(order.code){
+    const codeArea=$("code-area");
+    if(codeArea)codeArea.innerHTML=`<div class="code-box"><div>OTP Code</div><strong>${order.code}</strong></div>`;
+  }
   countdownInterval=setInterval(()=>{
     const finalAt=order.codeReceivedAt?Number(order.codeReceivedAt)+600000:Number(order.expiresAt);
     const left=Math.max(0,Math.floor((finalAt-Date.now())/1000));
     const el=$("countdown");if(el)el.textContent=`${Math.floor(left/60)}:${(left%60).toString().padStart(2,"0")}`;
+    if(!order.code){
+      const cancelLeft=Math.max(0,Math.ceil((Number(order.cancelAvailableAt||0)-Date.now())/1000));
+      const cancelBtn=$("cancel-btn");
+      if(cancelBtn){
+        cancelBtn.disabled=cancelLeft>0;
+        cancelBtn.textContent=cancelLeft>0
+          ? `Cancel available in ${Math.floor(cancelLeft/60)}:${String(cancelLeft%60).padStart(2,"0")}`
+          : "Cancel & Refund";
+      }
+    }
     if(left<=0){
       stopPolling();
       if(order.codeReceivedAt){clearActivePurchase();area.classList.add("hidden")}
@@ -847,12 +908,22 @@ function updatePurchaseActions(order){
     actions.innerHTML=`<button class="primary" id="done-btn" type="button">Done</button>`;
     $("done-btn").onclick=()=>{clearActivePurchase();$("purchase-area").classList.add("hidden");showPage("numbers");loadNumbers()};
   }else{
-    actions.innerHTML=`<button class="secondary" id="cancel-btn" type="button">Cancel & Refund</button>`;
+    const waitSeconds=Math.max(0,Math.ceil((Number(order.cancelAvailableAt||0)-Date.now())/1000));
+    actions.innerHTML=`<button class="secondary" id="cancel-btn" type="button" ${waitSeconds>0?"disabled":""}>${waitSeconds>0?`Cancel available in ${Math.floor(waitSeconds/60)}:${String(waitSeconds%60).padStart(2,"0")}`:"Cancel & Refund"}</button>`;
     $("cancel-btn").onclick=async()=>{
+      if(Date.now()<Number(order.cancelAvailableAt||0))return;
       if(!confirm("Cancel this number and get a refund?"))return;
       $("cancel-btn").disabled=true;
       try{await api("/api/cancel-number",{method:"POST",body:JSON.stringify({order_id:order.id})});clearActivePurchase();$("purchase-area").classList.add("hidden");showMessage("services-message","Number cancelled and refunded.","success");await refreshWallet()}
-      catch(e){showMessage("services-message",e.message,"error");$("cancel-btn").disabled=false}
+      catch(e){
+        const raw=String(e?.message||"").toLowerCase();
+        const customerMessage=raw.includes("otp suite")||raw.includes("invalid data")||raw.includes("cannot be cancelled")
+          ?"Cancellation is not available yet. Please wait a little longer and try again."
+          :"We couldn't cancel this number right now. Please try again shortly.";
+        showMessage("services-message",customerMessage,"error");
+        $("cancel-btn").disabled=false;
+        $("cancel-btn").textContent="Cancel & Refund";
+      }
     };
   }
 }
@@ -925,7 +996,8 @@ function renderServices(){
 
         const o=res.order||{};
 
-        activePurchase={id:o.id,service:o.service,number:o.number,amount_naira:o.amount_naira,expiresAt:Date.now()+10*60*1000,code:null,codeReceivedAt:null};
+        const purchasedAt=Date.now();
+        activePurchase={id:o.id,service:o.service,number:o.number,amount_naira:o.amount_naira,purchasedAt,cancelAvailableAt:purchasedAt+5*60*1000,expiresAt:purchasedAt+10*60*1000,code:null,codeReceivedAt:null};
 
         saveActivePurchase();
 
