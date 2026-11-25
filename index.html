@@ -496,9 +496,6 @@ const PAGE_SNAPSHOT_KEY="scotap_temporary_page_snapshot";
 function readPageSnapshot(){try{const raw=sessionStorage.getItem(PAGE_SNAPSHOT_KEY);return raw?JSON.parse(raw):null}catch{return null}}
 function clearPageSnapshot(){try{sessionStorage.removeItem(PAGE_SNAPSHOT_KEY)}catch{}}
 function saveTemporaryPageSnapshot(){if(!token)return;try{sessionStorage.setItem(PAGE_SNAPSHOT_KEY,JSON.stringify({page:currentPage,ticketId:currentPage==="ticket-view"?(currentTicketId||null):null,hiddenAt:Date.now()}))}catch{}}
-// pagehide fires on reload/navigation more reliably than visibilitychange on mobile browsers.
-window.addEventListener("pagehide",saveTemporaryPageSnapshot);
-window.addEventListener("beforeunload",saveTemporaryPageSnapshot);
 
 document.addEventListener("visibilitychange",()=>{
   if(document.visibilityState==="hidden"){saveTemporaryPageSnapshot();return}
@@ -513,7 +510,8 @@ document.addEventListener("visibilitychange",()=>{
   }else showPage("dashboard");
 });
 
-// Keep the short-lived session snapshot through reloads so the current page can be restored.
+// A real page unload (such as closing the tab) must not preserve the last page.
+window.addEventListener("pagehide",event=>{if(!event.persisted)clearPageSnapshot()});
 
 let activePurchase=null,pollInterval=null,countdownInterval=null,activePurchaseSyncInterval=null;
 let skipTicketListLoad=false;
@@ -547,7 +545,7 @@ if(page==="admin"&&token)loadCurrentMarkupForAdmin();if(page==="admin-orders"&&t
 
 function saveToken(t){token=t;try{if(t)localStorage.setItem("scotap_token",t);else localStorage.removeItem("scotap_token")}catch{}}
 
-function showLoggedIn(initialPage="dashboard",deferBackground=false){$("auth-panel").classList.add("hidden");$("hero").classList.add("hidden");$("public-features").classList.add("hidden");$("landing-page").classList.add("hidden");$("customer-dashboard").classList.remove("hidden");$("menu-toggle").classList.remove("hidden");$("notifications-button").classList.remove("hidden");$("header-status").classList.remove("hidden");$("header-support-button")?.classList.remove("hidden");$("activity-toasts")?.classList.add("hidden");if(!deferBackground){checkAdminStatus();loadAnnouncements()}if(initialPage)showPage(initialPage)}
+function showLoggedIn(initialPage="dashboard"){$("auth-panel").classList.add("hidden");$("hero").classList.add("hidden");$("public-features").classList.add("hidden");$("landing-page").classList.add("hidden");$("customer-dashboard").classList.remove("hidden");$("menu-toggle").classList.remove("hidden");$("notifications-button").classList.remove("hidden");$("header-status").classList.remove("hidden");$("header-support-button")?.classList.remove("hidden");$("activity-toasts")?.classList.add("hidden");checkAdminStatus();loadAnnouncements();if(initialPage)showPage(initialPage)}
 
 function maskPhone(num){
 
@@ -796,27 +794,11 @@ function saveActivePurchase(){
   if(!key||!activePurchase)return;
   try{const saved={...activePurchase};delete saved.code;localStorage.setItem(key,JSON.stringify(saved))}catch(e){console.warn("Could not save active purchase",e)}
 }
-function cancelledOrdersKey(){
-  const account=currentUser?.id||currentUser?.email||currentUser?.username;
-  return account ? "scotap_cancelled_orders_"+String(account).toLowerCase() : null;
-}
-function readCancelledOrderIds(){
-  const key=cancelledOrdersKey();if(!key)return [];
-  try{const value=JSON.parse(localStorage.getItem(key)||"[]");return Array.isArray(value)?value.map(String):[]}catch{return []}
-}
-function rememberCancelledOrder(id){
-  const key=cancelledOrdersKey();if(!key||!id)return;
-  try{const ids=new Set(readCancelledOrderIds());ids.add(String(id));localStorage.setItem(key,JSON.stringify([...ids].slice(-100)))}catch{}
-}
 function clearActivePurchase(){
   const key=purchaseStorageKey();
   if(key)try{localStorage.removeItem(key)}catch{}
   activePurchase=null;stopPolling();
   if(activePurchaseSyncInterval){clearInterval(activePurchaseSyncInterval);activePurchaseSyncInterval=null;}
-}
-function isTerminalPurchaseStatus(value){
-  const status=String(value||"").toLowerCase().trim().replace(/[ _-]+/g," ");
-  return ["cancel","refund","expire","complete","failed","reject","void"].some(word=>status.includes(word));
 }
 async function syncActivePurchaseAcrossDevices(){
   if(!token||!activePurchase?.id||document.visibilityState==="hidden")return;
@@ -824,13 +806,13 @@ async function syncActivePurchaseAcrossDevices(){
     const response=await api("/api/orders");
     const orders=Array.isArray(response.orders)?response.orders:[];
     const matching=orders.find(item=>String(item.id)===String(activePurchase.id));
-    if(readCancelledOrderIds().includes(String(activePurchase.id))){clearActivePurchase();$("purchase-area")?.classList.add("hidden");return;}
-    // The server is the shared source of truth. If this order is absent or terminal,
-    // do not keep showing a stale copy from this browser/Home Screen app.
-    if(!matching||isTerminalPurchaseStatus(matching.status)){
+    if(!matching)return;
+    const status=String(matching.status||"").toLowerCase().trim();
+    const terminal=["cancelled","canceled","expired","completed","complete","refunded","failed","rejected"];
+    if(terminal.includes(status)){
       clearActivePurchase();
       $("purchase-area")?.classList.add("hidden");
-      if(matching)showMessage("services-message","This number has already been cancelled or refunded.","info");
+      showMessage("services-message",status.includes("cancel")||status==="refunded"?"This number has already been cancelled or refunded.":"This number order is no longer active.","info");
       refreshWallet().catch(()=>{});
       if($("numbers-page")&&!$("numbers-page").classList.contains("hidden"))loadNumbers();
       return;
@@ -851,8 +833,11 @@ async function restoreActivePurchase(){
     // Use it as the source of truth instead of relying only on browser localStorage.
     const response=await api("/api/orders");
     const orders=Array.isArray(response.orders)?response.orders:[];
-    const cancelledIds=new Set(readCancelledOrderIds());
-    const pending=orders.filter(order=>order.id&&!cancelledIds.has(String(order.id))&&!isTerminalPurchaseStatus(order.status)).sort((a,b)=>{
+    const terminalStatuses=["cancelled","canceled","expired","completed","complete","refunded","failed","rejected"];
+    const pending=orders.filter(order=>{
+      const status=String(order.status||"").toLowerCase().trim();
+      return order.id&&!terminalStatuses.includes(status);
+    }).sort((a,b)=>{
       const dateA=Date.parse(a.created_at||a.createdAt||0)||0;
       const dateB=Date.parse(b.created_at||b.createdAt||0)||0;
       return dateB-dateA;
@@ -888,11 +873,17 @@ async function restoreActivePurchase(){
       await pollSMS(activePurchase.id);
     }
   }catch(e){
-    // Do not revive an old browser-local purchase when the server cannot confirm
-    // that it is still active. This prevents cancelled numbers reappearing on return.
-    clearActivePurchase();
-    $("purchase-area")?.classList.add("hidden");
-    console.warn("Could not confirm an active purchase from the server",e);
+    // Keep the local copy as a fallback if the order-history API is temporarily unavailable.
+    try{
+      const raw=localStorage.getItem(key);
+      if(!raw)return;
+      const saved=JSON.parse(raw);
+      if(!saved||!saved.id||!saved.expiresAt)return;
+      activePurchase={...saved,code:null};
+      renderPurchaseUI(activePurchase);
+      await pollSMS(activePurchase.id);
+    }catch(localError){console.warn("Could not restore active purchase",localError)}
+    console.warn("Could not sync active purchase from server",e);
   }
 }
 function renderPurchaseUI(order){
@@ -938,7 +929,7 @@ function renderPurchaseUI(order){
   },1000);
   if(!order.codeReceivedAt)pollInterval=setInterval(()=>pollSMS(order.id),4000);
   if(activePurchaseSyncInterval)clearInterval(activePurchaseSyncInterval);
-  activePurchaseSyncInterval=setInterval(syncActivePurchaseAcrossDevices,15000);
+  activePurchaseSyncInterval=setInterval(syncActivePurchaseAcrossDevices,5000);
 }
 function updatePurchaseActions(order){
   const actions=$("purchase-actions");if(!actions)return;
@@ -952,7 +943,7 @@ function updatePurchaseActions(order){
       if(Date.now()<Number(order.cancelAvailableAt||0))return;
       if(!confirm("Cancel this number and get a refund?"))return;
       $("cancel-btn").disabled=true;
-      try{const cancelResult=await api("/api/cancel-number",{method:"POST",body:JSON.stringify({order_id:order.id})});rememberCancelledOrder(order.id);clearActivePurchase();$("purchase-area").classList.add("hidden");showMessage("services-message",cancelResult.message||"Number cancelled. Your wallet is being updated.","success");await refreshWallet();if($("numbers-page")&&!$("numbers-page").classList.contains("hidden"))await loadNumbers()}
+      try{await api("/api/cancel-number",{method:"POST",body:JSON.stringify({order_id:order.id})});clearActivePurchase();$("purchase-area").classList.add("hidden");showMessage("services-message","Number cancelled and refunded.","success");await refreshWallet()}
       catch(e){
         const raw=String(e?.message||"").toLowerCase();
         const customerMessage=raw.includes("otp suite")||raw.includes("invalid data")||raw.includes("cannot be cancelled")
@@ -1146,30 +1137,26 @@ $("announcement-form").addEventListener("submit",async e=>{e.preventDefault();co
 
       token=saved;
 
-      // Restore the last page immediately; do not flash the dashboard first.
-      const snapshotIsFresh=pageSnapshot&&Number.isFinite(Number(pageSnapshot.hiddenAt))&&Date.now()-Number(pageSnapshot.hiddenAt)<=60000;
-      let destination=snapshotIsFresh&&allowedPages.includes(pageSnapshot.page)?pageSnapshot.page:"dashboard";
-      showLoggedIn(null,true);
-      if(destination==="ticket-view"&&pageSnapshot.ticketId){openTicket(pageSnapshot.ticketId)}
-      else if(destination==="ticket-view"){showPage("tickets")}
-      else{showPage(destination)}
+      // Keep the dashboard hidden while the saved destination is being restored.
+      $("dashboard-page")?.classList.add("hidden");
+      showLoggedIn(null);
 
       try{await loadProfile()}catch{}
 
-      // These requests are independent, so do not make the customer wait for them one by one.
-      await Promise.allSettled([
-        checkAdminStatus(),
-        restoreActivePurchase(),
-        refreshWallet(),
-        loadAnnouncements(),
-        verifyReturnPayment()
-      ]);
+      await checkAdminStatus();
 
-      if(["admin","admin-tickets","admin-orders","admin-deposits"].includes(destination)&&!isAdminUser){
-        destination="dashboard";
-        showPage(destination);
-      }
-      if(destination==="ticket-view"&&!pageSnapshot.ticketId){showPage(isAdminUser?"admin-tickets":"tickets")}
+      await restoreActivePurchase();
+
+      await refreshWallet();
+
+      await verifyReturnPayment();
+
+      const snapshotIsFresh=pageSnapshot&&Number.isFinite(Number(pageSnapshot.hiddenAt))&&Date.now()-Number(pageSnapshot.hiddenAt)<=60000;
+      let destination=snapshotIsFresh&&allowedPages.includes(pageSnapshot.page)?pageSnapshot.page:"dashboard";
+      if(["admin","admin-tickets","admin-orders","admin-deposits"].includes(destination)&&!isAdminUser){destination="dashboard"}
+      if(destination==="ticket-view"&&pageSnapshot.ticketId){await openTicket(pageSnapshot.ticketId)}
+      else if(destination==="ticket-view"){showPage(isAdminUser?"admin-tickets":"tickets")}
+      else{showPage(destination)}
 
     }else{
 
@@ -1178,11 +1165,10 @@ $("announcement-form").addEventListener("submit",async e=>{e.preventDefault();co
 
     }
 
-  }catch(error){
-    console.error("Session restoration error",error);
-    const saved=(()=>{try{return localStorage.getItem("scotap_token")}catch{return null}})();
-    if(saved){token=saved;showLoggedIn(currentPage||"dashboard",true);}
-    else{setMode("register");showLoggedOut();}
+  }catch{
+
+    setMode("register");showLoggedOut();
+
   }
 
 })();
