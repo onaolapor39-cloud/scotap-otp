@@ -130,109 +130,99 @@ body.ticket-open{overflow:hidden}
 #create-ticket-form{margin-top:16px}
 #create-ticket-form.hidden{display:none!important}
 
-/* ===== BOTTOM NAVIGATION (mobile-style shortcuts) ===== */
-.bottom-nav{
-  display:none;
-  position:fixed;
-  left:0;right:0;bottom:0;
-  z-index:25;
-  background:#0f0f0f;
-  border-top:1px solid var(--border);
-  padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));
-  box-shadow:0 -6px 24px #0006;
-}
-body.logged-in .bottom-nav{display:flex}
-body.ticket-open .bottom-nav{display:none!important}
-.bottom-nav button{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:3px;
-  background:transparent;
-  border:0;
-  color:var(--gold);
-  font-size:10px;
-  font-weight:650;
-  padding:6px 2px;
-  border-radius:10px;
-  min-width:0;
-  line-height:1.15;
-}
-.bottom-nav button .bn-icon{
-  width:28px;height:28px;
-  display:grid;place-items:center;
-  font-size:18px;
-  border-radius:9px;
-  background:rgba(245,197,66,.12);
-  color:var(--gold);
-  line-height:1;
-}
-.bottom-nav button.active .bn-icon,
-.bottom-nav button:active .bn-icon{
-  background:rgba(245,197,66,.28);
-}
-.bottom-nav button.active{
-  color:var(--gold-text);
-}
-.bottom-nav button span.label{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-body.logged-in{padding-bottom:72px}
-html[data-theme="light"] .bottom-nav{background:#fff;border-top-color:var(--border);box-shadow:0 -4px 18px #0001}
-html[data-theme="light"] .bottom-nav button .bn-icon{background:rgba(184,134,11,.12);color:var(--gold)}
-html[data-theme="light"] .bottom-nav button.active .bn-icon{background:rgba(184,134,11,.22)}
+
+/* Professional SVG icon system */
+[data-lucide]{width:20px;height:20px;stroke-width:2;vertical-align:middle;flex-shrink:0}
+.inline-icon{width:17px;height:17px;display:inline-block;vertical-align:-3px;color:var(--gold)}
+.icon-button{position:relative;width:44px;height:44px;padding:0;display:grid;place-items:center;border-radius:12px}
+.icon-button [data-lucide]{width:21px;height:21px;color:var(--gold)}
+.menu button{min-height:48px}
+.menu-icon{width:38px;height:38px;border-radius:11px;background:color-mix(in srgb,var(--gold) 15%,transparent);color:var(--gold);display:grid;place-items:center;flex-shrink:0}
+.menu-icon [data-lucide]{width:19px;height:19px}
+.topbar .status{display:none!important}
+.bottom-nav{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:40;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;padding:8px 6px;background:#11100d;border:1px solid rgba(245,197,66,.28);border-radius:18px;box-shadow:0 10px 32px #0008;backdrop-filter:blur(16px)}
+.bottom-nav.hidden{display:none!important}
+.bottom-nav-item{min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:6px 2px;border-radius:12px;background:transparent;color:#d8d3c4;font-size:10px;line-height:1.15;font-weight:700;white-space:nowrap}
+.bottom-nav-item .bottom-icon{width:34px;height:30px;display:grid;place-items:center;border-radius:10px;color:#d6a72c}
+.bottom-nav-item .bottom-icon [data-lucide]{width:21px;height:21px;stroke-width:2.1}
+.bottom-nav-item.active{background:rgba(214,167,44,.13);color:#f5c542}
+.bottom-nav-item.active .bottom-icon{background:rgba(214,167,44,.17);color:#f5c542}
+body:has(.bottom-nav:not(.hidden)){padding-bottom:92px}
+@media(min-width:760px){.bottom-nav{left:50%;right:auto;transform:translateX(-50%);width:min(560px,calc(100vw - 32px));bottom:16px}.bottom-nav-item{font-size:11px}}
+@media(max-width:600px){.bottom-nav{left:8px;right:8px;padding:7px 4px}.bottom-nav-item{font-size:9px}.bottom-nav-item .bottom-icon{height:28px}}
 
 </style>
 
 </head>
 
 <body>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+(function(){
+  function renderScotapIcons(root=document){ if(window.lucide?.createIcons) window.lucide.createIcons({root, attrs:{"stroke-width":2}}); }
+  document.addEventListener("DOMContentLoaded",()=>renderScotapIcons());
+  const observer=new MutationObserver(records=>{for(const record of records){for(const node of record.addedNodes){if(node.nodeType===1)renderScotapIcons(node);}}});
+  observer.observe(document.documentElement,{childList:true,subtree:true});
+  window.renderScotapIcons=renderScotapIcons;
+})();
+</script>
+
 
 <header class="topbar">
 
 <a class="brand" href="#" aria-label="SCOTAP OTP home"><span class="logo-mark" aria-hidden="true">S</span><span class="brand-name">SCOTAP<span> OTP</span></span></a>
 
 <div class="header-actions">
-
-<span class="status hidden" id="header-status">&#x25CF; Customer Dashboard</span>
-
-<button class="secondary hidden" id="notifications-button" type="button" aria-label="Notifications">&#x1F514; <span id="notification-count" class="notice-count hidden">0</span></button>
-
-<!-- Menu + Support moved to bottom nav; kept in DOM for existing JS but hidden from top -->
-<button class="secondary menu-button hidden" id="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" style="display:none!important">&#x2630;</button>
-
-<button class="secondary hidden" id="header-support-button" type="button" style="display:none!important">&#x1F4AC; Support</button>
-
+<button class="icon-button secondary hidden" id="notifications-button" type="button" aria-label="Notifications" title="Notifications"><i data-lucide="bell"></i><span id="notification-count" class="notice-count hidden">0</span></button>
 </div>
 
 </header>
 
 <nav class="menu hidden" id="main-menu" aria-label="Customer menu">
 
-<button type="button" data-page="settings">&#x2699;&#xFE0F; <span>Account settings</span></button>
+<button type="button" data-page="settings"><span class="menu-icon"><i data-lucide="settings"></i></span> <span>Account settings</span></button>
 
-<button type="button" data-page="services">&#x1F4F1; <span>Available Services</span></button>
+<button type="button" data-page="services"><span class="menu-icon"><i data-lucide="smartphone"></i></span> <span>Available Services</span></button>
 
-<button type="button" data-page="transactions">&#x1F4B3; <span>Transaction History</span></button>
+<button type="button" data-page="transactions"><span class="menu-icon"><i data-lucide="receipt-text"></i></span> <span>Transaction History</span></button>
 
-<button type="button" data-page="numbers">&#x1F4F2; <span>Number History</span></button>
+<button type="button" data-page="numbers"><span class="menu-icon"><i data-lucide="phone"></i></span> <span>Number History</span></button>
 
-<button type="button" data-page="notifications">&#x1F514; <span>Announcements</span></button>
+<button type="button" data-page="notifications"><span class="menu-icon"><i data-lucide="bell"></i></span> <span>Announcements</span></button>
 
-<button type="button" data-page="tickets">&#x1F3AB; <span>Support Tickets</span></button>
+<button type="button" data-page="tickets"><span class="menu-icon"><i data-lucide="ticket"></i></span> <span>Support Tickets</span></button>
 
-<button type="button" data-page="admin" id="admin-menu-item" class="hidden">&#x1F6E0;&#xFE0F; <span>Admin Dashboard</span></button>
+<button type="button" data-page="admin" id="admin-menu-item" class="hidden"><span class="menu-icon"><i data-lucide="layout-dashboard"></i></span> <span>Admin Dashboard</span></button>
 
-<button type="button" data-page="admin-tickets" id="admin-tickets-menu" class="hidden">&#x1F4CB; <span>Ticket Log (Admin)</span></button>
+<button type="button" data-page="admin-tickets" id="admin-tickets-menu" class="hidden"><span class="menu-icon"><i data-lucide="clipboard-list"></i></span> <span>Ticket Log (Admin)</span></button>
 
-<button type="button" data-page="admin-orders" id="admin-orders-menu" class="hidden">&#x1F4F1; <span>All Number Purchases</span></button>
+<button type="button" data-page="admin-orders" id="admin-orders-menu" class="hidden"><span class="menu-icon"><i data-lucide="shopping-bag"></i></span> <span>All Number Purchases</span></button>
 
-<button type="button" data-page="admin-deposits" id="admin-deposits-menu" class="hidden">&#x1F4B3; <span>All Wallet Funding</span></button>
+<button type="button" data-page="admin-deposits" id="admin-deposits-menu" class="hidden"><span class="menu-icon"><i data-lucide="wallet"></i></span> <span>All Wallet Funding</span></button>
 
-<button type="button" data-page="dashboard">&#x1F4B0; <span>Dashboard / Wallet</span></button>
+<button type="button" data-page="dashboard"><span class="menu-icon"><i data-lucide="wallet-cards"></i></span> <span>Dashboard / Wallet</span></button>
 
-<button type="button" data-page="logout" class="logout-item">&#x1F6AA; <span>Log out</span></button>
+<button type="button" data-page="logout" class="logout-item"><span class="menu-icon"><i data-lucide="log-out"></i></span> <span>Log out</span></button>
 
+</nav>
+
+
+<nav class="bottom-nav hidden" id="bottom-nav" aria-label="Quick navigation">
+  <button type="button" class="bottom-nav-item" data-page="dashboard" data-nav-page="dashboard" aria-label="Home">
+    <span class="bottom-icon"><i data-lucide="house"></i></span><span>Home</span>
+  </button>
+  <button type="button" class="bottom-nav-item" data-page="numbers" data-nav-page="numbers" aria-label="Number History">
+    <span class="bottom-icon"><i data-lucide="phone"></i></span><span>Number</span>
+  </button>
+  <button type="button" class="bottom-nav-item" data-page="transactions" data-nav-page="transactions" aria-label="Transaction History">
+    <span class="bottom-icon"><i data-lucide="receipt-text"></i></span><span>Transactions</span>
+  </button>
+  <button type="button" class="bottom-nav-item" id="header-support-button" aria-label="Support Tickets">
+    <span class="bottom-icon"><i data-lucide="ticket"></i></span><span>Support</span>
+  </button>
+  <button type="button" class="bottom-nav-item" id="menu-toggle" aria-label="Open menu" aria-expanded="false">
+    <span class="bottom-icon"><i data-lucide="menu"></i></span><span>Menu</span>
+  </button>
 </nav>
 
 <main>
@@ -325,17 +315,17 @@ html[data-theme="light"] .bottom-nav button.active .bn-icon{background:rgba(184,
 
   <div class="balance" id="balance">****</div>
 
-  <button id="toggle-balance" class="secondary" type="button" style="padding:8px 12px;font-size:14px;min-width:auto" aria-label="Toggle balance visibility" title="Show or hide balance">&#x1F441;&#xFE0F; Hide</button>
+  <button id="toggle-balance" class="secondary" type="button" style="padding:8px 12px;font-size:14px;min-width:auto" aria-label="Toggle balance visibility" title="Show or hide balance"><i data-lucide="eye" class="inline-icon"></i> Hide</button>
 
 </div>
 
-<p class="muted">&#x1F4B0; Available wallet balance</p>
+<p class="muted"><i data-lucide="wallet" class="inline-icon"></i> Available wallet balance</p>
 
 <div class="dashboard-actions">
 
-<button class="primary" id="show-deposit" type="button">&#x2795; Add Money</button>
+<button class="primary" id="show-deposit" type="button"><i data-lucide="plus" class="inline-icon"></i> Add Money</button>
 
-<button class="secondary" id="refresh-button" type="button">&#x1F504; Refresh Balance</button>
+<button class="secondary" id="refresh-button" type="button"><i data-lucide="refresh-cw" class="inline-icon"></i> Refresh Balance</button>
 
 </div>
 
@@ -345,7 +335,7 @@ html[data-theme="light"] .bottom-nav button.active .bn-icon{background:rgba(184,
 
 <hr style="border:0;border-top:1px solid var(--border);margin:20px 0">
 
-<h2>&#x1F4B3; Add money to your wallet</h2>
+<h2><i data-lucide="credit-card" class="inline-icon"></i> Add money to your wallet</h2>
 
 <p class="muted">Choose how much to deposit. Paystack handles the payment securely.</p>
 
@@ -375,29 +365,29 @@ html[data-theme="light"] .bottom-nav button.active .bn-icon{background:rgba(184,
 
 </section>
 
-<section class="panel page-panel hidden" id="settings-page"><div class="section-heading"><h2>&#x2699;&#xFE0F; Account settings</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Edit your account information, appearance, or password.</p><form id="profile-form" style="margin-top:16px"><h3 style="margin-bottom:10px">&#x1F464; Account Information</h3><label for="profile-full-name">Full name</label><input id="profile-full-name" type="text" maxlength="100" autocomplete="name" required placeholder="Your full name"><label for="profile-username">Username</label><input id="profile-username" type="text" minlength="3" maxlength="24" pattern="[A-Za-z0-9_]{3,24}" autocomplete="username" required placeholder="Your username"><label for="profile-email">Email address</label><input id="profile-email" type="email" maxlength="254" autocomplete="email" required placeholder="you@example.com"><button class="primary full" id="profile-submit" type="submit">Save account information</button><div id="profile-message" class="message" aria-live="polite"></div></form><hr style="border:0;border-top:1px solid var(--border);margin:20px 0"><div class="settings-grid" style="margin-top:15px"><div><label for="settings-theme">Appearance</label><select id="settings-theme"><option value="dark">&#x1F319; Dark mode</option><option value="light">&#x2600;&#xFE0F; Light mode</option></select></div><div><label>Support</label><button class="secondary full" type="button" data-page="tickets">&#x1F4AC; Support Tickets</button></div></div><hr style="border:0;border-top:1px solid var(--border);margin:20px 0"><h2>&#x1F510; Change password</h2><form id="password-form"><label for="current-password">Current password</label><input id="current-password" type="password" autocomplete="current-password" minlength="8" maxlength="128" required placeholder="Enter current password"><label for="new-password">New password</label><input id="new-password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required placeholder="At least 8 characters"><label for="confirm-new-password">Confirm new password</label><input id="confirm-new-password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required placeholder="Enter new password again"><button class="primary full" id="password-submit" type="submit">Update password</button></form><div id="settings-message" class="message" aria-live="polite"></div></section>
+<section class="panel page-panel hidden" id="settings-page"><div class="section-heading"><h2><i data-lucide="settings" class="inline-icon"></i> Account settings</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Edit your account information, appearance, or password.</p><form id="profile-form" style="margin-top:16px"><h3 style="margin-bottom:10px"><i data-lucide="user-round" class="inline-icon"></i> Account Information</h3><label for="profile-full-name">Full name</label><input id="profile-full-name" type="text" maxlength="100" autocomplete="name" required placeholder="Your full name"><label for="profile-username">Username</label><input id="profile-username" type="text" minlength="3" maxlength="24" pattern="[A-Za-z0-9_]{3,24}" autocomplete="username" required placeholder="Your username"><label for="profile-email">Email address</label><input id="profile-email" type="email" maxlength="254" autocomplete="email" required placeholder="you@example.com"><button class="primary full" id="profile-submit" type="submit">Save account information</button><div id="profile-message" class="message" aria-live="polite"></div></form><hr style="border:0;border-top:1px solid var(--border);margin:20px 0"><div class="settings-grid" style="margin-top:15px"><div><label for="settings-theme">Appearance</label><select id="settings-theme"><option value="dark"><i data-lucide="moon" class="inline-icon"></i> Dark mode</option><option value="light"><i data-lucide="sun" class="inline-icon"></i> Light mode</option></select></div><div><label>Support</label><button class="secondary full" type="button" data-page="tickets"><i data-lucide="message-circle" class="inline-icon"></i> Support Tickets</button></div></div><hr style="border:0;border-top:1px solid var(--border);margin:20px 0"><h2><i data-lucide="shield-check" class="inline-icon"></i> Change password</h2><form id="password-form"><label for="current-password">Current password</label><input id="current-password" type="password" autocomplete="current-password" minlength="8" maxlength="128" required placeholder="Enter current password"><label for="new-password">New password</label><input id="new-password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required placeholder="At least 8 characters"><label for="confirm-new-password">Confirm new password</label><input id="confirm-new-password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required placeholder="Enter new password again"><button class="primary full" id="password-submit" type="submit">Update password</button></form><div id="settings-message" class="message" aria-live="polite"></div></section>
 
-<section class="panel page-panel hidden" id="services-page"><div class="section-heading"><h2>&#x1F4F1; Available Services</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Choose a country to view supported apps and prices.</p>
+<section class="panel page-panel hidden" id="services-page"><div class="section-heading"><h2><i data-lucide="smartphone" class="inline-icon"></i> Available Services</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Choose a country to view supported apps and prices.</p>
 
 <!-- Active purchase shown immediately after Available Services header so no scrolling is needed -->
 
 <div id="purchase-area" class="hidden" style="margin:16px 0 8px"></div>
 
-<div class="service-tools" style="margin-top:15px"><div><label for="country-filter">Choose country</label><select id="country-filter"><option value="">Loading countries...</option></select></div><div><label for="service-search">Search service</label><input id="service-search" type="search" placeholder="Search WhatsApp, Telegram..."></div></div><button class="secondary full" id="reload-services" type="button">&#x1F504; Refresh countries and prices</button><div id="services-message" class="message" aria-live="polite">Log in to load available countries.</div><div id="service-list" class="service-list"></div></section>
+<div class="service-tools" style="margin-top:15px"><div><label for="country-filter">Choose country</label><select id="country-filter"><option value="">Loading countries...</option></select></div><div><label for="service-search">Search service</label><input id="service-search" type="search" placeholder="Search WhatsApp, Telegram..."></div></div><button class="secondary full" id="reload-services" type="button"><i data-lucide="refresh-cw" class="inline-icon"></i> Refresh countries and prices</button><div id="services-message" class="message" aria-live="polite">Log in to load available countries.</div><div id="service-list" class="service-list"></div></section>
 
-<section class="panel page-panel hidden" id="transactions-page"><div class="section-heading"><h2>&#x1F4B3; Transaction History</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Your deposits and number purchases.</p><div id="transactions-message" class="message"></div><div id="transactions-list"></div></section>
+<section class="panel page-panel hidden" id="transactions-page"><div class="section-heading"><h2><i data-lucide="credit-card" class="inline-icon"></i> Transaction History</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Your deposits and number purchases.</p><div id="transactions-message" class="message"></div><div id="transactions-list"></div></section>
 
-<section class="panel page-panel hidden" id="numbers-page"><div class="section-heading"><h2>&#x1F4F2; Number History</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Numbers you have purchased.</p><div id="numbers-message" class="message"></div><div id="numbers-list"></div></section>
+<section class="panel page-panel hidden" id="numbers-page"><div class="section-heading"><h2><i data-lucide="phone" class="inline-icon"></i> Number History</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Numbers you have purchased.</p><div id="numbers-message" class="message"></div><div id="numbers-list"></div></section>
 
-<section class="panel page-panel hidden" id="notifications-page"><div class="section-heading"><h2>&#x1F514; Announcements</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Official announcements posted by SCOTAP administration.</p><button class="secondary" id="refresh-announcements" type="button">&#x1F504; Refresh announcements</button><div id="announcements-message" class="message" aria-live="polite"></div><div id="announcements-list"></div></section>
+<section class="panel page-panel hidden" id="notifications-page"><div class="section-heading"><h2><i data-lucide="bell" class="inline-icon"></i> Announcements</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Official announcements posted by SCOTAP administration.</p><button class="secondary" id="refresh-announcements" type="button"><i data-lucide="refresh-cw" class="inline-icon"></i> Refresh announcements</button><div id="announcements-message" class="message" aria-live="polite"></div><div id="announcements-list"></div></section>
 
-<section class="panel page-panel hidden" id="admin-page"><div class="section-heading"><h2>&#x1F6E0;&#xFE0F; Admin Dashboard</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Publish announcements for logged-in SCOTAP OTP users.</p><form id="announcement-form" class="admin-form"><label for="announcement-title">Announcement title</label><input id="announcement-title" maxlength="120" required placeholder="Example: Scheduled maintenance"><label for="announcement-message">Message</label><textarea id="announcement-message-input" maxlength="5000" rows="6" required placeholder="Write the announcement..."></textarea><button class="primary full" id="publish-announcement" type="submit">Publish announcement</button></form><div id="admin-message" class="message" aria-live="polite"></div>
-
-<hr style="border:0;border-top:1px solid var(--border);margin:28px 0">
-
+<section class="panel page-panel hidden" id="admin-page"><div class="section-heading"><h2><i data-lucide="wrench" class="inline-icon"></i> Admin Dashboard</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Publish announcements for logged-in SCOTAP OTP users.</p><form id="announcement-form" class="admin-form"><label for="announcement-title">Announcement title</label><input id="announcement-title" maxlength="120" required placeholder="Example: Scheduled maintenance"><label for="announcement-message">Message</label><textarea id="announcement-message-input" maxlength="5000" rows="6" required placeholder="Write the announcement..."></textarea><button class="primary full" id="publish-announcement" type="submit">Publish announcement</button></form><div id="admin-message" class="message" aria-live="polite"></div>
 
 <hr style="border:0;border-top:1px solid var(--border);margin:28px 0">
-<h3>&#x1F4B0; Gain / Markup Amount</h3>
+
+
+<hr style="border:0;border-top:1px solid var(--border);margin:28px 0">
+<h3><i data-lucide="wallet" class="inline-icon"></i> Gain / Markup Amount</h3>
 <p class="muted">This is the extra Naira you earn on every number purchase. Changes apply immediately to new buys.</p>
 <form id="markup-form" class="admin-form">
   <label for="markup-amount">Current gain amount (NGN)</label>
@@ -419,7 +409,7 @@ html[data-theme="light"] .bottom-nav button.active .bn-icon{background:rgba(184,
 </section>
 
 <section class="panel page-panel hidden" id="tickets-page">
-  <div class="section-heading"><h2>&#x1F3AB; Support Tickets</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div>
+  <div class="section-heading"><h2><i data-lucide="ticket" class="inline-icon"></i> Support Tickets</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div>
   <p class="muted">Create and track support tickets. Max 5 open tickets at a time.</p>
   <button class="primary" id="create-ticket-btn" type="button" style="margin:12px 0">+ Create New Ticket</button>
   <div id="tickets-message" class="message" aria-live="polite"></div>
@@ -433,7 +423,7 @@ html[data-theme="light"] .bottom-nav button.active .bn-icon{background:rgba(184,
   <div id="ticket-reply-area" class="whatsapp-composer">
     <textarea id="ticket-reply-text" rows="2" maxlength="5000" placeholder="Type a message..." aria-label="Type your message"></textarea>
     <div class="composer-actions">
-      <label class="attach-button" for="ticket-reply-files">&#x1F4CE; Attach</label>
+      <label class="attach-button" for="ticket-reply-files"><i data-lucide="paperclip" class="inline-icon"></i> Attach</label>
       <input id="ticket-reply-files" type="file" accept="image/*,application/pdf" multiple>
       <span class="muted composer-hint">Up to 4 files · 5MB each</span>
       <button class="primary" id="ticket-reply-btn" type="button" aria-label="Send reply">&#10148;</button>
@@ -443,38 +433,38 @@ html[data-theme="light"] .bottom-nav button.active .bn-icon{background:rgba(184,
 </section>
 
 <section class="panel page-panel hidden" id="admin-tickets-page">
-  <div class="section-heading"><h2>&#x1F4CB; Ticket Log (Admin)</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div>
+  <div class="section-heading"><h2><i data-lucide="clipboard-list" class="inline-icon"></i> Ticket Log (Admin)</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div>
   <div class="tabs" style="margin-bottom:12px">
     <button class="primary" id="admin-tickets-open-tab" type="button">Open Tickets</button>
     <button class="secondary" id="admin-tickets-closed-tab" type="button">Closed Tickets</button>
   </div>
   <input id="admin-tickets-search" type="search" placeholder="Search ticket number, username, email or subject..." style="margin-bottom:10px">
-  <button class="secondary" id="admin-tickets-refresh" type="button">&#x1F504; Refresh</button>
+  <button class="secondary" id="admin-tickets-refresh" type="button"><i data-lucide="refresh-cw" class="inline-icon"></i> Refresh</button>
   <div id="admin-tickets-message" class="message"></div>
   <div id="admin-tickets-list"></div>
 </section>
 
 <section class="panel page-panel hidden" id="admin-orders-page">
-  <div class="section-heading"><h2>&#x1F4F1; All Number Purchases</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div>
+  <div class="section-heading"><h2><i data-lucide="smartphone" class="inline-icon"></i> All Number Purchases</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div>
   <p class="muted">All users' virtual number purchases (any status).</p>
   <input id="admin-orders-search" type="search" placeholder="Search username, number, service..." style="margin-bottom:10px">
-  <button class="secondary" id="admin-orders-refresh" type="button">&#x1F504; Refresh</button>
+  <button class="secondary" id="admin-orders-refresh" type="button"><i data-lucide="refresh-cw" class="inline-icon"></i> Refresh</button>
   <div id="admin-orders-message" class="message"></div>
   <div id="admin-orders-list" style="overflow-x:auto"></div>
 </section>
 
 <section class="panel page-panel hidden" id="admin-deposits-page">
-  <div class="section-heading"><h2>&#x1F4B3; All Wallet Funding</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div>
+  <div class="section-heading"><h2><i data-lucide="credit-card" class="inline-icon"></i> All Wallet Funding</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div>
   <p class="muted">All users' wallet deposits (any status).</p>
   <input id="admin-deposits-search" type="search" placeholder="Search username or reference..." style="margin-bottom:10px">
-  <button class="secondary" id="admin-deposits-refresh" type="button">&#x1F504; Refresh</button>
+  <button class="secondary" id="admin-deposits-refresh" type="button"><i data-lucide="refresh-cw" class="inline-icon"></i> Refresh</button>
   <div id="admin-deposits-message" class="message"></div>
   <div id="admin-deposits-list" style="overflow-x:auto"></div>
 </section>
 
 </section>
 
-<section id="public-features"><h2 class="section-title">Why <span>SCOTAP OTP?</span></h2><section class="features"><article class="feature"><h3>&#x1F510; Secure account</h3><p>Your own customer account.</p></article><article class="feature"><h3>&#x1F4B0; Personal wallet</h3><p>View your balance and add money when you're ready.</p></article><article class="feature"><h3>&#x26A1; OTP services</h3><p>Browse supported services before choosing to buy.</p></article></section></section>
+<section id="public-features"><h2 class="section-title">Why <span>SCOTAP OTP?</span></h2><section class="features"><article class="feature"><h3><i data-lucide="shield-check" class="inline-icon"></i> Secure account</h3><p>Your own customer account.</p></article><article class="feature"><h3><i data-lucide="wallet" class="inline-icon"></i> Personal wallet</h3><p>View your balance and add money when you're ready.</p></article><article class="feature"><h3><i data-lucide="zap" class="inline-icon"></i> OTP services</h3><p>Browse supported services before choosing to buy.</p></article></section></section>
 
 <section class="panel page-panel hidden" id="terms-page">
 <div class="section-heading"><h2>Terms of Service</h2><button class="secondary small-button" type="button" id="terms-back">&#x2190; Back</button></div>
@@ -539,30 +529,6 @@ html[data-theme="light"] .bottom-nav button.active .bn-icon{background:rgba(184,
 
 <div id="activity-toasts"></div>
 
-<!-- Bottom navigation shortcuts (full menu still available via Menu) -->
-<nav class="bottom-nav" id="bottom-nav" aria-label="Main shortcuts">
-  <button type="button" data-page="dashboard" data-bn="home">
-    <span class="bn-icon" aria-hidden="true">&#x1F3E0;</span>
-    <span class="label">Home</span>
-  </button>
-  <button type="button" data-page="services" data-bn="services">
-    <span class="bn-icon" aria-hidden="true">&#x1F4F1;</span>
-    <span class="label">Services</span>
-  </button>
-  <button type="button" data-page="numbers" data-bn="numbers">
-    <span class="bn-icon" aria-hidden="true">&#x1F4F2;</span>
-    <span class="label">Numbers</span>
-  </button>
-  <button type="button" data-page="tickets" data-bn="tickets">
-    <span class="bn-icon" aria-hidden="true">&#x1F3AB;</span>
-    <span class="label">Tickets</span>
-  </button>
-  <button type="button" id="bottom-menu-btn" data-bn="menu" aria-label="Open full menu" aria-expanded="false">
-    <span class="bn-icon" aria-hidden="true">&#x2630;</span>
-    <span class="label">Menu</span>
-  </button>
-</nav>
-
 <script>
 
 "use strict";
@@ -623,12 +589,12 @@ function updateProfile(user){currentUser=user||{};$("profile-full-name").value=c
 
 async function loadProfile(){const result=await api("/api/me");updateProfile(result.user)}
 
-function showPage(page){currentPage=page;document.body.classList.toggle("ticket-open",page==="ticket-view");if(page==="ticket-view"){const topbar=document.querySelector(".topbar");document.documentElement.style.setProperty("--ticket-top",(topbar?.getBoundingClientRect().height||0)+"px")}const pages={dashboard:"dashboard-page",settings:"settings-page",services:"services-page",transactions:"transactions-page",numbers:"numbers-page",notifications:"notifications-page",admin:"admin-page",tickets:"tickets-page","ticket-view":"ticket-view-page","admin-tickets":"admin-tickets-page","admin-orders":"admin-orders-page","admin-deposits":"admin-deposits-page",terms:"terms-page",privacy:"privacy-page"};Object.values(pages).forEach(id=>{const el=$(id);if(el)el.classList.add("hidden")});if(pages[page])$(pages[page]).classList.remove("hidden");$("main-menu").classList.add("hidden");$("menu-toggle").setAttribute("aria-expanded","false");const bottomMenuBtn=$("bottom-menu-btn");if(bottomMenuBtn)bottomMenuBtn.setAttribute("aria-expanded","false");document.querySelectorAll(".bottom-nav button[data-page]").forEach(btn=>{btn.classList.toggle("active",btn.dataset.page===page)});if(page==="services"&&token){if(countries.length===0)loadServices();if(activePurchase){const area=$("purchase-area");if(area&&area.classList.contains("hidden"))renderPurchaseUI(activePurchase);}}if(page==="notifications"&&token){loadAnnouncements();markAnnouncementsRead();}if(page==="transactions"&&token)loadTransactions();if(page==="numbers"&&token)loadNumbers();if(page==="dashboard"&&token)loadRecentActivity();if(page==="tickets"&&token&&!skipTicketListLoad)loadTickets();if(page==="admin-tickets"&&token)loadAdminTickets("open");
+function showPage(page){currentPage=page;document.querySelectorAll(".bottom-nav-item[data-nav-page]").forEach(item=>item.classList.toggle("active",item.dataset.navPage===page));document.body.classList.toggle("ticket-open",page==="ticket-view");if(page==="ticket-view"){const topbar=document.querySelector(".topbar");document.documentElement.style.setProperty("--ticket-top",(topbar?.getBoundingClientRect().height||0)+"px")}const pages={dashboard:"dashboard-page",settings:"settings-page",services:"services-page",transactions:"transactions-page",numbers:"numbers-page",notifications:"notifications-page",admin:"admin-page",tickets:"tickets-page","ticket-view":"ticket-view-page","admin-tickets":"admin-tickets-page","admin-orders":"admin-orders-page","admin-deposits":"admin-deposits-page",terms:"terms-page",privacy:"privacy-page"};Object.values(pages).forEach(id=>{const el=$(id);if(el)el.classList.add("hidden")});if(pages[page])$(pages[page]).classList.remove("hidden");$("main-menu").classList.add("hidden");$("menu-toggle").setAttribute("aria-expanded","false");if(page==="services"&&token){if(countries.length===0)loadServices();if(activePurchase){const area=$("purchase-area");if(area&&area.classList.contains("hidden"))renderPurchaseUI(activePurchase);}}if(page==="notifications"&&token){loadAnnouncements();markAnnouncementsRead();}if(page==="transactions"&&token)loadTransactions();if(page==="numbers"&&token)loadNumbers();if(page==="dashboard"&&token)loadRecentActivity();if(page==="tickets"&&token&&!skipTicketListLoad)loadTickets();if(page==="admin-tickets"&&token)loadAdminTickets("open");
 if(page==="admin"&&token)loadCurrentMarkupForAdmin();if(page==="admin-orders"&&token)loadAdminOrders();if(page==="admin-deposits"&&token)loadAdminDeposits();window.scrollTo({top:0,behavior:"smooth"})}
 
 function saveToken(t){token=t;try{if(t)localStorage.setItem("scotap_token",t);else localStorage.removeItem("scotap_token")}catch{}}
 
-function showLoggedIn(initialPage="dashboard"){$("auth-panel").classList.add("hidden");$("hero").classList.add("hidden");$("public-features").classList.add("hidden");$("landing-page").classList.add("hidden");$("customer-dashboard").classList.remove("hidden");$("notifications-button").classList.remove("hidden");$("header-status").classList.remove("hidden");$("activity-toasts")?.classList.add("hidden");document.body.classList.add("logged-in");checkAdminStatus();loadAnnouncements();if(initialPage)showPage(initialPage)}
+function showLoggedIn(initialPage="dashboard"){$("auth-panel").classList.add("hidden");$("hero").classList.add("hidden");$("public-features").classList.add("hidden");$("landing-page").classList.add("hidden");$("customer-dashboard").classList.remove("hidden");$("bottom-nav")?.classList.remove("hidden");$("notifications-button").classList.remove("hidden");$("header-status").classList.add("hidden");$("activity-toasts")?.classList.add("hidden");if(initialPage)showPage(initialPage);checkAdminStatus();loadAnnouncements()}
 
 function maskPhone(num){
 
@@ -662,7 +628,7 @@ function applyBalanceVisibility(){
 
     const btn=$("toggle-balance");
 
-    if(btn){btn.innerHTML="&#x1F441;&#xFE0F; Show";btn.title="Show balance";}
+    if(btn){btn.innerHTML='<i data-lucide="eye" class="inline-icon"></i> Show';btn.title="Show balance";}
 
   }else{
 
@@ -670,7 +636,7 @@ function applyBalanceVisibility(){
 
     const btn=$("toggle-balance");
 
-    if(btn){btn.innerHTML="&#x1F441;&#xFE0F; Hide";btn.title="Hide balance";}
+    if(btn){btn.innerHTML='<i data-lucide="eye-off" class="inline-icon"></i> Hide';btn.title="Hide balance";}
 
   }
 
@@ -690,7 +656,7 @@ function setBalanceDisplay(amountText){
 
 }
 
-function showLoggedOut(){saveToken(null);currentUser=null;countries=[];services=[];servicesCountry="";stopPolling();$("landing-page")?.classList.remove("hidden");$("auth-panel").classList.add("hidden");$("hero").classList.add("hidden");$("public-features").classList.remove("hidden");$("customer-dashboard").classList.add("hidden");$("menu-toggle").classList.add("hidden");$("notifications-button").classList.add("hidden");$("header-status").classList.add("hidden");$("header-support-button")?.classList.add("hidden");$("activity-toasts")?.classList.remove("hidden");$("admin-menu-item").classList.add("hidden");$("admin-tickets-menu")?.classList.add("hidden");$("admin-orders-menu")?.classList.add("hidden");$("admin-deposits-menu")?.classList.add("hidden");$("main-menu").classList.add("hidden");document.body.classList.remove("logged-in");const tp=$("terms-page"),pp=$("privacy-page");if(tp)tp.classList.add("hidden");if(pp)pp.classList.add("hidden");setBalanceDisplay("&#x20A6;&#x2014;");$("greeting").textContent="Welcome to SCOTAP!";$("country-filter").replaceChildren(new Option("Log in to load countries",""));$("service-list").replaceChildren();$("purchase-area").classList.add("hidden");showMessage("services-message","Log in to load available countries.");$("current-password").value="";$("new-password").value="";$("confirm-new-password").value=""}
+function showLoggedOut(){saveToken(null);currentUser=null;countries=[];services=[];servicesCountry="";stopPolling();$("landing-page")?.classList.remove("hidden");$("auth-panel").classList.add("hidden");$("hero").classList.add("hidden");$("public-features").classList.remove("hidden");$("customer-dashboard").classList.add("hidden");$("bottom-nav")?.classList.add("hidden");$("notifications-button").classList.add("hidden");$("header-status").classList.add("hidden");$("activity-toasts")?.classList.remove("hidden");$("admin-menu-item").classList.add("hidden");$("admin-tickets-menu")?.classList.add("hidden");$("admin-orders-menu")?.classList.add("hidden");$("admin-deposits-menu")?.classList.add("hidden");$("main-menu").classList.add("hidden");const tp=$("terms-page"),pp=$("privacy-page");if(tp)tp.classList.add("hidden");if(pp)pp.classList.add("hidden");setBalanceDisplay("&#x20A6;&#x2014;");$("greeting").textContent="Welcome to SCOTAP!";$("country-filter").replaceChildren(new Option("Log in to load countries",""));$("service-list").replaceChildren();$("purchase-area").classList.add("hidden");showMessage("services-message","Log in to load available countries.");$("current-password").value="";$("new-password").value="";$("confirm-new-password").value=""}
 
 async function refreshWallet(){if(!token)return;$("refresh-button").disabled=true;showMessage("wallet-message","Loading your wallet...");try{const d=await api("/api/wallet");setBalanceDisplay(money(d.balance_kobo));showMessage("wallet-message","Wallet updated.","success");loadRecentActivity()}catch(e){showMessage("wallet-message",e.message,"error")}finally{$("refresh-button").disabled=false}}
 
@@ -699,7 +665,6 @@ $("register-tab").addEventListener("click",()=>setMode("register"));$("login-tab
 $("auth-form").addEventListener("submit",async e=>{e.preventDefault();const b=$("auth-submit");b.disabled=true;showMessage("auth-message","Please wait...");try{let body;if(mode==="register"){if($("password").value!==$("confirm-password").value)throw new Error("Passwords do not match.");if(!$("terms-accepted").checked)throw new Error("You must accept the Terms of Service and Privacy Policy.");body={full_name:$("full-name").value.trim(),username:$("username").value.trim().toLowerCase(),email:$("email").value.trim(),password:$("password").value,confirm_password:$("confirm-password").value,terms_accepted:$("terms-accepted").checked}}else body={email:$("email").value.trim(),password:$("password").value};const result=await api(mode==="register"?"/api/register":"/api/login",{method:"POST",body:JSON.stringify(body)});if(!result.token)throw new Error("The server did not return a login token.");saveToken(result.token);$("password").value="";$("confirm-password").value="";showLoggedIn();if(result.user)updateProfile(result.user);try{await loadProfile()}catch(err){if(!currentUser)throw err}await restoreActivePurchase();await Promise.allSettled([refreshWallet()]);await verifyReturnPayment()}catch(err){showMessage("auth-message",err.message,"error")}finally{b.disabled=false}});
 
 $("menu-toggle").addEventListener("click",()=>{const m=$("main-menu"),open=m.classList.contains("hidden");m.classList.toggle("hidden",!open);$("menu-toggle").setAttribute("aria-expanded",String(open))});
-$("bottom-menu-btn")?.addEventListener("click",()=>{const m=$("main-menu"),open=m.classList.contains("hidden");m.classList.toggle("hidden",!open);$("bottom-menu-btn").setAttribute("aria-expanded",String(open));$("menu-toggle").setAttribute("aria-expanded",String(open))});
 
 document.querySelectorAll("[data-page]").forEach(button=>button.addEventListener("click",()=>{const p=button.dataset.page;if(p==="logout"){clearPageSnapshot();showLoggedOut();$("deposit-area").classList.add("hidden");setMode("login");showMessage("auth-message","You have logged out.","success");return}showPage(p)}));
 
@@ -745,113 +710,113 @@ function logoForService(name){
 
   const brands = [
 
-    [/whatsapp/, "whatsapp", "25D366", "&#x1F4AC;"],
+    [/whatsapp/, "whatsapp", "25D366", '<i data-lucide="message-circle" class="inline-icon"></i>'],
 
-    [/telegram/, "telegram", "26A5E4", "&#x2708;&#xFE0F;"],
+    [/telegram/, "telegram", "26A5E4", '<i data-lucide="send" class="inline-icon"></i>'],
 
-    [/instagram/, "instagram", "E4405F", "&#x1F4F8;"],
+    [/instagram/, "instagram", "E4405F", '<i data-lucide="camera" class="inline-icon"></i>'],
 
-    [/facebook|meta/, "facebook", "0866FF", "&#x1F4D8;"],
+    [/facebook|meta/, "facebook", "0866FF", '<i data-lucide="book-open" class="inline-icon"></i>'],
 
-    [/google|gmail|youtube/, "google", "4285F4", "&#x1F310;"],
+    [/google|gmail|youtube/, "google", "4285F4", '<i data-lucide="globe" class="inline-icon"></i>'],
 
-    [/tiktok/, "tiktok", "000000", "&#x1F3B5;"],
+    [/tiktok/, "tiktok", "000000", '<i data-lucide="music" class="inline-icon"></i>'],
 
-    [/twitter|x\.com|\bx\b/, "x", "000000", "&#x1D54F;"],
+    [/twitter|x\.com|\bx\b/, "x", "000000", '<i data-lucide="x" class="inline-icon"></i>'],
 
-    [/discord/, "discord", "5865F2", "&#x1F3AE;"],
+    [/discord/, "discord", "5865F2", '<i data-lucide="gamepad-2" class="inline-icon"></i>'],
 
-    [/snapchat/, "snapchat", "FFFC00", "&#x1F47B;"],
+    [/snapchat/, "snapchat", "FFFC00", '<i data-lucide="ghost" class="inline-icon"></i>'],
 
-    [/microsoft|outlook|hotmail/, "microsoft", "5E5E5E", "&#x1FA9F;"],
+    [/microsoft|outlook|hotmail/, "microsoft", "5E5E5E", '<i data-lucide="monitor" class="inline-icon"></i>'],
 
-    [/apple|icloud/, "apple", "000000", "&#x1F34E;"],
+    [/apple|icloud/, "apple", "000000", '<i data-lucide="apple" class="inline-icon"></i>'],
 
-    [/uber/, "uber", "000000", "&#x1F697;"],
+    [/uber/, "uber", "000000", '<i data-lucide="car" class="inline-icon"></i>'],
 
-    [/amazon/, "amazon", "FF9900", "&#x1F4E6;"],
+    [/amazon/, "amazon", "FF9900", '<i data-lucide="package" class="inline-icon"></i>'],
 
-    [/viber/, "viber", "7360F2", "&#x1F4DE;"],
+    [/viber/, "viber", "7360F2", '<i data-lucide="phone" class="inline-icon"></i>'],
 
-    [/signal/, "signal", "3A76F0", "&#x1F535;"],
+    [/signal/, "signal", "3A76F0", '<i data-lucide="circle" class="inline-icon"></i>'],
 
-    [/reddit/, "reddit", "FF4500", "&#x1F47D;"],
+    [/reddit/, "reddit", "FF4500", '<i data-lucide="bot" class="inline-icon"></i>'],
 
-    [/line/, "line", "06C755", "&#x1F49A;"],
+    [/line/, "line", "06C755", '<i data-lucide="heart" class="inline-icon"></i>'],
 
-    [/wechat/, "wechat", "07C160", "&#x1F4AC;"],
+    [/wechat/, "wechat", "07C160", '<i data-lucide="message-circle" class="inline-icon"></i>'],
 
-    [/yahoo/, "yahoo", "6001D2", "&#x2709;&#xFE0F;"],
+    [/yahoo/, "yahoo", "6001D2", '<i data-lucide="mail" class="inline-icon"></i>'],
 
-    [/netflix/, "netflix", "E50914", "&#x1F3AC;"],
+    [/netflix/, "netflix", "E50914", '<i data-lucide="clapperboard" class="inline-icon"></i>'],
 
-    [/spotify/, "spotify", "1DB954", "&#x1F3A7;"],
+    [/spotify/, "spotify", "1DB954", '<i data-lucide="headphones" class="inline-icon"></i>'],
 
-    [/paypal/, "paypal", "003087", "&#x1F4B3;"],
+    [/paypal/, "paypal", "003087", '<i data-lucide="credit-card" class="inline-icon"></i>'],
 
-    [/binance/, "binance", "F0B90B", "&#x1F7E1;"],
+    [/binance/, "binance", "F0B90B", '<i data-lucide="circle" class="inline-icon"></i>'],
 
-    [/coinbase/, "coinbase", "0052FF", "&#x1F4B0;"],
+    [/coinbase/, "coinbase", "0052FF", '<i data-lucide="wallet" class="inline-icon"></i>'],
 
-    [/steam/, "steam", "000000", "&#x1F3AE;"],
+    [/steam/, "steam", "000000", '<i data-lucide="gamepad-2" class="inline-icon"></i>'],
 
-    [/twitch/, "twitch", "9146FF", "&#x1F7E3;"],
+    [/twitch/, "twitch", "9146FF", '<i data-lucide="circle" class="inline-icon"></i>'],
 
-    [/linkedin/, "linkedin", "0A66C2", "&#x1F4BC;"],
+    [/linkedin/, "linkedin", "0A66C2", '<i data-lucide="briefcase-business" class="inline-icon"></i>'],
 
-    [/pinterest/, "pinterest", "E60023", "&#x1F4CC;"],
+    [/pinterest/, "pinterest", "E60023", '<i data-lucide="pin" class="inline-icon"></i>'],
 
-    [/skype/, "skype", "00AFF0", "&#x1F4AC;"],
+    [/skype/, "skype", "00AFF0", '<i data-lucide="message-circle" class="inline-icon"></i>'],
 
-    [/zoom/, "zoom", "2D8CFF", "&#x1F4F9;"],
+    [/zoom/, "zoom", "2D8CFF", '<i data-lucide="video" class="inline-icon"></i>'],
 
-    [/slack/, "slack", "4A154B", "&#x1F4AC;"],
+    [/slack/, "slack", "4A154B", '<i data-lucide="message-circle" class="inline-icon"></i>'],
 
-    [/dropbox/, "dropbox", "0061FF", "&#x1F4E6;"],
+    [/dropbox/, "dropbox", "0061FF", '<i data-lucide="package" class="inline-icon"></i>'],
 
-    [/github/, "github", "181717", "&#x1F419;"],
+    [/github/, "github", "181717", '<i data-lucide="bug" class="inline-icon"></i>'],
 
-    [/adobe/, "adobe", "FF0000", "&#x1F3A8;"],
+    [/adobe/, "adobe", "FF0000", '<i data-lucide="palette" class="inline-icon"></i>'],
 
-    [/samsung/, "samsung", "1428A0", "&#x1F4F1;"],
+    [/samsung/, "samsung", "1428A0", '<i data-lucide="smartphone" class="inline-icon"></i>'],
 
-    [/huawei/, "huawei", "FF0000", "&#x1F4F1;"],
+    [/huawei/, "huawei", "FF0000", '<i data-lucide="smartphone" class="inline-icon"></i>'],
 
-    [/xiaomi/, "xiaomi", "FF6900", "&#x1F4F1;"],
+    [/xiaomi/, "xiaomi", "FF6900", '<i data-lucide="smartphone" class="inline-icon"></i>'],
 
-    [/revolut/, "revolut", "0075EB", "&#x1F4B3;"],
+    [/revolut/, "revolut", "0075EB", '<i data-lucide="credit-card" class="inline-icon"></i>'],
 
-    [/cashapp|cash app/, "cashapp", "00D632", "&#x1F4B5;"],
+    [/cashapp|cash app/, "cashapp", "00D632", '<i data-lucide="banknote" class="inline-icon"></i>'],
 
-    [/venmo/, "venmo", "3D95CE", "&#x1F4B8;"],
+    [/venmo/, "venmo", "3D95CE", '<i data-lucide="wallet" class="inline-icon"></i>'],
 
-    [/wise|transferwise/, "wise", "9FE870", "&#x1F4B8;"],
+    [/wise|transferwise/, "wise", "9FE870", '<i data-lucide="wallet" class="inline-icon"></i>'],
 
-    [/airbnb/, "airbnb", "FF5A5F", "&#x1F3E0;"],
+    [/airbnb/, "airbnb", "FF5A5F", '<i data-lucide="house" class="inline-icon"></i>'],
 
-    [/uber eats|ubereats/, "ubereats", "06C167", "&#x1F354;"],
+    [/uber eats|ubereats/, "ubereats", "06C167", '<i data-lucide="utensils" class="inline-icon"></i>'],
 
-    [/doordash/, "doordash", "FF3008", "&#x1F6F5;"],
+    [/doordash/, "doordash", "FF3008", '<i data-lucide="bike" class="inline-icon"></i>'],
 
-    [/bolt/, "bolt", "34D186", "&#x26A1;"],
+    [/bolt/, "bolt", "34D186", '<i data-lucide="zap" class="inline-icon"></i>'],
 
-    [/glovo/, "glovo", "FFC244", "&#x1F6F5;"],
+    [/glovo/, "glovo", "FFC244", '<i data-lucide="bike" class="inline-icon"></i>'],
 
-    [/jumia/, "jumia", "F68B1E", "&#x1F6D2;"],
+    [/jumia/, "jumia", "F68B1E", '<i data-lucide="shopping-cart" class="inline-icon"></i>'],
 
-    [/konga/, "konga", "EC1C24", "&#x1F6D2;"],
+    [/konga/, "konga", "EC1C24", '<i data-lucide="shopping-cart" class="inline-icon"></i>'],
 
-    [/paystack/, "paystack", "00C3F7", "&#x1F4B3;"],
+    [/paystack/, "paystack", "00C3F7", '<i data-lucide="credit-card" class="inline-icon"></i>'],
 
-    [/flutterwave/, "flutterwave", "F5A623", "&#x1F4B3;"],
+    [/flutterwave/, "flutterwave", "F5A623", '<i data-lucide="credit-card" class="inline-icon"></i>'],
 
-    [/opay/, "opay", "1B5E20", "&#x1F49A;"],
+    [/opay/, "opay", "1B5E20", '<i data-lucide="heart" class="inline-icon"></i>'],
 
-    [/palmpay/, "palmpay", "00A86B", "&#x1F49A;"],
+    [/palmpay/, "palmpay", "00A86B", '<i data-lucide="heart" class="inline-icon"></i>'],
 
-    [/kuda/, "kuda", "40196D", "&#x1F49C;"],
+    [/kuda/, "kuda", "40196D", '<i data-lucide="heart" class="inline-icon"></i>'],
 
-    [/moniepoint/, "moniepoint", "000000", "&#x1F3E6;"]
+    [/moniepoint/, "moniepoint", "000000", '<i data-lucide="landmark" class="inline-icon"></i>']
 
   ];
 
@@ -861,7 +826,7 @@ function logoForService(name){
 
   const clean = n.replace(/[^a-z0-9]/g, "");
 
-  return { url: `https://cdn.simpleicons.org/${clean}/555555`, fallback: "&#x1F4F1;" };
+  return { url: `https://cdn.simpleicons.org/${clean}/555555`, fallback: '<i data-lucide="smartphone" class="inline-icon"></i>' };
 
 }
 
@@ -1270,7 +1235,7 @@ function renderServices(){
 
     const name=document.createElement("h3");name.textContent=getServiceName(service);
 
-    const country=document.createElement("p");country.className="service-meta";country.innerHTML="&#x1F30D; "+(c?countryName(c):code);
+    const country=document.createElement("p");country.className="service-meta";country.innerHTML='<i data-lucide="globe" class="inline-icon"></i> '+(c?countryName(c):code);
 
     const amount=getServicePrice(service),price=document.createElement("p");price.className="price";
 
@@ -1331,7 +1296,7 @@ async function loadTransactions(){if(!token)return;showMessage("transactions-mes
 
 async function loadNumbers(){if(!token)return;showMessage("numbers-message","Loading...");try{const r=await api("/api/orders");const list=r.orders||[];const box=$("numbers-list");if(!list.length){box.innerHTML='<p class="muted">No number purchases yet.</p>';showMessage("numbers-message","");return}box.innerHTML=`<table class="history-table"><thead><tr><th>ID</th><th>SERVICE</th><th>PHONE</th><th>CODE</th><th>AMOUNT</th><th>STATUS</th><th>DATE</th></tr></thead><tbody>${list.map(o=>`<tr><td>${(o.id||"").slice(0,8)}</td><td>${o.service||""}</td><td>${o.phone_number||""}</td><td>${o.sms_code||"&#x2014;"}</td><td>${money(o.amount_kobo)}</td><td>${o.status||""}</td><td>${o.created_at?new Date(o.created_at).toLocaleString():""}</td></tr>`).join("")}</tbody></table>`;showMessage("numbers-message","")}catch(e){showMessage("numbers-message",e.message,"error")}}
 
-async function loadRecentActivity(){if(!token)return;try{const r=await api("/api/transactions");const list=(r.transactions||[]).filter(t=>t.type==="purchase").slice(0,5);const box=$("recent-activity-list");if(!list.length){box.innerHTML='<p class="muted">No recent number purchases.</p>';return}box.innerHTML=list.map(t=>`<div class="activity-item"><div class="activity-left"><div class="activity-icon">&#x1F4F1;</div><div><strong>Number Purchase</strong><div class="muted" style="font-size:12px">${t.service||""} ${maskPhone(t.phone_number||"")}</div></div></div><div style="text-align:right"><div style="color:#e65b5b">-${money(t.amount_kobo)}</div><div class="muted" style="font-size:11px">${t.created_at?new Date(t.created_at).toLocaleString():""}</div></div></div>`).join("")}catch(e){}}
+async function loadRecentActivity(){if(!token)return;try{const r=await api("/api/transactions");const list=(r.transactions||[]).filter(t=>t.type==="purchase").slice(0,5);const box=$("recent-activity-list");if(!list.length){box.innerHTML='<p class="muted">No recent number purchases.</p>';return}box.innerHTML=list.map(t=>`<div class="activity-item"><div class="activity-left"><div class="activity-icon"><i data-lucide="smartphone" class="inline-icon"></i></div><div><strong>Number Purchase</strong><div class="muted" style="font-size:12px">${t.service||""} ${maskPhone(t.phone_number||"")}</div></div></div><div style="text-align:right"><div style="color:#e65b5b">-${money(t.amount_kobo)}</div><div class="muted" style="font-size:11px">${t.created_at?new Date(t.created_at).toLocaleString():""}</div></div></div>`).join("")}catch(e){}}
 
 async function verifyReturnPayment(){if(!token)return;const p=new URLSearchParams(window.location.search),ref=p.get("reference")||p.get("trxref")||sessionStorage.getItem("scotap_pending_payment");if(!ref)return;showMessage("wallet-message","Checking your payment with Paystack...");try{const r=await api("/api/payments/verify",{method:"POST",body:JSON.stringify({reference:ref})});sessionStorage.removeItem("scotap_pending_payment");await refreshWallet();showMessage("wallet-message",r.already_credited?"This payment was already credited.":"Payment verified. Your wallet has been updated.","success");history.replaceState({},"",window.location.pathname)}catch(err){showMessage("wallet-message","Payment verification could not be confirmed: "+err.message+". Check your payment status before paying again.","error")}}
 
@@ -1373,7 +1338,7 @@ function updateNotificationBadge(){
 
 }
 
-async function checkAdminStatus(){if(!token){isAdminUser=false;return}try{const r=await api("/api/admin/status");const isAdmin=r.is_admin===true;isAdminUser=isAdmin;$("admin-menu-item").classList.toggle("hidden",!isAdmin);$("admin-tickets-menu")?.classList.toggle("hidden",!isAdmin);$("admin-orders-menu")?.classList.toggle("hidden",!isAdmin);$("admin-deposits-menu")?.classList.toggle("hidden",!isAdmin);if(!isAdmin&&$("admin-page"))$("admin-page").classList.add("hidden")}catch(e){isAdminUser=false;$("admin-menu-item").classList.add("hidden");$("admin-tickets-menu")?.classList.add("hidden");$("admin-orders-menu")?.classList.add("hidden");$("admin-deposits-menu")?.classList.add("hidden")}}
+async function checkAdminStatus(){if(!token)return;try{const r=await api("/api/admin/status");const flags=[r?.is_admin,r?.admin,r?.user?.is_admin,r?.user?.admin];const roles=[r?.role,r?.user?.role,r?.user?.account_type,r?.account_type];const explicitFalse=flags.some(v=>v===false||v===0||v==="false");const explicitTrue=flags.some(v=>v===true||v===1||v==="true")||roles.some(v=>typeof v==="string"&&v.toLowerCase().includes("admin"));/* A successful response from the admin-status endpoint is itself treated as authorization unless it explicitly denies admin status. */const isAdmin=explicitTrue||(!explicitFalse&&r?.success===true);isAdminUser=isAdmin;["admin-menu-item","admin-tickets-menu","admin-orders-menu","admin-deposits-menu"].forEach(id=>$(id)?.classList.toggle("hidden",!isAdmin));if(!isAdmin&&$("admin-page"))$("admin-page").classList.add("hidden");return isAdmin}catch(e){/* Do not erase the login session on an admin-status network error. */return false}}
 
 async function loadAnnouncements(){if(!token)return;const box=$("announcements-list"),msg=$("announcements-message");if(!box)return;msg.textContent="Loading announcements...";try{const r=await api("/api/announcements");scotapAnnouncements=Array.isArray(r.announcements)?r.announcements:(Array.isArray(r.items)?r.items:[]);box.innerHTML=announcementCards(scotapAnnouncements);msg.textContent=scotapAnnouncements.length?"Latest official announcements.":"No announcements have been published yet.";updateNotificationBadge()}catch(e){msg.textContent="Could not load announcements: "+e.message}}
 
@@ -1388,66 +1353,43 @@ $("announcement-form").addEventListener("submit",async e=>{e.preventDefault();co
 // Restore session on page load
 
 (async function restoreSession(){
-
+  const saved = (()=>{try{return localStorage.getItem("scotap_token")}catch{return null}})();
   try{
-
     try{localStorage.removeItem("scotap_last_page");localStorage.removeItem("scotap_last_ticket_id")}catch{}
-    const saved=localStorage.getItem("scotap_token");
-
     if(saved){
-
-      const pageSnapshot=readPageSnapshot();
-      const allowedPages=["dashboard","settings","services","transactions","numbers","notifications","admin","tickets","ticket-view","admin-tickets","admin-orders","admin-deposits"];
-      clearPageSnapshot();
-
       token=saved;
-
-      // Keep the dashboard hidden while the saved destination is being restored.
-      $("dashboard-page")?.classList.add("hidden");
-      showLoggedIn(null);
-
-      try{await loadProfile()}catch{}
-
-      // Show the right page ASAP — do not wait for purchase restore (that caused OTP flash + slow load)
-      const snapshotIsFresh=pageSnapshot&&Number.isFinite(Number(pageSnapshot.hiddenAt))&&Date.now()-Number(pageSnapshot.hiddenAt)<=60000;
-      let destination=snapshotIsFresh&&allowedPages.includes(pageSnapshot.page)?pageSnapshot.page:"dashboard";
-
-      // Lightweight parallel work while we decide destination
-      const bootWork = Promise.all([
-        checkAdminStatus().catch(()=>{}),
-        refreshWallet().catch(()=>{}),
-        verifyReturnPayment().catch(()=>{})
-      ]);
-
-      await bootWork;
-
-      if(["admin","admin-tickets","admin-orders","admin-deposits"].includes(destination)&&!isAdminUser){destination="dashboard"}
-      if(destination==="ticket-view"&&pageSnapshot.ticketId){await openTicket(pageSnapshot.ticketId)}
-      else if(destination==="ticket-view"){showPage(isAdminUser?"admin-tickets":"tickets")}
-      else{showPage(destination)}
-
-      // Reveal UI now — before background purchase sync
+      clearPageSnapshot();
+      // Show the dashboard immediately; background requests must not leave a blank page.
+      showLoggedIn("dashboard");
       document.documentElement.classList.add("app-ready");
 
-      // Restore active (waiting) purchase in background; never blocks first paint
+      // Restore data and permissions without deleting the saved token on temporary errors.
+      await Promise.allSettled([
+        loadProfile(),
+        checkAdminStatus(),
+        refreshWallet(),
+        verifyReturnPayment()
+      ]);
+      await checkAdminStatus();
+      showPage("dashboard");
       restoreActivePurchase().catch(()=>{});
-
     }else{
-
       clearPageSnapshot();
-      setMode("register");showLoggedOut();
-
+      setMode("register");
+      showLoggedOut();
     }
-
-  }catch{
-
-    setMode("register");showLoggedOut();
-
-  } finally {
-    // Show page only when session restore finished so content + chrome appear together
+  }catch(err){
+    // Network/startup errors must not sign the customer out or erase their token.
+    if(saved){
+      token=saved;
+      showLoggedIn("dashboard");
+    }else{
+      setMode("register");
+      showLoggedOut();
+    }
+  }finally{
     document.documentElement.classList.add("app-ready");
   }
-
 })();
 
 document.getElementById("go-register")?.addEventListener("click", () => {
