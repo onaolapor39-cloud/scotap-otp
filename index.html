@@ -289,11 +289,13 @@ body:has(.bottom-nav:not(.hidden)){padding-bottom:92px}
     <h2><i data-lucide="menu" class="inline-icon"></i> Menu</h2>
     <button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button>
   </div>
-  <p class="muted" style="margin-bottom:12px">All account options and admin tools.</p>
+  <p class="muted" style="margin-bottom:12px">All account options.</p>
   <nav class="menu page-menu" id="main-menu" aria-label="Customer menu">
 
 
 <button type="button" data-page="settings"><span class="menu-icon"><i data-lucide="settings"></i></span> <span>Account settings</span></button>
+
+<button type="button" data-page="get-app"><span class="menu-icon"><i data-lucide="download"></i></span> <span>Get App</span></button>
 
 <button type="button" data-page="services"><span class="menu-icon"><i data-lucide="smartphone"></i></span> <span>Available Services</span></button>
 
@@ -477,6 +479,19 @@ body:has(.bottom-nav:not(.hidden)){padding-bottom:92px}
   <div id="admin-deposits-list" style="overflow-x:auto"></div>
 </section>
 
+<section class="panel page-panel hidden" id="get-app-page">
+  <div class="section-heading"><h2><i data-lucide="download" class="inline-icon"></i> Get App</h2><button class="secondary small-button" type="button" data-page="menu">&#x2190; Back</button></div>
+  <p class="muted" style="margin-bottom:16px">Add SCOTAP OTP to your iPhone Home Screen so it opens like an app.</p>
+  <ol style="padding-left:22px;display:grid;gap:12px;margin:12px 0 18px">
+    <li>Open the SCOTAP OTP website in <strong>Safari</strong> on your iPhone. If it is open in another browser or inside another app, open the website directly in Safari.</li>
+    <li>Tap Safari's <strong>Share</strong> button (the square with an arrow pointing up).</li>
+    <li>Scroll down in the Share menu and tap <strong>Add to Home Screen</strong>. If you do not see it, scroll further down the list.</li>
+    <li>Keep the name as <strong>SCOTAP OTP</strong>, then tap <strong>Add</strong> in the top-right corner.</li>
+    <li>Return to your Home Screen and tap the SCOTAP OTP icon to open the website like an app.</li>
+  </ol>
+  <p class="muted">Tip: Use Safari for these steps. You need an internet connection to use SCOTAP OTP services.</p>
+</section>
+
 </section>
 
 <section id="public-features"><h2 class="section-title">Why <span>SCOTAP OTP?</span></h2><section class="features"><article class="feature"><h3><i data-lucide="shield-check" class="inline-icon"></i> Secure account</h3><p>Your own customer account.</p></article><article class="feature"><h3><i data-lucide="wallet" class="inline-icon"></i> Personal wallet</h3><p>View your balance and add money when you're ready.</p></article><article class="feature"><h3><i data-lucide="zap" class="inline-icon"></i> OTP services</h3><p>Browse supported services before choosing to buy.</p></article></section></section>
@@ -604,7 +619,7 @@ function updateProfile(user){currentUser=user||{};const setVal=(id,v)=>{const el
 
 async function loadProfile(){const result=await api("/api/me");updateProfile(result.user)}
 
-function showPage(page){currentPage=page;document.querySelectorAll(".bottom-nav-item[data-nav-page]").forEach(item=>item.classList.toggle("active",item.dataset.navPage===page));document.body.classList.toggle("ticket-open",page==="ticket-view");if(page==="ticket-view"){const topbar=document.querySelector(".topbar");document.documentElement.style.setProperty("--ticket-top",(topbar?.getBoundingClientRect().height||0)+"px")}const pages={dashboard:"dashboard-page",settings:"settings-page",services:"services-page",transactions:"transactions-page",numbers:"numbers-page",notifications:"notifications-page",admin:"admin-page",tickets:"tickets-page","ticket-view":"ticket-view-page","admin-tickets":"admin-tickets-page","admin-orders":"admin-orders-page","admin-deposits":"admin-deposits-page",terms:"terms-page",privacy:"privacy-page",menu:"menu-page"};Object.values(pages).forEach(id=>{const el=$(id);if(el)el.classList.add("hidden")});if(pages[page])$(pages[page]).classList.remove("hidden");if(page!=="menu"){$("menu-toggle")?.setAttribute("aria-expanded","false")}else{$("menu-toggle")?.setAttribute("aria-expanded","true");if(window.renderScotapIcons)window.renderScotapIcons($("menu-page"))}if(page==="services"&&token){if(countries.length===0)loadServices();if(activePurchase){const area=$("purchase-area");if(area&&area.classList.contains("hidden"))renderPurchaseUI(activePurchase);}}if(page==="notifications"&&token){loadAnnouncements();markAnnouncementsRead();}if(page==="transactions"&&token)loadTransactions();if(page==="numbers"&&token)loadNumbers();if(page==="dashboard"&&token)loadRecentActivity();if(page==="tickets"&&token&&!skipTicketListLoad)loadTickets();if(page==="admin-tickets"&&token)loadAdminTickets("open");
+function showPage(page){currentPage=page;document.querySelectorAll(".bottom-nav-item[data-nav-page]").forEach(item=>item.classList.toggle("active",item.dataset.navPage===page));document.body.classList.toggle("ticket-open",page==="ticket-view");if(page==="ticket-view"){const topbar=document.querySelector(".topbar");document.documentElement.style.setProperty("--ticket-top",(topbar?.getBoundingClientRect().height||0)+"px")}const pages={dashboard:"dashboard-page",settings:"settings-page",services:"services-page",transactions:"transactions-page",numbers:"numbers-page",notifications:"notifications-page",admin:"admin-page",tickets:"tickets-page","ticket-view":"ticket-view-page","admin-tickets":"admin-tickets-page","admin-orders":"admin-orders-page","admin-deposits":"admin-deposits-page","get-app":"get-app-page",terms:"terms-page",privacy:"privacy-page",menu:"menu-page"};Object.values(pages).forEach(id=>{const el=$(id);if(el)el.classList.add("hidden")});if(pages[page])$(pages[page]).classList.remove("hidden");if(page!=="menu"){$("menu-toggle")?.setAttribute("aria-expanded","false")}else{$("menu-toggle")?.setAttribute("aria-expanded","true");if(window.renderScotapIcons)window.renderScotapIcons($("menu-page"))}if(page==="services"&&token){if(countries.length===0)loadServices();if(activePurchase){const area=$("purchase-area");if(area&&area.classList.contains("hidden"))renderPurchaseUI(activePurchase);}}if(page==="notifications"&&token){loadAnnouncements();markAnnouncementsRead();}if(page==="transactions"&&token)loadTransactions();if(page==="numbers"&&token)loadNumbers();if(page==="dashboard"&&token)loadRecentActivity();if(page==="tickets"&&token&&!skipTicketListLoad)loadTickets();if(page==="admin-tickets"&&token)loadAdminTickets("open");
 if(page==="admin"&&token)loadCurrentMarkupForAdmin();if(page==="admin-orders"&&token)loadAdminOrders();if(page==="admin-deposits"&&token)loadAdminDeposits();window.scrollTo({top:0,behavior:"smooth"})}
 
 function saveToken(t){token=t;try{if(t)localStorage.setItem("scotap_token",t);else localStorage.removeItem("scotap_token")}catch{}}
