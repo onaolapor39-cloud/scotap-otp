@@ -103,13 +103,16 @@ html[data-theme="light"] .chat-msg .meta{color:#667781}
 html[data-theme="light"] .chat-files a{color:#087e67}
 
 /* Ticket conversations use their own screen; only the messages area scrolls. */
-body.ticket-open{overflow:hidden}
-#ticket-view-page{position:fixed!important;top:var(--ticket-top,0px);left:0;right:0;bottom:0;z-index:19;margin:0!important;width:100%;max-width:none;min-height:0;height:auto;padding:14px clamp(14px,4vw,34px);border-radius:0;display:flex;flex-direction:column;overflow:hidden;gap:0}
+body.ticket-open{overflow:hidden;padding-bottom:0!important}
+body.ticket-open .bottom-nav{display:none!important}
+#ticket-view-page{position:fixed!important;top:var(--ticket-top,0px);left:0;right:0;bottom:0;z-index:45;margin:0!important;width:100%;max-width:none;min-height:0;height:auto;padding:14px clamp(14px,4vw,34px);padding-bottom:calc(14px + env(safe-area-inset-bottom,0px));border-radius:0;display:flex;flex-direction:column;overflow:hidden;gap:0;background:var(--bg)}
 #ticket-view-page .section-heading{flex:0 0 auto;margin-bottom:8px}
 #ticket-view-page #ticket-meta{flex:0 0 auto;margin-bottom:8px!important}
 #ticket-view-page .whatsapp-chat{flex:1 1 auto;height:auto;min-height:0;max-height:none;margin:0;border-radius:14px 14px 0 0;overscroll-behavior:contain}
-#ticket-view-page .whatsapp-composer{flex:0 0 auto;border-radius:0 0 14px 14px}
+#ticket-view-page .whatsapp-composer{flex:0 0 auto;border-radius:0 0 14px 14px;background:var(--panel);border:1px solid var(--border);padding:10px;z-index:2}
 #ticket-view-page #ticket-view-message{flex:0 0 auto;margin-top:6px}
+#ticket-view-page .composer-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px}
+#ticket-view-page .composer-actions button#ticket-reply-btn{width:44px;height:44px;padding:0;border-radius:50%;font-size:20px;flex-shrink:0;display:grid;place-items:center}
 .chat-msg{max-width:min(84%,560px)}
 .chat-msg.customer{background:#fff;color:#171717}
 .chat-msg.support{background:var(--gold);color:#fff}
