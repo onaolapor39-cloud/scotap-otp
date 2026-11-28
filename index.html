@@ -440,6 +440,58 @@ body:has(.bottom-nav:not(.hidden)){padding-bottom:92px}
 </form>
 <div id="admin-search-message" class="message"></div>
 <div id="admin-user-result" class="hidden" style="margin-top:16px"></div>
+
+<hr style="border:0;border-top:1px solid var(--border);margin:28px 0">
+
+<!-- ===== CREDIT / DEBIT WALLET ===== -->
+<h3><i data-lucide="wallet" class="inline-icon"></i> Wallet Adjustment</h3>
+<p class="muted">Manually credit or debit any user's SCOTAP wallet. Always add a clear reason.</p>
+
+<div style="display:flex;gap:12px;flex-wrap:wrap;margin:16px 0">
+  <button class="primary" id="show-credit-form" type="button">
+    <i data-lucide="plus-circle" class="inline-icon"></i> Credit Wallet
+  </button>
+  <button class="secondary" id="show-debit-form" type="button" style="border-color:#e65b5b;color:#e65b5b">
+    <i data-lucide="minus-circle" class="inline-icon"></i> Debit Wallet
+  </button>
+</div>
+
+<!-- Credit Form -->
+<div id="credit-wallet-area" class="hidden" style="margin-top:16px">
+  <div class="panel" style="background:var(--card);margin:0">
+    <h4 style="margin-bottom:12px;color:#229447">Credit User Wallet</h4>
+    <label for="credit-username">Username or Email</label>
+    <input id="credit-username" type="text" placeholder="e.g. john_doe or user@email.com" autocomplete="off">
+    <label for="credit-amount">Amount (₦)</label>
+    <input id="credit-amount" type="number" min="1" max="5000000" step="1" placeholder="e.g. 2000">
+    <label for="credit-reason">Reason (required)</label>
+    <input id="credit-reason" type="text" maxlength="200" placeholder="e.g. Refund for failed number, Promo, Correction...">
+    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+      <button class="primary" id="credit-submit-btn" type="button">Credit Wallet</button>
+      <button class="secondary" id="cancel-credit" type="button">Cancel</button>
+    </div>
+    <div id="credit-message" class="message"></div>
+  </div>
+</div>
+
+<!-- Debit Form -->
+<div id="debit-wallet-area" class="hidden" style="margin-top:16px">
+  <div class="panel" style="background:var(--card);margin:0">
+    <h4 style="margin-bottom:12px;color:#e65b5b">Debit User Wallet</h4>
+    <label for="debit-username">Username or Email</label>
+    <input id="debit-username" type="text" placeholder="e.g. john_doe or user@email.com" autocomplete="off">
+    <label for="debit-amount">Amount (₦)</label>
+    <input id="debit-amount" type="number" min="1" max="5000000" step="1" placeholder="e.g. 500">
+    <label for="debit-reason">Reason (required)</label>
+    <input id="debit-reason" type="text" maxlength="200" placeholder="e.g. Accidental credit, Chargeback, Abuse...">
+    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+      <button class="primary" id="debit-submit-btn" type="button" style="background:#e65b5b;color:#fff">Debit Wallet</button>
+      <button class="secondary" id="cancel-debit" type="button">Cancel</button>
+    </div>
+    <div id="debit-message" class="message"></div>
+  </div>
+</div>
+
 </section>
 
 <section class="panel page-panel hidden" id="tickets-page">
@@ -1715,6 +1767,114 @@ if (adminSearchForm) {
 </script>
 
 <script>
+
+// ===== ADMIN CREDIT / DEBIT WALLET =====
+const creditArea = document.getElementById("credit-wallet-area");
+const debitArea = document.getElementById("debit-wallet-area");
+
+document.getElementById("show-credit-form")?.addEventListener("click", () => {
+  creditArea?.classList.remove("hidden");
+  debitArea?.classList.add("hidden");
+  document.getElementById("credit-username")?.focus();
+});
+
+document.getElementById("show-debit-form")?.addEventListener("click", () => {
+  debitArea?.classList.remove("hidden");
+  creditArea?.classList.add("hidden");
+  document.getElementById("debit-username")?.focus();
+});
+
+document.getElementById("cancel-credit")?.addEventListener("click", () => {
+  creditArea?.classList.add("hidden");
+  const msg = document.getElementById("credit-message");
+  if (msg) { msg.textContent = ""; msg.className = "message"; }
+});
+
+document.getElementById("cancel-debit")?.addEventListener("click", () => {
+  debitArea?.classList.add("hidden");
+  const msg = document.getElementById("debit-message");
+  if (msg) { msg.textContent = ""; msg.className = "message"; }
+});
+
+document.getElementById("credit-submit-btn")?.addEventListener("click", async () => {
+  const username = document.getElementById("credit-username")?.value.trim() || "";
+  const amount = Number(document.getElementById("credit-amount")?.value);
+  const reason = document.getElementById("credit-reason")?.value.trim() || "";
+  const msg = document.getElementById("credit-message");
+  const btn = document.getElementById("credit-submit-btn");
+
+  if (!username || !Number.isFinite(amount) || amount <= 0 || !reason) {
+    if (msg) { msg.textContent = "Please fill all fields correctly."; msg.className = "message error"; }
+    return;
+  }
+
+  if (!confirm(`Credit ₦${amount.toLocaleString()} to ${username}?\n\nReason: ${reason}`)) return;
+
+  if (btn) btn.disabled = true;
+  if (msg) { msg.textContent = "Processing credit..."; msg.className = "message"; }
+
+  try {
+    const r = await api("/api/admin/credit-wallet", {
+      method: "POST",
+      body: JSON.stringify({ username, amount_naira: amount, reason })
+    });
+    if (msg) {
+      msg.textContent = `${r.message} | New balance: ₦${Number(r.new_balance_naira).toLocaleString()}`;
+      msg.className = "message success";
+    }
+    const u = document.getElementById("credit-username");
+    const a = document.getElementById("credit-amount");
+    const re = document.getElementById("credit-reason");
+    if (u) u.value = "";
+    if (a) a.value = "";
+    if (re) re.value = "";
+  } catch (err) {
+    if (msg) { msg.textContent = err.message || "Something went wrong"; msg.className = "message error"; }
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+});
+
+document.getElementById("debit-submit-btn")?.addEventListener("click", async () => {
+  const username = document.getElementById("debit-username")?.value.trim() || "";
+  const amount = Number(document.getElementById("debit-amount")?.value);
+  const reason = document.getElementById("debit-reason")?.value.trim() || "";
+  const msg = document.getElementById("debit-message");
+  const btn = document.getElementById("debit-submit-btn");
+
+  if (!username || !Number.isFinite(amount) || amount <= 0 || !reason) {
+    if (msg) { msg.textContent = "Please fill all fields correctly."; msg.className = "message error"; }
+    return;
+  }
+
+  if (!confirm(`Debit ₦${amount.toLocaleString()} from ${username}?\n\nReason: ${reason}\n\nThis cannot be undone easily.`)) return;
+
+  if (btn) btn.disabled = true;
+  if (msg) { msg.textContent = "Processing debit..."; msg.className = "message"; }
+
+  try {
+    const r = await api("/api/admin/debit-wallet", {
+      method: "POST",
+      body: JSON.stringify({ username, amount_naira: amount, reason })
+    });
+    if (msg) {
+      msg.textContent = `${r.message} | New balance: ₦${Number(r.new_balance_naira).toLocaleString()}`;
+      msg.className = "message success";
+    }
+    const u = document.getElementById("debit-username");
+    const a = document.getElementById("debit-amount");
+    const re = document.getElementById("debit-reason");
+    if (u) u.value = "";
+    if (a) a.value = "";
+    if (re) re.value = "";
+  } catch (err) {
+    if (msg) { msg.textContent = err.message || "Something went wrong"; msg.className = "message error"; }
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+});
+
+
 // ===== SUPPORT TICKETS JS =====
 
 document.addEventListener("click", async (e) => {
