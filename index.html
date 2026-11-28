@@ -163,7 +163,7 @@ body:has(.bottom-nav:not(.hidden)){padding-bottom:92px}
 
 <body>
 <script src="https://unpkg.com/lucide@latest"></script>
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
 <script>
 (function(){
   function renderScotapIcons(root=document){ if(window.lucide?.createIcons) window.lucide.createIcons({root, attrs:{"stroke-width":2}}); }
@@ -284,7 +284,7 @@ body:has(.bottom-nav:not(.hidden)){padding-bottom:92px}
 
 <section class="panel hidden" id="auth-panel"><h2 id="auth-title">Create your SCOTAP account</h2><p class="muted" id="auth-description">Create your profile to get started.</p><div class="tabs"><button class="primary" id="register-tab" type="button">Register</button><button class="secondary" id="login-tab" type="button">Log in</button></div>
 
-<form id="auth-form"><div id="register-fields"><label for="full-name">Full name</label><input id="full-name" type="text" autocomplete="name" maxlength="100" placeholder="Your full name"><label for="username">Username</label><input id="username" type="text" autocomplete="username" minlength="3" maxlength="24" pattern="[A-Za-z0-9_]{3,24}" placeholder="Choose a username (letters, numbers, _) " autocapitalize="none"></div><label for="email" id="email-label">Email address</label><input id="email" type="email" autocomplete="email" maxlength="254" required placeholder="you@example.com"><label for="password">Password</label><input id="password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required placeholder="At least 8 characters"><div id="confirm-password-field"><label for="confirm-password">Confirm password</label><input id="confirm-password" type="password" autocomplete="new-password" minlength="8" maxlength="128" placeholder="Enter password again"></div><div class="check-row" id="terms-row"><input id="terms-accepted" type="checkbox"><label for="terms-accepted">I agree to the <a href="#" data-legal="terms">Terms of Service</a> and <a href="#" data-legal="privacy">Privacy Policy</a>, and I will not use this service for fraud.</label></div><div class="cf-turnstile" data-sitekey="0x4AAAAAAGVxRywmcBBNfxpX" data-theme="auto" style="margin:14px 0"></div><button class="primary full" id="auth-submit" type="submit">Create account</button></form><div id="auth-message" class="message" aria-live="polite"></div></section>
+<form id="auth-form"><div id="register-fields"><label for="full-name">Full name</label><input id="full-name" type="text" autocomplete="name" maxlength="100" placeholder="Your full name"><label for="username">Username</label><input id="username" type="text" autocomplete="username" minlength="3" maxlength="24" pattern="[A-Za-z0-9_]{3,24}" placeholder="Choose a username (letters, numbers, _) " autocapitalize="none"></div><label for="email" id="email-label">Email address</label><input id="email" type="email" autocomplete="email" maxlength="254" required placeholder="you@example.com"><label for="password">Password</label><input id="password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required placeholder="At least 8 characters"><div id="confirm-password-field"><label for="confirm-password">Confirm password</label><input id="confirm-password" type="password" autocomplete="new-password" minlength="8" maxlength="128" placeholder="Enter password again"></div><div class="check-row" id="terms-row"><input id="terms-accepted" type="checkbox"><label for="terms-accepted">I agree to the <a href="#" data-legal="terms">Terms of Service</a> and <a href="#" data-legal="privacy">Privacy Policy</a>, and I will not use this service for fraud.</label></div><button class="primary full" id="auth-submit" type="submit">Create account</button></form><div id="auth-message" class="message" aria-live="polite"></div></section>
 
 <section class="hidden" id="customer-dashboard">
 
@@ -404,11 +404,11 @@ body:has(.bottom-nav:not(.hidden)){padding-bottom:92px}
 <div class="admin-form admin-stats-grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0">
   <div class="panel admin-stat-card" style="margin:0">
     <div class="admin-stat-label"><i data-lucide="user-round" class="admin-stat-icon" aria-hidden="true"></i><span class="muted">Total Registered Users</span></div>
-    <div id="admin-total-users" class="admin-stat-value">-</div>
+    <div id="admin-total-users" class="admin-stat-value">â</div>
   </div>
   <div class="panel admin-stat-card" style="margin:0">
     <div class="admin-stat-label"><i data-lucide="activity" class="admin-stat-icon" aria-hidden="true"></i><span class="muted">Currently Using Website</span></div>
-    <div id="admin-active-users" class="admin-stat-value">-</div>
+    <div id="admin-active-users" class="admin-stat-value">â</div>
   </div>
 </div>
 <div class="admin-form" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:18px 0" aria-label="Admin records">
@@ -733,7 +733,7 @@ async function refreshWallet(){if(!token)return;$("refresh-button").disabled=tru
 
 $("register-tab").addEventListener("click",()=>setMode("register"));$("login-tab").addEventListener("click",()=>setMode("login"));
 
-$("auth-form").addEventListener("submit",async e=>{e.preventDefault();const b=$("auth-submit");b.disabled=true;showMessage("auth-message","Please wait...");try{const humanToken=window.turnstile?.getResponse?.();if(!humanToken)throw new Error("Please complete the Verify Human check.");let body;if(mode==="register"){if($("password").value!==$("confirm-password").value)throw new Error("Passwords do not match.");if(!$("terms-accepted").checked)throw new Error("You must accept the Terms of Service and Privacy Policy.");body={full_name:$("full-name").value.trim(),username:$("username").value.trim().toLowerCase(),email:$("email").value.trim(),password:$("password").value,confirm_password:$("confirm-password").value,terms_accepted:$("terms-accepted").checked,cf_turnstile_response:humanToken}}else body={email:$("email").value.trim(),password:$("password").value,cf_turnstile_response:humanToken};const result=await api(mode==="register"?"/api/register":"/api/login",{method:"POST",body:JSON.stringify(body)});if(!result.token)throw new Error("The server did not return a login token.");window.turnstile?.reset?.();saveToken(result.token);$("password").value="";$("confirm-password").value="";showLoggedIn();if(result.user)updateProfile(result.user);try{await loadProfile()}catch(err){if(!currentUser)throw err}await restoreActivePurchase();await Promise.allSettled([refreshWallet()]);await verifyReturnPayment()}catch(err){window.turnstile?.reset?.();showMessage("auth-message",err.message,"error")}finally{b.disabled=false}});
+$("auth-form").addEventListener("submit",async e=>{e.preventDefault();const b=$("auth-submit");b.disabled=true;showMessage("auth-message","Please wait...");try{let body;if(mode==="register"){if($("password").value!==$("confirm-password").value)throw new Error("Passwords do not match.");if(!$("terms-accepted").checked)throw new Error("You must accept the Terms of Service and Privacy Policy.");body={full_name:$("full-name").value.trim(),username:$("username").value.trim().toLowerCase(),email:$("email").value.trim(),password:$("password").value,confirm_password:$("confirm-password").value,terms_accepted:$("terms-accepted").checked}}else body={email:$("email").value.trim(),password:$("password").value};const result=await api(mode==="register"?"/api/register":"/api/login",{method:"POST",body:JSON.stringify(body)});if(!result.token)throw new Error("The server did not return a login token.");saveToken(result.token);$("password").value="";$("confirm-password").value="";showLoggedIn();if(result.user)updateProfile(result.user);try{await loadProfile()}catch(err){if(!currentUser)throw err}await restoreActivePurchase();await Promise.allSettled([refreshWallet()]);await verifyReturnPayment()}catch(err){showMessage("auth-message",err.message,"error")}finally{b.disabled=false}});
 
 $("menu-toggle").addEventListener("click",()=>{showPage("menu");});
 
@@ -1232,7 +1232,7 @@ function updatePurchaseActions(order){
         }
 
         if(!confirmed){
-          // API said OK but status still pending - do NOT pretend it worked
+          // API said OK but status still pending â do NOT pretend it worked
           showMessage(
             "services-message",
             "Cancel request sent, but the number is still active on the server (status: " +
@@ -1454,7 +1454,7 @@ $("announcement-form").addEventListener("submit",async e=>{e.preventDefault();co
 
       try{await loadProfile()}catch{}
 
-      // Show the right page ASAP - do not wait for purchase restore (that caused OTP flash + slow load)
+      // Show the right page ASAP â do not wait for purchase restore (that caused OTP flash + slow load)
       const snapshotIsFresh=pageSnapshot&&Number.isFinite(Number(pageSnapshot.hiddenAt))&&Date.now()-Number(pageSnapshot.hiddenAt)<=60000;
       let destination=snapshotIsFresh&&allowedPages.includes(pageSnapshot.page)?pageSnapshot.page:"dashboard";
 
@@ -1472,7 +1472,7 @@ $("announcement-form").addEventListener("submit",async e=>{e.preventDefault();co
       else if(destination==="ticket-view"){showPage(isAdminUser?"admin-tickets":"tickets")}
       else{showPage(destination)}
 
-      // Reveal UI now - before background purchase sync
+      // Reveal UI now â before background purchase sync
       document.documentElement.classList.add("app-ready");
 
       // Restore active (waiting) purchase in background; never blocks first paint
@@ -1863,7 +1863,7 @@ function showCreateTicketForm() {
         ));
       }
     } catch (e) {
-      sel.replaceChildren(new Option("Could not load transactions - tap to retry", "__error__"));
+      sel.replaceChildren(new Option("Could not load transactions â tap to retry", "__error__"));
       console.error("Could not load related ticket transactions:", e);
     } finally {
       sel.disabled = false;
@@ -2214,7 +2214,7 @@ async function loadAdminOrders() {
       <td>${escapeHtml(o.phone_number || "")}</td>
       <td>${money(o.amount_kobo)}</td>
       <td>${escapeHtml(o.status || "")}</td>
-      <td>${escapeHtml(o.sms_code || "-")}</td>
+      <td>${escapeHtml(o.sms_code || "â")}</td>
       <td>${o.created_at ? new Date(o.created_at).toLocaleString() : ""}</td>
     </tr>`).join("")}</tbody></table>`;
     showMessage("admin-orders-message", `${list.length} record(s)`);
