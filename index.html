@@ -154,6 +154,9 @@ body:has(.bottom-nav:not(.hidden)){padding-bottom:92px}
 @media(min-width:760px){.bottom-nav{left:50%;right:auto;transform:translateX(-50%);width:min(560px,calc(100vw - 32px));bottom:16px}.bottom-nav-item{font-size:11px}}
 @media(max-width:600px){.bottom-nav{left:8px;right:8px;padding:7px 4px}.bottom-nav-item{font-size:9px}.bottom-nav-item .bottom-icon{height:28px}}
 
+
+.admin-stat-card{padding:16px!important}.admin-stat-label{display:flex;align-items:center;gap:9px;min-height:28px}.admin-stat-icon{width:20px;height:20px;flex:0 0 20px;color:#22a447;stroke-width:2.2}.admin-stat-value{font-size:28px;font-weight:800;line-height:1.3;margin-top:8px;font-variant-numeric:tabular-nums}
+@media(max-width:420px){.admin-stats-grid{grid-template-columns:1fr!important}}
 </style>
 
 </head>
@@ -310,9 +313,7 @@ body:has(.bottom-nav:not(.hidden)){padding-bottom:92px}
 
 <button type="button" data-page="admin-tickets" id="admin-tickets-menu" class="hidden"><span class="menu-icon"><i data-lucide="clipboard-list"></i></span> <span>Ticket Log (Admin)</span></button>
 
-<button type="button" data-page="admin-orders" id="admin-orders-menu" class="hidden"><span class="menu-icon"><i data-lucide="shopping-bag"></i></span> <span>All Number Purchases</span></button>
 
-<button type="button" data-page="admin-deposits" id="admin-deposits-menu" class="hidden"><span class="menu-icon"><i data-lucide="wallet"></i></span> <span>All Wallet Funding</span></button>
 
 <button type="button" data-page="dashboard"><span class="menu-icon"><i data-lucide="wallet-cards"></i></span> <span>Dashboard / Wallet</span></button>
 
@@ -400,9 +401,19 @@ body:has(.bottom-nav:not(.hidden)){padding-bottom:92px}
 <section class="panel page-panel hidden" id="notifications-page"><div class="section-heading"><h2><i data-lucide="bell" class="inline-icon"></i> Announcements</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Official announcements posted by SCOTAP administration.</p><button class="secondary" id="refresh-announcements" type="button"><i data-lucide="refresh-cw" class="inline-icon"></i> Refresh announcements</button><div id="announcements-message" class="message" aria-live="polite"></div><div id="announcements-list"></div></section>
 
 <section class="panel page-panel hidden" id="admin-page"><div class="section-heading"><h2><i data-lucide="wrench" class="inline-icon"></i> Admin Dashboard</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div><p class="muted">Publish announcements for logged-in SCOTAP OTP users.</p>
-<div class="admin-form" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0">
-  <div class="panel" style="margin:0"><div class="muted">Total Registered Users</div><div id="admin-total-users" style="font-size:28px;font-weight:800">â</div></div>
-  <div class="panel" style="margin:0"><div class="muted">Currently Using Website</div><div id="admin-active-users" style="font-size:28px;font-weight:800">â</div></div>
+<div class="admin-form admin-stats-grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0">
+  <div class="panel admin-stat-card" style="margin:0">
+    <div class="admin-stat-label"><i data-lucide="user-round" class="admin-stat-icon" aria-hidden="true"></i><span class="muted">Total Registered Users</span></div>
+    <div id="admin-total-users" class="admin-stat-value">â</div>
+  </div>
+  <div class="panel admin-stat-card" style="margin:0">
+    <div class="admin-stat-label"><i data-lucide="activity" class="admin-stat-icon" aria-hidden="true"></i><span class="muted">Currently Using Website</span></div>
+    <div id="admin-active-users" class="admin-stat-value">â</div>
+  </div>
+</div>
+<div class="admin-form" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:18px 0" aria-label="Admin records">
+  <button class="secondary" type="button" data-page="admin-orders" style="display:flex;align-items:center;justify-content:flex-start;gap:12px;text-align:left;padding:16px;min-height:64px"><i data-lucide="shopping-bag" class="inline-icon"></i><span><strong>All Number Purchases</strong><small class="muted" style="display:block">View every user's number orders</small></span><i data-lucide="chevron-right" style="margin-left:auto"></i></button>
+  <button class="secondary" type="button" data-page="admin-deposits" style="display:flex;align-items:center;justify-content:flex-start;gap:12px;text-align:left;padding:16px;min-height:64px"><i data-lucide="wallet" class="inline-icon"></i><span><strong>All Wallet Funding</strong><small class="muted" style="display:block">View every user's wallet deposits</small></span><i data-lucide="chevron-right" style="margin-left:auto"></i></button>
 </div>
 <div id="admin-stats-message" class="message" aria-live="polite"></div><form id="announcement-form" class="admin-form"><label for="announcement-title">Announcement title</label><input id="announcement-title" maxlength="120" required placeholder="Example: Scheduled maintenance"><label for="announcement-message">Message</label><textarea id="announcement-message-input" maxlength="5000" rows="6" required placeholder="Write the announcement..."></textarea><button class="primary full" id="publish-announcement" type="submit">Publish announcement</button></form><div id="admin-message" class="message" aria-live="polite"></div>
 
@@ -468,7 +479,7 @@ body:has(.bottom-nav:not(.hidden)){padding-bottom:92px}
 </section>
 
 <section class="panel page-panel hidden" id="admin-orders-page">
-  <div class="section-heading"><h2><i data-lucide="smartphone" class="inline-icon"></i> All Number Purchases</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div>
+  <div class="section-heading"><h2><i data-lucide="smartphone" class="inline-icon"></i> All Number Purchases</h2><button class="secondary small-button" type="button" data-page="admin">&#x2190; Back</button></div>
   <p class="muted">All users' virtual number purchases (any status).</p>
   <input id="admin-orders-search" type="search" placeholder="Search username, number, service..." style="margin-bottom:10px">
   <button class="secondary" id="admin-orders-refresh" type="button"><i data-lucide="refresh-cw" class="inline-icon"></i> Refresh</button>
@@ -477,7 +488,7 @@ body:has(.bottom-nav:not(.hidden)){padding-bottom:92px}
 </section>
 
 <section class="panel page-panel hidden" id="admin-deposits-page">
-  <div class="section-heading"><h2><i data-lucide="credit-card" class="inline-icon"></i> All Wallet Funding</h2><button class="secondary small-button" type="button" data-page="dashboard">&#x2190; Back</button></div>
+  <div class="section-heading"><h2><i data-lucide="credit-card" class="inline-icon"></i> All Wallet Funding</h2><button class="secondary small-button" type="button" data-page="admin">&#x2190; Back</button></div>
   <p class="muted">All users' wallet deposits (any status).</p>
   <input id="admin-deposits-search" type="search" placeholder="Search username or reference..." style="margin-bottom:10px">
   <button class="secondary" id="admin-deposits-refresh" type="button"><i data-lucide="refresh-cw" class="inline-icon"></i> Refresh</button>
