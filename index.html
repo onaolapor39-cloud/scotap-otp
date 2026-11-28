@@ -414,6 +414,8 @@ body:has(.bottom-nav:not(.hidden)){padding-bottom:92px}
 <div class="admin-form" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:18px 0" aria-label="Admin records">
   <button class="secondary" type="button" data-page="admin-orders" style="display:flex;align-items:center;justify-content:flex-start;gap:12px;text-align:left;padding:16px;min-height:64px"><i data-lucide="shopping-bag" class="inline-icon"></i><span><strong>All Number Purchases</strong><small class="muted" style="display:block">View every user's number orders</small></span><i data-lucide="chevron-right" style="margin-left:auto"></i></button>
   <button class="secondary" type="button" data-page="admin-deposits" style="display:flex;align-items:center;justify-content:flex-start;gap:12px;text-align:left;padding:16px;min-height:64px"><i data-lucide="wallet" class="inline-icon"></i><span><strong>All Wallet Funding</strong><small class="muted" style="display:block">View every user's wallet deposits</small></span><i data-lucide="chevron-right" style="margin-left:auto"></i></button>
+  <button class="secondary" type="button" data-page="admin-credit-wallet" style="display:flex;align-items:center;justify-content:flex-start;gap:12px;text-align:left;padding:16px;min-height:64px"><i data-lucide="wallet" class="inline-icon"></i><span><strong>Credit Wallet</strong><small class="muted" style="display:block">Add funds to a user's wallet</small></span><i data-lucide="chevron-right" style="margin-left:auto"></i></button>
+  <button class="secondary" type="button" data-page="admin-debit-wallet" style="display:flex;align-items:center;justify-content:flex-start;gap:12px;text-align:left;padding:16px;min-height:64px"><i data-lucide="wallet-minimal" class="inline-icon"></i><span><strong>Debit Wallet</strong><small class="muted" style="display:block">Deduct funds from a user's wallet</small></span><i data-lucide="chevron-right" style="margin-left:auto"></i></button>
 </div>
 <div id="admin-stats-message" class="message" aria-live="polite"></div><form id="announcement-form" class="admin-form"><label for="announcement-title">Announcement title</label><input id="announcement-title" maxlength="120" required placeholder="Example: Scheduled maintenance"><label for="announcement-message">Message</label><textarea id="announcement-message-input" maxlength="5000" rows="6" required placeholder="Write the announcement..."></textarea><button class="primary full" id="publish-announcement" type="submit">Publish announcement</button></form><div id="admin-message" class="message" aria-live="polite"></div>
 
@@ -440,58 +442,6 @@ body:has(.bottom-nav:not(.hidden)){padding-bottom:92px}
 </form>
 <div id="admin-search-message" class="message"></div>
 <div id="admin-user-result" class="hidden" style="margin-top:16px"></div>
-
-<hr style="border:0;border-top:1px solid var(--border);margin:28px 0">
-
-<!-- ===== CREDIT / DEBIT WALLET ===== -->
-<h3><i data-lucide="wallet" class="inline-icon"></i> Wallet Adjustment</h3>
-<p class="muted">Manually credit or debit any user's SCOTAP wallet. Always add a clear reason.</p>
-
-<div style="display:flex;gap:12px;flex-wrap:wrap;margin:16px 0">
-  <button class="primary" id="show-credit-form" type="button">
-    <i data-lucide="plus-circle" class="inline-icon"></i> Credit Wallet
-  </button>
-  <button class="secondary" id="show-debit-form" type="button" style="border-color:#e65b5b;color:#e65b5b">
-    <i data-lucide="minus-circle" class="inline-icon"></i> Debit Wallet
-  </button>
-</div>
-
-<!-- Credit Form -->
-<div id="credit-wallet-area" class="hidden" style="margin-top:16px">
-  <div class="panel" style="background:var(--card);margin:0">
-    <h4 style="margin-bottom:12px;color:#229447">Credit User Wallet</h4>
-    <label for="credit-username">Username or Email</label>
-    <input id="credit-username" type="text" placeholder="e.g. john_doe or user@email.com" autocomplete="off">
-    <label for="credit-amount">Amount (₦)</label>
-    <input id="credit-amount" type="number" min="1" max="5000000" step="1" placeholder="e.g. 2000">
-    <label for="credit-reason">Reason (required)</label>
-    <input id="credit-reason" type="text" maxlength="200" placeholder="e.g. Refund for failed number, Promo, Correction...">
-    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
-      <button class="primary" id="credit-submit-btn" type="button">Credit Wallet</button>
-      <button class="secondary" id="cancel-credit" type="button">Cancel</button>
-    </div>
-    <div id="credit-message" class="message"></div>
-  </div>
-</div>
-
-<!-- Debit Form -->
-<div id="debit-wallet-area" class="hidden" style="margin-top:16px">
-  <div class="panel" style="background:var(--card);margin:0">
-    <h4 style="margin-bottom:12px;color:#e65b5b">Debit User Wallet</h4>
-    <label for="debit-username">Username or Email</label>
-    <input id="debit-username" type="text" placeholder="e.g. john_doe or user@email.com" autocomplete="off">
-    <label for="debit-amount">Amount (₦)</label>
-    <input id="debit-amount" type="number" min="1" max="5000000" step="1" placeholder="e.g. 500">
-    <label for="debit-reason">Reason (required)</label>
-    <input id="debit-reason" type="text" maxlength="200" placeholder="e.g. Accidental credit, Chargeback, Abuse...">
-    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
-      <button class="primary" id="debit-submit-btn" type="button" style="background:#e65b5b;color:#fff">Debit Wallet</button>
-      <button class="secondary" id="cancel-debit" type="button">Cancel</button>
-    </div>
-    <div id="debit-message" class="message"></div>
-  </div>
-</div>
-
 </section>
 
 <section class="panel page-panel hidden" id="tickets-page">
@@ -546,6 +496,24 @@ body:has(.bottom-nav:not(.hidden)){padding-bottom:92px}
   <button class="secondary" id="admin-deposits-refresh" type="button"><i data-lucide="refresh-cw" class="inline-icon"></i> Refresh</button>
   <div id="admin-deposits-message" class="message"></div>
   <div id="admin-deposits-list" style="overflow-x:auto"></div>
+</section>
+
+<section class="panel page-panel hidden" id="admin-credit-wallet-page">
+  <div class="section-heading"><h2><i data-lucide="wallet" class="inline-icon"></i> Credit Wallet</h2><button class="secondary small-button" type="button" data-page="admin">&#x2190; Back</button></div>
+  <p class="muted">Add funds to a registered user's SCOTAP wallet. Every adjustment is recorded.</p>
+  <form id="admin-credit-search-form" class="admin-form"><label for="admin-credit-search">Search username or email</label><input id="admin-credit-search" type="search" minlength="2" required placeholder="Enter username or email"><button class="secondary full" type="submit">Find User</button></form>
+  <div id="admin-credit-user" class="announcement-card hidden"></div>
+  <form id="admin-credit-form" class="admin-form hidden"><label for="admin-credit-amount">Amount (â¦)</label><input id="admin-credit-amount" type="number" min="0.01" max="10000000" step="0.01" required placeholder="e.g. 5000"><label for="admin-credit-reason">Reason</label><input id="admin-credit-reason" type="text" minlength="5" maxlength="250" required placeholder="Reason for this credit"><button class="primary full" id="admin-credit-submit" type="submit">Confirm Credit</button></form>
+  <div id="admin-credit-message" class="message" aria-live="polite"></div><h3 style="margin-top:24px">Recent wallet adjustments</h3><div id="admin-credit-history" style="overflow-x:auto"></div>
+</section>
+
+<section class="panel page-panel hidden" id="admin-debit-wallet-page">
+  <div class="section-heading"><h2><i data-lucide="wallet-minimal" class="inline-icon"></i> Debit Wallet</h2><button class="secondary small-button" type="button" data-page="admin">&#x2190; Back</button></div>
+  <p class="muted">Deduct funds from a registered user's SCOTAP wallet. A debit cannot make the balance negative.</p>
+  <form id="admin-debit-search-form" class="admin-form"><label for="admin-debit-search">Search username or email</label><input id="admin-debit-search" type="search" minlength="2" required placeholder="Enter username or email"><button class="secondary full" type="submit">Find User</button></form>
+  <div id="admin-debit-user" class="announcement-card hidden"></div>
+  <form id="admin-debit-form" class="admin-form hidden"><label for="admin-debit-amount">Amount (â¦)</label><input id="admin-debit-amount" type="number" min="0.01" max="10000000" step="0.01" required placeholder="e.g. 500"><label for="admin-debit-reason">Reason</label><input id="admin-debit-reason" type="text" minlength="5" maxlength="250" required placeholder="Reason for this debit"><button class="primary full" id="admin-debit-submit" type="submit">Confirm Debit</button></form>
+  <div id="admin-debit-message" class="message" aria-live="polite"></div><h3 style="margin-top:24px">Recent wallet adjustments</h3><div id="admin-debit-history" style="overflow-x:auto"></div>
 </section>
 
 <section class="panel page-panel hidden" id="get-app-page">
@@ -692,8 +660,8 @@ setInterval(sendActivityHeartbeat,30000);
 async function loadAdminStats(){const total=$("admin-total-users"),active=$("admin-active-users"),msg=$("admin-stats-message");if(!total||!active)return;msg.textContent="Loading user counts...";try{const r=await api("/api/admin/stats");total.textContent=Number(r.total_registered_users||0).toLocaleString();active.textContent=Number(r.currently_using_website||0).toLocaleString();msg.textContent=""}catch(e){msg.textContent=e.message;msg.className="message error"}}
 
 
-function showPage(page){currentPage=page;document.querySelectorAll(".bottom-nav-item[data-nav-page]").forEach(item=>item.classList.toggle("active",item.dataset.navPage===page));document.body.classList.toggle("ticket-open",page==="ticket-view");if(page==="ticket-view"){const topbar=document.querySelector(".topbar");document.documentElement.style.setProperty("--ticket-top",(topbar?.getBoundingClientRect().height||0)+"px")}const pages={dashboard:"dashboard-page",settings:"settings-page",services:"services-page",transactions:"transactions-page",numbers:"numbers-page",notifications:"notifications-page",admin:"admin-page",tickets:"tickets-page","ticket-view":"ticket-view-page","admin-tickets":"admin-tickets-page","admin-orders":"admin-orders-page","admin-deposits":"admin-deposits-page","get-app":"get-app-page",terms:"terms-page",privacy:"privacy-page",menu:"menu-page"};Object.values(pages).forEach(id=>{const el=$(id);if(el)el.classList.add("hidden")});if(pages[page])$(pages[page]).classList.remove("hidden");if(page!=="menu"){$("menu-toggle")?.setAttribute("aria-expanded","false")}else{$("menu-toggle")?.setAttribute("aria-expanded","true");if(window.renderScotapIcons)window.renderScotapIcons($("menu-page"))}if(page==="services"&&token){if(countries.length===0)loadServices();if(activePurchase){const area=$("purchase-area");if(area&&area.classList.contains("hidden"))renderPurchaseUI(activePurchase);}}if(page==="notifications"&&token){loadAnnouncements();markAnnouncementsRead();}if(page==="transactions"&&token)loadTransactions();if(page==="numbers"&&token)loadNumbers();if(page==="dashboard"&&token)loadRecentActivity();if(page==="tickets"&&token&&!skipTicketListLoad)loadTickets();if(page==="admin-tickets"&&token)loadAdminTickets("open");
-if(page==="admin"&&token){loadCurrentMarkupForAdmin();loadAdminStats();}if(page==="admin-orders"&&token)loadAdminOrders();if(page==="admin-deposits"&&token)loadAdminDeposits();window.scrollTo({top:0,behavior:"smooth"})}
+function showPage(page){currentPage=page;document.querySelectorAll(".bottom-nav-item[data-nav-page]").forEach(item=>item.classList.toggle("active",item.dataset.navPage===page));document.body.classList.toggle("ticket-open",page==="ticket-view");if(page==="ticket-view"){const topbar=document.querySelector(".topbar");document.documentElement.style.setProperty("--ticket-top",(topbar?.getBoundingClientRect().height||0)+"px")}const pages={dashboard:"dashboard-page",settings:"settings-page",services:"services-page",transactions:"transactions-page",numbers:"numbers-page",notifications:"notifications-page",admin:"admin-page",tickets:"tickets-page","ticket-view":"ticket-view-page","admin-tickets":"admin-tickets-page","admin-orders":"admin-orders-page","admin-deposits":"admin-deposits-page","admin-credit-wallet":"admin-credit-wallet-page","admin-debit-wallet":"admin-debit-wallet-page","get-app":"get-app-page",terms:"terms-page",privacy:"privacy-page",menu:"menu-page"};Object.values(pages).forEach(id=>{const el=$(id);if(el)el.classList.add("hidden")});if(pages[page])$(pages[page]).classList.remove("hidden");if(page!=="menu"){$("menu-toggle")?.setAttribute("aria-expanded","false")}else{$("menu-toggle")?.setAttribute("aria-expanded","true");if(window.renderScotapIcons)window.renderScotapIcons($("menu-page"))}if(page==="services"&&token){if(countries.length===0)loadServices();if(activePurchase){const area=$("purchase-area");if(area&&area.classList.contains("hidden"))renderPurchaseUI(activePurchase);}}if(page==="notifications"&&token){loadAnnouncements();markAnnouncementsRead();}if(page==="transactions"&&token)loadTransactions();if(page==="numbers"&&token)loadNumbers();if(page==="dashboard"&&token)loadRecentActivity();if(page==="tickets"&&token&&!skipTicketListLoad)loadTickets();if(page==="admin-tickets"&&token)loadAdminTickets("open");
+if(page==="admin"&&token){loadCurrentMarkupForAdmin();loadAdminStats();}if(page==="admin-orders"&&token)loadAdminOrders();if(page==="admin-deposits"&&token)loadAdminDeposits();if(page==="admin-credit-wallet"&&token)loadWalletAdjustmentHistory("credit");if(page==="admin-debit-wallet"&&token)loadWalletAdjustmentHistory("debit");window.scrollTo({top:0,behavior:"smooth"})}
 
 function saveToken(t){token=t;try{if(t)localStorage.setItem("scotap_token",t);else localStorage.removeItem("scotap_token")}catch{}}
 
@@ -768,6 +736,16 @@ $("register-tab").addEventListener("click",()=>setMode("register"));$("login-tab
 $("auth-form").addEventListener("submit",async e=>{e.preventDefault();const b=$("auth-submit");b.disabled=true;showMessage("auth-message","Please wait...");try{const humanToken=window.turnstile?.getResponse?.();if(!humanToken)throw new Error("Please complete the Verify Human check.");let body;if(mode==="register"){if($("password").value!==$("confirm-password").value)throw new Error("Passwords do not match.");if(!$("terms-accepted").checked)throw new Error("You must accept the Terms of Service and Privacy Policy.");body={full_name:$("full-name").value.trim(),username:$("username").value.trim().toLowerCase(),email:$("email").value.trim(),password:$("password").value,confirm_password:$("confirm-password").value,terms_accepted:$("terms-accepted").checked,cf_turnstile_response:humanToken}}else body={email:$("email").value.trim(),password:$("password").value,cf_turnstile_response:humanToken};const result=await api(mode==="register"?"/api/register":"/api/login",{method:"POST",body:JSON.stringify(body)});if(!result.token)throw new Error("The server did not return a login token.");window.turnstile?.reset?.();saveToken(result.token);$("password").value="";$("confirm-password").value="";showLoggedIn();if(result.user)updateProfile(result.user);try{await loadProfile()}catch(err){if(!currentUser)throw err}await restoreActivePurchase();await Promise.allSettled([refreshWallet()]);await verifyReturnPayment()}catch(err){window.turnstile?.reset?.();showMessage("auth-message",err.message,"error")}finally{b.disabled=false}});
 
 $("menu-toggle").addEventListener("click",()=>{showPage("menu");});
+
+let adminCreditTarget=null, adminDebitTarget=null;
+function escapeAdminText(value){return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;", "'":"&#39;"}[c]));}
+function renderWalletTarget(kind,user){const target=kind==="credit"?"admin-credit":"admin-debit";const box=$(target+"-user");box.classList.remove("hidden");box.innerHTML=`<strong>${escapeAdminText(user.full_name||user.username||"User")}</strong><div class="muted">@${escapeAdminText(user.username)} Â· ${escapeAdminText(user.email)}</div><div style="margin-top:8px">Current wallet: <strong>${money(user.balance_kobo)}</strong></div>`;$(target+"-form").classList.remove("hidden");if(kind==="credit")adminCreditTarget=user;else adminDebitTarget=user;}
+async function searchWalletTarget(kind){const prefix=kind==="credit"?"admin-credit":"admin-debit";const form=$(prefix+"-search-form");form.addEventListener("submit",async e=>{e.preventDefault();const msg=$(prefix+"-message");const q=$(prefix+"-search").value.trim();$(prefix+"-form").classList.add("hidden");$(prefix+"-user").classList.add("hidden");if(kind==="credit")adminCreditTarget=null;else adminDebitTarget=null;showMessage(prefix+"-message","Searching for user...");try{const r=await api("/api/admin/search-user",{method:"POST",body:JSON.stringify({query:q})});renderWalletTarget(kind,r.user);showMessage(prefix+"-message","User found. Check the account and balance before proceeding.","success");}catch(err){showMessage(prefix+"-message",err.message,"error");}});}
+searchWalletTarget("credit");searchWalletTarget("debit");
+async function loadWalletAdjustmentHistory(kind){const id=kind==="credit"?"admin-credit-history":"admin-debit-history";const box=$(id);if(!box)return;box.innerHTML="<p class='muted'>Loading adjustment history...</p>";try{const r=await api("/api/admin/wallet-adjustments?type="+kind);const rows=r.items||[];if(!rows.length){box.innerHTML="<p class='muted'>No wallet adjustments recorded yet.</p>";return;}box.innerHTML=`<table class="history-table"><thead><tr><th>User</th><th>Amount</th><th>Reason</th><th>Admin</th><th>Date</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${escapeAdminText(x.username||x.email||x.user_id)}</td><td>${kind==="credit"?"+":"â"}${money(x.amount_kobo)}</td><td>${escapeAdminText(x.reason)}</td><td>${escapeAdminText(x.admin_email)}</td><td>${escapeAdminText(new Date(x.created_at).toLocaleString())}</td></tr>`).join("")}</tbody></table>`;}catch(e){box.innerHTML=`<p class='message error'>${escapeAdminText(e.message)}</p>`;}}
+async function submitWalletAdjustment(kind,e){e.preventDefault();const prefix=kind==="credit"?"admin-credit":"admin-debit";const target=kind==="credit"?adminCreditTarget:adminDebitTarget;const button=$(prefix+"-submit");if(!target){showMessage(prefix+"-message","Find and select a user first.","error");return;}const amount=Number($(prefix+"-amount").value);const reason=$(prefix+"-reason").value.trim();if(!Number.isFinite(amount)||amount<=0||amount>10000000||Math.round(amount*100)!==amount*100){showMessage(prefix+"-message","Enter a valid amount up to â¦10,000,000 (maximum 2 decimal places).","error");return;}if(reason.length<5||reason.length>250){showMessage(prefix+"-message","Enter a reason between 5 and 250 characters.","error");return;}const action=kind==="credit"?"credit":"debit";if(!window.confirm(`Confirm ${action} of ${money(Math.round(amount*100))} ${kind==="credit"?"to":"from"} @${target.username}'s wallet?\nReason: ${reason}`))return;button.disabled=true;showMessage(prefix+"-message",`Processing wallet ${action}...`);try{const r=await api("/api/admin/wallet-adjust",{method:"POST",body:JSON.stringify({user_id:target.id,type:kind,amount_naira:amount,reason})});target.balance_kobo=r.balance_kobo;renderWalletTarget(kind,target);$(prefix+"-form").reset();showMessage(prefix+"-message",`Wallet ${action} successful. New balance: ${money(r.balance_kobo)}.`,"success");await loadWalletAdjustmentHistory(kind);}catch(err){showMessage(prefix+"-message",err.message,"error");}finally{button.disabled=false;}}
+$("admin-credit-form").addEventListener("submit",e=>submitWalletAdjustment("credit",e));
+$("admin-debit-form").addEventListener("submit",e=>submitWalletAdjustment("debit",e));
 
 document.querySelectorAll("[data-page]").forEach(button=>button.addEventListener("click",()=>{const p=button.dataset.page;if(p==="logout"){clearPageSnapshot();showLoggedOut();$("deposit-area").classList.add("hidden");setMode("login");showMessage("auth-message","You have logged out.","success");return}showPage(p)}));
 
@@ -1767,114 +1745,6 @@ if (adminSearchForm) {
 </script>
 
 <script>
-
-// ===== ADMIN CREDIT / DEBIT WALLET =====
-const creditArea = document.getElementById("credit-wallet-area");
-const debitArea = document.getElementById("debit-wallet-area");
-
-document.getElementById("show-credit-form")?.addEventListener("click", () => {
-  creditArea?.classList.remove("hidden");
-  debitArea?.classList.add("hidden");
-  document.getElementById("credit-username")?.focus();
-});
-
-document.getElementById("show-debit-form")?.addEventListener("click", () => {
-  debitArea?.classList.remove("hidden");
-  creditArea?.classList.add("hidden");
-  document.getElementById("debit-username")?.focus();
-});
-
-document.getElementById("cancel-credit")?.addEventListener("click", () => {
-  creditArea?.classList.add("hidden");
-  const msg = document.getElementById("credit-message");
-  if (msg) { msg.textContent = ""; msg.className = "message"; }
-});
-
-document.getElementById("cancel-debit")?.addEventListener("click", () => {
-  debitArea?.classList.add("hidden");
-  const msg = document.getElementById("debit-message");
-  if (msg) { msg.textContent = ""; msg.className = "message"; }
-});
-
-document.getElementById("credit-submit-btn")?.addEventListener("click", async () => {
-  const username = document.getElementById("credit-username")?.value.trim() || "";
-  const amount = Number(document.getElementById("credit-amount")?.value);
-  const reason = document.getElementById("credit-reason")?.value.trim() || "";
-  const msg = document.getElementById("credit-message");
-  const btn = document.getElementById("credit-submit-btn");
-
-  if (!username || !Number.isFinite(amount) || amount <= 0 || !reason) {
-    if (msg) { msg.textContent = "Please fill all fields correctly."; msg.className = "message error"; }
-    return;
-  }
-
-  if (!confirm(`Credit ₦${amount.toLocaleString()} to ${username}?\n\nReason: ${reason}`)) return;
-
-  if (btn) btn.disabled = true;
-  if (msg) { msg.textContent = "Processing credit..."; msg.className = "message"; }
-
-  try {
-    const r = await api("/api/admin/credit-wallet", {
-      method: "POST",
-      body: JSON.stringify({ username, amount_naira: amount, reason })
-    });
-    if (msg) {
-      msg.textContent = `${r.message} | New balance: ₦${Number(r.new_balance_naira).toLocaleString()}`;
-      msg.className = "message success";
-    }
-    const u = document.getElementById("credit-username");
-    const a = document.getElementById("credit-amount");
-    const re = document.getElementById("credit-reason");
-    if (u) u.value = "";
-    if (a) a.value = "";
-    if (re) re.value = "";
-  } catch (err) {
-    if (msg) { msg.textContent = err.message || "Something went wrong"; msg.className = "message error"; }
-  } finally {
-    if (btn) btn.disabled = false;
-  }
-});
-
-document.getElementById("debit-submit-btn")?.addEventListener("click", async () => {
-  const username = document.getElementById("debit-username")?.value.trim() || "";
-  const amount = Number(document.getElementById("debit-amount")?.value);
-  const reason = document.getElementById("debit-reason")?.value.trim() || "";
-  const msg = document.getElementById("debit-message");
-  const btn = document.getElementById("debit-submit-btn");
-
-  if (!username || !Number.isFinite(amount) || amount <= 0 || !reason) {
-    if (msg) { msg.textContent = "Please fill all fields correctly."; msg.className = "message error"; }
-    return;
-  }
-
-  if (!confirm(`Debit ₦${amount.toLocaleString()} from ${username}?\n\nReason: ${reason}\n\nThis cannot be undone easily.`)) return;
-
-  if (btn) btn.disabled = true;
-  if (msg) { msg.textContent = "Processing debit..."; msg.className = "message"; }
-
-  try {
-    const r = await api("/api/admin/debit-wallet", {
-      method: "POST",
-      body: JSON.stringify({ username, amount_naira: amount, reason })
-    });
-    if (msg) {
-      msg.textContent = `${r.message} | New balance: ₦${Number(r.new_balance_naira).toLocaleString()}`;
-      msg.className = "message success";
-    }
-    const u = document.getElementById("debit-username");
-    const a = document.getElementById("debit-amount");
-    const re = document.getElementById("debit-reason");
-    if (u) u.value = "";
-    if (a) a.value = "";
-    if (re) re.value = "";
-  } catch (err) {
-    if (msg) { msg.textContent = err.message || "Something went wrong"; msg.className = "message error"; }
-  } finally {
-    if (btn) btn.disabled = false;
-  }
-});
-
-
 // ===== SUPPORT TICKETS JS =====
 
 document.addEventListener("click", async (e) => {
