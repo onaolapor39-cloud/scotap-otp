@@ -404,11 +404,11 @@ body:has(.bottom-nav:not(.hidden)){padding-bottom:92px}
 <div class="admin-form admin-stats-grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0">
   <div class="panel admin-stat-card" style="margin:0">
     <div class="admin-stat-label"><i data-lucide="user-round" class="admin-stat-icon" aria-hidden="true"></i><span class="muted">Total Registered Users</span></div>
-    <div id="admin-total-users" class="admin-stat-value">â</div>
+    <div id="admin-total-users" class="admin-stat-value">-</div>
   </div>
   <div class="panel admin-stat-card" style="margin:0">
     <div class="admin-stat-label"><i data-lucide="activity" class="admin-stat-icon" aria-hidden="true"></i><span class="muted">Currently Using Website</span></div>
-    <div id="admin-active-users" class="admin-stat-value">â</div>
+    <div id="admin-active-users" class="admin-stat-value">-</div>
   </div>
 </div>
 <div class="admin-form" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:18px 0" aria-label="Admin records">
@@ -1202,7 +1202,7 @@ function updatePurchaseActions(order){
         }
 
         if(!confirmed){
-          // API said OK but status still pending â do NOT pretend it worked
+          // API said OK but status still pending - do NOT pretend it worked
           showMessage(
             "services-message",
             "Cancel request sent, but the number is still active on the server (status: " +
@@ -1424,7 +1424,7 @@ $("announcement-form").addEventListener("submit",async e=>{e.preventDefault();co
 
       try{await loadProfile()}catch{}
 
-      // Show the right page ASAP â do not wait for purchase restore (that caused OTP flash + slow load)
+      // Show the right page ASAP - do not wait for purchase restore (that caused OTP flash + slow load)
       const snapshotIsFresh=pageSnapshot&&Number.isFinite(Number(pageSnapshot.hiddenAt))&&Date.now()-Number(pageSnapshot.hiddenAt)<=60000;
       let destination=snapshotIsFresh&&allowedPages.includes(pageSnapshot.page)?pageSnapshot.page:"dashboard";
 
@@ -1442,7 +1442,7 @@ $("announcement-form").addEventListener("submit",async e=>{e.preventDefault();co
       else if(destination==="ticket-view"){showPage(isAdminUser?"admin-tickets":"tickets")}
       else{showPage(destination)}
 
-      // Reveal UI now â before background purchase sync
+      // Reveal UI now - before background purchase sync
       document.documentElement.classList.add("app-ready");
 
       // Restore active (waiting) purchase in background; never blocks first paint
@@ -1833,7 +1833,7 @@ function showCreateTicketForm() {
         ));
       }
     } catch (e) {
-      sel.replaceChildren(new Option("Could not load transactions â tap to retry", "__error__"));
+      sel.replaceChildren(new Option("Could not load transactions - tap to retry", "__error__"));
       console.error("Could not load related ticket transactions:", e);
     } finally {
       sel.disabled = false;
@@ -2184,7 +2184,7 @@ async function loadAdminOrders() {
       <td>${escapeHtml(o.phone_number || "")}</td>
       <td>${money(o.amount_kobo)}</td>
       <td>${escapeHtml(o.status || "")}</td>
-      <td>${escapeHtml(o.sms_code || "â")}</td>
+      <td>${escapeHtml(o.sms_code || "-")}</td>
       <td>${o.created_at ? new Date(o.created_at).toLocaleString() : ""}</td>
     </tr>`).join("")}</tbody></table>`;
     showMessage("admin-orders-message", `${list.length} record(s)`);
